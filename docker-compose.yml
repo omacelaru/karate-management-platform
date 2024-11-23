@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # PostgreSQL 13
+  postgres:
+    image: postgres:13
+    container_name: postgres-container
+    environment:
+      POSTGRES_USER: karate_user
+      POSTGRES_PASSWORD: Karate.user2025
+      POSTGRES_DB: karate_app_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  # Microservice karate-auth-service (Spring Boot)
+  karate-auth-service:
+    build:
+      context: ./
+    container_name: karate-auth-service
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/karate_app_db
+      SPRING_DATASOURCE_USERNAME: karate_user
+      SPRING_DATASOURCE_PASSWORD: Karate.user2025
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
