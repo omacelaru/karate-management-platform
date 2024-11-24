@@ -4,11 +4,11 @@ services:
   # PostgreSQL 13
   postgres:
     image: postgres:13
-    container_name: postgres-container
+    container_name: postgres-auth-container
     environment:
       POSTGRES_USER: karate_user
       POSTGRES_PASSWORD: Karate.user2025
-      POSTGRES_DB: karate_app_db
+      POSTGRES_DB: karate_users_db
     ports:
       - "5432:5432"
     volumes:
@@ -24,7 +24,7 @@ services:
     depends_on:
       - postgres
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/karate_app_db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/karate_users_db
       SPRING_DATASOURCE_USERNAME: karate_user
       SPRING_DATASOURCE_PASSWORD: Karate.user2025
     ports:
