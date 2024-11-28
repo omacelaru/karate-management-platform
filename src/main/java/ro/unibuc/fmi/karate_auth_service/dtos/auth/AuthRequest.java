@@ -1,4 +1,4 @@
-package ro.unibuc.fmi.karate_auth_service.dtos;
+package ro.unibuc.fmi.karate_auth_service.dtos.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
