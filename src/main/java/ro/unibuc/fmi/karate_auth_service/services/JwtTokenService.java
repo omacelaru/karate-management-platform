@@ -3,14 +3,12 @@ package ro.unibuc.fmi.karate_auth_service.services;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
+import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
@@ -18,8 +16,8 @@ import java.util.function.Function;
 
 @Service
 public class JwtTokenService {
-    @Value("${jwt.public-signing-key}")
-    private String PUBLIC_SIGNING_KEY;
+    @Value("${jwt.secret-signing-key}")
+    private String SECRET_SIGNING_KEY;
 
     public String generateToken(UserDetails userDetails) {
         return generateToken(Map.of(), userDetails);
@@ -30,7 +28,7 @@ public class JwtTokenService {
                 .builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
-                .signWith(getPublicSigningKey())
+                .signWith(getSecretSigningKey())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .compact();
@@ -61,17 +59,16 @@ public class JwtTokenService {
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parser()
-                .verifyWith(getPublicSigningKey())
+                .verifyWith(getSecretSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
     }
 
-    private PublicKey getPublicSigningKey() {
+    private SecretKey getSecretSigningKey() {
         try {
-            byte[] publicSigningKeyBytes = Base64.getDecoder().decode(PUBLIC_SIGNING_KEY);
-            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicSigningKeyBytes);
-            return KeyFactory.getInstance("RSA").generatePublic(keySpec);
+            byte[] publicSigningKeyBytes = Base64.getDecoder().decode(SECRET_SIGNING_KEY);
+            return Keys.hmacShaKeyFor(publicSigningKeyBytes);
         } catch (Exception e) {
             throw new RuntimeException("Failed to get public signing key", e);
         }
