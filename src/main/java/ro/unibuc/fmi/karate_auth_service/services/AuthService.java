@@ -37,7 +37,9 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(AuthRequest authRequest) {
-        //TODO - validate user and throw exception if invalid
+        if (userRepository.existsByEmail(authRequest.getEmail())) {
+            throw new IllegalArgumentException("Email already exists");
+        }
         User user = User.builder()
                 .email(authRequest.getEmail())
                 .password(passwordEncoder.encode(authRequest.getPassword()))

@@ -22,6 +22,18 @@ public class AuthResource {
 
     private final AuthService authService;
 
+    @Operation(summary = "Register",
+            description = "Registers a new user",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "User registered successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
+            })
+    @PostMapping("/register")
+    //TODO Uncomment @Valid annotation after testing
+    public ResponseEntity<AuthResponse> register(@RequestBody /*@Valid*/ AuthRequest authRequest) {
+        return ResponseEntity.ok(authService.register(authRequest));
+    }
+
     @Operation(summary = "Login",
             description = "Logs in a user",
             responses = {
@@ -31,16 +43,5 @@ public class AuthResource {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
         return ResponseEntity.ok(authService.login(authRequest));
-    }
-
-    @Operation(summary = "Register",
-            description = "Registers a new user",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "User registered successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
-            })
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody AuthRequest authRequest) {
-        return ResponseEntity.ok(authService.register(authRequest));
     }
 }
