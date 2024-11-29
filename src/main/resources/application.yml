@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: karate-auth-service
+
+  # Server Configuration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/karate_users_db
+    username: karate_user
+    password: Karate.user2025
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: true
+
+# Swagger Configuration
+springdoc:
+  api-docs.enabled: true
+  swagger-ui.enabled: true
+
+jwt:
+  secret-signing-key: VVBnjmJk/7zALlGMV2MTY/DeRxzecHINfsxU16d+A/gX+ta4lrnnM7nJRNPhDm6Vrt8EGXGRfUwbAkiWQWT4U1C6UZ+LXNx4bNVttqrTKOJNU17gyXIGQL+MFAIz0FCDqKZrOLGpE3RCnkLsJRbgo76gMdNvhGCcEm8JkHoLsXTSXJamuBDhheQD/wreedFrkzph4+XQ+NFSQ9PUMUy7/W1JwJcgLO8Dti8RUShJXXIxH0ed4q77kOpH7A0DOSvdr062geYmgI3mScOHJMI1R0ymPheDE5PDgfyYR/bdlcgt7RWPkDBe34WGeNdxdOktZKSLsDjUWe7ywZf5MpaZgQ==
