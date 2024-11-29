@@ -2,7 +2,7 @@ package ro.unibuc.fmi.karate_auth_service.services;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +16,7 @@ import ro.unibuc.fmi.karate_auth_service.utils.MapperUtils;
 
 import java.util.Set;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -36,6 +37,7 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(AuthRequest authRequest) {
+        //TODO - validate user and throw exception if invalid
         User user = User.builder()
                 .email(authRequest.getEmail())
                 .password(passwordEncoder.encode(authRequest.getPassword()))
