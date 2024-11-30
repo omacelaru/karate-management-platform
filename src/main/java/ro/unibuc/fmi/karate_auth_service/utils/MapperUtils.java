@@ -7,7 +7,7 @@ import ro.unibuc.fmi.karate_auth_service.models.user.User;
 
 @Mapper(componentModel = "spring")
 public interface MapperUtils {
-    AuthResponse mapToAuthResponse(String token);
+    AuthResponse mapToAuthResponse(String accessToken, String refreshToken);
 
     UserResponse mapToUserResponse(User user);
 }

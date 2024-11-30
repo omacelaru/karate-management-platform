@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ro.unibuc.fmi.karate_auth_service.dtos.auth.AuthRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.auth.AuthResponse;
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
+import ro.unibuc.fmi.karate_auth_service.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_auth_service.services.AuthService;
 
 @RestController
@@ -43,5 +46,18 @@ public class AuthResource {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest) {
         return ResponseEntity.ok(authService.login(authRequest));
+    }
+
+
+    @Operation(summary = "Refresh token",
+            description = "Refresh the access token",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Token refreshed successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AuthResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
+            })
+    @SecuredEndpoint
+    @PostMapping("/refresh-token")
+    public ResponseEntity<AuthResponse> refreshToken(HttpServletRequest request) {
+        return ResponseEntity.ok(authService.refreshToken(request));
     }
 }
