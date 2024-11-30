@@ -4,6 +4,7 @@ package ro.unibuc.fmi.karate_auth_service.services;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,13 +22,22 @@ public class JwtTokenService {
 
     @Value("${jwt.secret-signing-key}")
     private String SECRET_SIGNING_KEY;
+    @Value("${jwt.access-token-expiration}")
+    private long accessTokenExpiration;
+    @Value("${jwt.refresh-token-expiration}")
+    private long refreshTokenExpiration;
 
-    public String generateToken(UserDetails userDetails) {
-        log.debug("Generating token for user: {}", userDetails.getUsername());
-        return generateToken(Map.of(), userDetails);
+    public String generateAccessToken(UserDetails userDetails) {
+        log.debug("Generating access token for user: {}", userDetails.getUsername());
+        return generateToken(Map.of(), userDetails, accessTokenExpiration);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    public String generateRefreshToken(UserDetails userDetails) {
+        log.debug("Generating refresh token for user: {}", userDetails.getUsername());
+        return generateToken(Map.of(), userDetails, refreshTokenExpiration);
+    }
+
+    private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
         log.debug("Generating token with extra claims for user: {}", userDetails.getUsername());
         String token = Jwts
                 .builder()
@@ -35,7 +45,7 @@ public class JwtTokenService {
                 .subject(userDetails.getUsername())
                 .signWith(getSecretSigningKey())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .expiration(new Date(System.currentTimeMillis() + expiration))
                 .compact();
         log.info("Token successfully generated for user: {}", userDetails.getUsername());
         return token;
@@ -101,6 +111,22 @@ public class JwtTokenService {
             log.error("Failed to generate secret signing key: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to get public signing key", e);
         }
+    }
+
+    public String extractRefreshToken(HttpServletRequest request) {
+        log.debug("Extracting refresh token from request.");
+        String token = request.getHeader("Authorization");
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        log.debug("Extracted refresh token: {}", token);
+        return token;
+    }
+
+
+    public String extractUserEmailFromRefreshToken(String refreshToken) {
+        log.debug("Extracting user email from refresh token.");
+        return extractUserEmail(refreshToken);
     }
 }
 

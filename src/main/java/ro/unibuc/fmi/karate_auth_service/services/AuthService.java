@@ -1,5 +1,6 @@
 package ro.unibuc.fmi.karate_auth_service.services;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +32,9 @@ public class AuthService {
     public AuthResponse login(AuthRequest authRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
         User user = userRepository.findByEmail(authRequest.getEmail()).orElseThrow();
-        String token = jwtTokenService.generateToken(user);
-        return mapperUtils.mapToAuthResponse(token);
+        String accessToken = jwtTokenService.generateAccessToken(user);
+        String refreshToken = jwtTokenService.generateRefreshToken(user);
+        return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
     }
 
     @Transactional
@@ -46,7 +48,16 @@ public class AuthService {
                 .roles(Set.of(Role.USER))
                 .build();
         userRepository.save(user);
-        String token = jwtTokenService.generateToken(user);
-        return mapperUtils.mapToAuthResponse(token);
+        String accessToken = jwtTokenService.generateAccessToken(user);
+        String refreshToken = jwtTokenService.generateRefreshToken(user);
+        return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
+    }
+
+    public AuthResponse refreshToken(HttpServletRequest request) {
+        String refreshToken = jwtTokenService.extractRefreshToken(request);
+        String userEmail = jwtTokenService.extractUserEmailFromRefreshToken(refreshToken);
+        User user = userRepository.findByEmail(userEmail).orElseThrow();
+        String accessToken = jwtTokenService.generateAccessToken(user);
+        return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
     }
 }
