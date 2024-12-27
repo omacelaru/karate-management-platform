@@ -1,14 +1,15 @@
 package ro.unibuc.fmi.karate_auth_service.dtos.user;
 
-import lombok.Data;
+import io.swagger.v3.oas.annotations.media.Schema;
+import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.Set;
 
-@Data
-public class UserResponse {
-    private Long id;
-    private String lastName;
-    private String firstName;
-    private String email;
-    private List<String> roles;
+/**
+ * DTO for {@link ro.unibuc.fmi.karate_auth_service.models.user.User}
+ */
+@Schema(description = "User response")
+public record UserResponse(Long id, Set<Role> roles, String lastName, String firstName, String email,
+                           String password) implements Serializable {
 }
