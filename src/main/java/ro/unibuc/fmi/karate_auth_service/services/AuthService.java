@@ -30,8 +30,8 @@ public class AuthService {
 
     @Transactional
     public AuthResponse login(AuthRequest authRequest) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
-        User user = userRepository.findByEmail(authRequest.getEmail()).orElseThrow();
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.email(), authRequest.password()));
+        User user = userRepository.findByEmail(authRequest.email()).orElseThrow();
         String accessToken = jwtTokenService.generateAccessToken(user);
         String refreshToken = jwtTokenService.generateRefreshToken(user);
         return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
@@ -39,12 +39,12 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(AuthRequest authRequest) {
-        if (userRepository.existsByEmail(authRequest.getEmail())) {
+        if (userRepository.existsByEmail(authRequest.email())) {
             throw new IllegalArgumentException("Email already exists");
         }
         User user = User.builder()
-                .email(authRequest.getEmail())
-                .password(passwordEncoder.encode(authRequest.getPassword()))
+                .email(authRequest.email())
+                .password(passwordEncoder.encode(authRequest.password()))
                 .roles(Set.of(Role.USER))
                 .build();
         userRepository.save(user);
