@@ -15,7 +15,6 @@ import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 @Aspect
 @Component
 public class SecuredEndpointAspect {
-
     @Around("@annotation(securedEndpoint)")
     public Object enforceRoles(ProceedingJoinPoint joinPoint, SecuredEndpoint securedEndpoint) throws Throwable {
         Role[] requiredRoles = securedEndpoint.roles();
