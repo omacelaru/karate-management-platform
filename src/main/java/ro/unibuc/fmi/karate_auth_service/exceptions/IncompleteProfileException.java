@@ -6,8 +6,4 @@ public class IncompleteProfileException extends BadRequestException {
     public IncompleteProfileException() {
         super("Profile is incomplete");
     }
-
-    public IncompleteProfileException(String message) {
-        super(message);
-    }
 }

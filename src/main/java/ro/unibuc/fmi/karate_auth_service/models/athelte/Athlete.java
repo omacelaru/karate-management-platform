@@ -48,7 +48,7 @@ public class Athlete extends BaseEntity {
     @Max(value = 200, message = "Weight must be no greater than 200 kg")
     private Integer weight;
 
-    @Column(name = "profile_picture_url", length = 255)
+    @Column(name = "profile_picture_url")
     private String profilePictureUrl;
 
     @OneToOne(cascade = CascadeType.PERSIST)
