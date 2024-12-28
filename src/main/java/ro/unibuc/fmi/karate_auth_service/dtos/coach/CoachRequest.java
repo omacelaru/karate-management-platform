@@ -1,8 +1,6 @@
 package ro.unibuc.fmi.karate_auth_service.dtos.coach;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
-import ro.unibuc.fmi.karate_auth_service.dtos.user.UserDetailsRequest;
 
 import java.io.Serializable;
 
