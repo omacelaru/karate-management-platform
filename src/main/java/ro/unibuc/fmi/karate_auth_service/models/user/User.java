@@ -51,11 +51,9 @@ public class User extends BaseEntity implements UserDetails {
     private String nationality;
 
     @Column(name = "birth_date")
-    @NotNull(message = "Birth date cannot be null")
     private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
-    @NotNull(message = "Gender cannot be null")
     private Gender gender;
 
     @Column(name = "profile_picture_url")

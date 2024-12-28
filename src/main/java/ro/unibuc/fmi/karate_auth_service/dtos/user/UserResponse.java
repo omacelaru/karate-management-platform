@@ -1,9 +1,12 @@
 package ro.unibuc.fmi.karate_auth_service.dtos.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import ro.unibuc.fmi.karate_auth_service.models.athelte.Gender;
 import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
@@ -13,6 +16,8 @@ import java.util.Set;
  * <p>Usage: This DTO is typically used in user profile responses or user listing responses.</p>
  */
 @Schema(description = "Response containing user details such as ID, roles, name, and email.")
-public record UserResponse(Long id, Set<Role> roles, String lastName, String firstName,
-                           String email) implements Serializable {
+//TODO investigate for id duplication
+public record UserResponse(Long id, LocalDateTime createdAt, LocalDateTime updatedAt, Set<Role> roles,
+                           String lastName, String firstName, String email, String nationality, LocalDate birthDate,
+                           Gender gender, String profilePictureUrl) implements Serializable {
 }

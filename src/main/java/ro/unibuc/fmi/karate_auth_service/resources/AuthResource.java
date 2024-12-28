@@ -32,6 +32,7 @@ public class AuthResource {
             })
     @PostMapping("/register")
     //TODO Uncomment @Valid annotation after testing
+    //TODO Throw not specific exception in case of email already exists
     public ResponseEntity<AuthResponse> register(@RequestBody /*@Valid*/ AuthRequest authRequest) {
         return ResponseEntity.ok(authService.register(authRequest));
     }

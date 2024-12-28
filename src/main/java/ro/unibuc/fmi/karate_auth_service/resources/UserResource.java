@@ -4,11 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ro.unibuc.fmi.karate_auth_service.dtos.user.UserDetailsRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.user.UserResponse;
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
 import ro.unibuc.fmi.karate_auth_service.security.SecuredEndpoint;
@@ -31,4 +31,17 @@ public class UserResource {
     public ResponseEntity<UserResponse> getMe() {
         return ResponseEntity.ok(userService.getMe());
     }
+
+    @Operation(summary = "Update logged in user information",
+            description = "Added the rest of the user details",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "User information updated successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
+            })
+    @SecuredEndpoint
+    @PatchMapping("/me")
+    public ResponseEntity<UserResponse> updateMe(@RequestBody @Valid UserDetailsRequest userDetailsRequest) {
+        return ResponseEntity.ok(userService.updateMe(userDetailsRequest));
+    }
+
 }

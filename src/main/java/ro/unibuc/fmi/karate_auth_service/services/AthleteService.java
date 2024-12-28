@@ -33,13 +33,7 @@ public class AthleteService {
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public AthleteResponse createAthlete(AthleteRequest athleteRequest) {
         User user = UserUtils.getCurrentUser();
-        if (user.getRoles().contains(Role.ATHLETE)) {
-            log.warn("User with email: {} is already an athlete", user.getEmail());
-            throw new IllegalStateException("User is already an athlete");
-        }
-        user.setFirstName(athleteRequest.userRequestName().firstName());
-        user.setLastName(athleteRequest.userRequestName().lastName());
-        user.getRoles().add(Role.ATHLETE);
+        UserService.applyRolesToUser(user, Role.ATHLETE);
 
         Athlete athlete = mapperUtils.mapToAthlete(athleteRequest);
         athlete.setUser(user);
