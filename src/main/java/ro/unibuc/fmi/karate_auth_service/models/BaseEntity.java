@@ -15,7 +15,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @MappedSuperclass
 @AllArgsConstructor
-public class BaseEntity {
+public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
