@@ -33,6 +33,13 @@ public class AthleteResource {
         return ResponseEntity.ok(athleteService.getMe());
     }
 
+
+    @Operation(summary = "Create a new athlete",
+            description = "Creates a new athlete",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Athlete created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AthleteResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
+            })
     @SecuredEndpoint
     @PostMapping("/me")
     public ResponseEntity<AthleteResponse> createAthleteProfile(@RequestBody @Valid AthleteRequest athleteRequest) {

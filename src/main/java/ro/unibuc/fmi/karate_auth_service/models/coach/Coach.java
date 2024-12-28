@@ -1,0 +1,34 @@
+package ro.unibuc.fmi.karate_auth_service.models.coach;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import ro.unibuc.fmi.karate_auth_service.models.BaseEntity;
+import ro.unibuc.fmi.karate_auth_service.models.athelte.Athlete;
+import ro.unibuc.fmi.karate_auth_service.models.user.User;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
+@Entity
+@Table(name = "coaches")
+public class Coach extends BaseEntity {
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @MapsId
+    private User user;
+
+    @ManyToMany(cascade = CascadeType.DETACH)
+    @JoinTable(name = "coaches_athletes",
+            joinColumns = @JoinColumn(name = "coach_id"),
+            inverseJoinColumns = @JoinColumn(name = "athlete_id"))
+    private Set<Athlete> athletes = new LinkedHashSet<>();
+
+}

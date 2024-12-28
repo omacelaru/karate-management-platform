@@ -6,9 +6,12 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 
 /**
- * DTO for authentication
+ * DTO for user authentication request.
+ * This DTO is used to send authentication details (email and password) when a user tries to log in.
+ *
+ * <p>Usage: This DTO is used for sending authentication details in a POST request for user login.</p>
  */
-@Schema(description = "Authentication request")
+@Schema(description = "Authentication request containing email and password for user login.")
 public record AuthRequest(
         @NotEmpty(message = "Email is required")
         @Email(message = "Email is invalid", regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")

@@ -6,8 +6,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -59,7 +58,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError);
     }
 
-    @ExceptionHandler({BadCredentialsException.class, AuthenticationCredentialsNotFoundException.class})
+    @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiError> handleBadCredentialsException(Exception error, WebRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.UNAUTHORIZED.value(),
