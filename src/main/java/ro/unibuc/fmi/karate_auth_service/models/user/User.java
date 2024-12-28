@@ -1,6 +1,8 @@
 package ro.unibuc.fmi.karate_auth_service.models.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +12,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ro.unibuc.fmi.karate_auth_service.models.BaseEntity;
+import ro.unibuc.fmi.karate_auth_service.models.athelte.Gender;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -22,7 +26,6 @@ import java.util.Set;
 @AllArgsConstructor
 @SuperBuilder
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "users")
 public class User extends BaseEntity implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
@@ -31,10 +34,10 @@ public class User extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new LinkedHashSet<>();
 
-    @Column(name = "last_name", length = 100)
+    @Column(name = "last_name", length = 60)
     private String lastName;
 
-    @Column(name = "first_name")
+    @Column(name = "first_name", length = 120)
     private String firstName;
 
     @Column(name = "email", nullable = false, unique = true)
@@ -42,6 +45,21 @@ public class User extends BaseEntity implements UserDetails {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "nationality", length = 100)
+    @Size(min = 2, max = 100, message = "Nationality should be between 2 and 100 characters")
+    private String nationality;
+
+    @Column(name = "birth_date")
+    @NotNull(message = "Birth date cannot be null")
+    private LocalDate birthDate;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Gender cannot be null")
+    private Gender gender;
+
+    @Column(name = "profile_picture_url")
+    private String profilePictureUrl;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

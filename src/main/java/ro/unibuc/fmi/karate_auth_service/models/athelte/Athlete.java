@@ -4,16 +4,17 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_auth_service.models.BaseEntity;
+import ro.unibuc.fmi.karate_auth_service.models.coach.Coach;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 
-import java.time.LocalDate;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,18 +24,9 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "athletes")
 public class Athlete extends BaseEntity {
-    @Column(name = "nationality", length = 100)
-    @NotNull(message = "Nationality cannot be null")
-    @Size(min = 2, max = 100, message = "Nationality should be between 2 and 100 characters")
-    private String nationality;
-
-    @Column(name = "birth_date")
-    @NotNull(message = "Birth date cannot be null")
-    private LocalDate birthDate;
-
-    @Enumerated(EnumType.STRING)
-    @NotNull(message = "Gender cannot be null")
-    private Gender gender;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @MapsId
+    private User user;
 
     @Column(name = "height")
     @NotNull
@@ -42,16 +34,13 @@ public class Athlete extends BaseEntity {
     @Max(value = 250, message = "Height must be no greater than 250 cm")
     private Integer height;
 
-    @NotNull
     @Column(name = "weight")
+    @NotNull
     @Min(value = 20, message = "Weight must be at least 20 kg")
     @Max(value = 200, message = "Weight must be no greater than 200 kg")
     private Integer weight;
 
-    @Column(name = "profile_picture_url")
-    private String profilePictureUrl;
+    @ManyToMany(mappedBy = "athletes", cascade = CascadeType.DETACH)
+    private Set<Coach> coaches = new LinkedHashSet<>();
 
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @MapsId
-    private User user;
 }
