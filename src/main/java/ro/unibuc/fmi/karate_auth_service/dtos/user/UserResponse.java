@@ -7,9 +7,12 @@ import java.io.Serializable;
 import java.util.Set;
 
 /**
- * DTO for {@link ro.unibuc.fmi.karate_auth_service.models.user.User}
+ * DTO for the response containing user details for {@link ro.unibuc.fmi.karate_auth_service.models.user.User}.
+ * This DTO is used to send user information after a successful user query or action.
+ *
+ * <p>Usage: This DTO is typically used in user profile responses or user listing responses.</p>
  */
-@Schema(description = "User response")
-public record UserResponse(Long id, Set<Role> roles, String lastName, String firstName, String email,
-                           String password) implements Serializable {
+@Schema(description = "Response containing user details such as ID, roles, name, and email.")
+public record UserResponse(Long id, Set<Role> roles, String lastName, String firstName,
+                           String email) implements Serializable {
 }

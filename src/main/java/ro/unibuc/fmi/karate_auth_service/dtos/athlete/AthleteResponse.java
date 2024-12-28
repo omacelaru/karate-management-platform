@@ -13,9 +13,14 @@ import java.time.LocalDate;
 import java.util.Set;
 
 /**
- * DTO for {@link ro.unibuc.fmi.karate_auth_service.models.athelte.Athlete}
+ * DTO for the athlete response data, used for representing the athlete's information
+ * returned in API responses. This includes personal details such as name, nationality,
+ * birthdate, gender, height, weight, and roles.
+ *
+ * <p>Usage: This DTO is used when returning athlete data, either after creation or
+ * during updates, and it is typically returned in the response body of an API call.</p>
  */
-@Schema(description = "Athlete response")
+@Schema(description = "Athlete response containing athlete information including roles, personal details, and measurements.")
 public record AthleteResponse(Long id, Set<Role> roles, String lastName, String firstName, String email,
                               @NotNull(message = "Nationality cannot be null") @Size(message = "Nationality should be between 2 and 100 characters", min = 2, max = 100) String nationality,
                               @NotNull(message = "Birth date cannot be null") LocalDate birthDate,
