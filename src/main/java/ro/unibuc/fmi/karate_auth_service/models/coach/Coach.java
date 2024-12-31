@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_auth_service.models.BaseEntity;
 import ro.unibuc.fmi.karate_auth_service.models.athelte.Athlete;
+import ro.unibuc.fmi.karate_auth_service.models.club.Club;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 
 import java.util.LinkedHashSet;
@@ -30,5 +31,9 @@ public class Coach extends BaseEntity {
             joinColumns = @JoinColumn(name = "coach_id"),
             inverseJoinColumns = @JoinColumn(name = "athlete_id"))
     private Set<Athlete> athletes = new LinkedHashSet<>();
+
+    @ManyToOne(cascade = CascadeType.DETACH)
+    @JoinColumn(name = "club_id")
+    private Club club;
 
 }
