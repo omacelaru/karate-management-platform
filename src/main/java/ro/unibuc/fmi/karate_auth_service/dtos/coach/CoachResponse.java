@@ -3,6 +3,7 @@ package ro.unibuc.fmi.karate_auth_service.dtos.coach;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteResponse;
+import ro.unibuc.fmi.karate_auth_service.dtos.club.ClubResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.user.UserResponse;
 
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import java.util.Set;
 @Schema(description = "Coach response containing personal details such as user details and a list of athletes.")
 public record CoachResponse(Long id,
                             UserResponse user,
+                            ClubResponse club,
                             @Size(max = 5) Set<AthleteResponse> athletes
 ) implements Serializable {
 }

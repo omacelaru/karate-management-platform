@@ -17,8 +17,8 @@ public record ClubRequest(@NotBlank(message = "Name is mandatory")
                           @Length(max = 60, message = "Name must have at most 60 characters")
                           String name,
 
-                          @Pattern(regexp = "^[A-Z]{10}$", message = "Acronym must have exactly 10 uppercase letters")
-                          @Length(max = 10, message = "Acronym must have at most 10 characters")
+                          @Pattern(regexp = "^[A-Z]{3,10}$",
+                                  message = "Acronym must have between 3 and 10 uppercase letters")
                           String acronym
 ) implements Serializable {
 }
