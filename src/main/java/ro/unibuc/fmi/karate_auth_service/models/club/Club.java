@@ -20,7 +20,8 @@ import java.util.Set;
 @Entity
 @Table(name = "clubs")
 public class Club extends BaseEntity {
-    @OneToMany(mappedBy = "club", cascade = CascadeType.DETACH, orphanRemoval = true)
+    //todo - scriere despre cascade type
+    @OneToMany(mappedBy = "club", cascade = CascadeType.DETACH)
     private Set<Coach> coaches = new LinkedHashSet<>();
 
     @Column(name = "name", nullable = false, unique = true)
