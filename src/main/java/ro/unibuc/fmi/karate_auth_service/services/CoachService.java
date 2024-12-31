@@ -1,5 +1,6 @@
 package ro.unibuc.fmi.karate_auth_service.services;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ public class CoachService {
         return coachRepository.findByUserEmail(email).map(mapperUtils::mapToCoachResponse).orElseThrow(IncompleteProfileException::new);
     }
 
+    @Transactional
     public CoachResponse createCoach(@Valid CoachRequest coachRequest) {
         User user = UserUtils.getCurrentUser();
         UserService.applyRolesToUser(user, Role.COACH);
