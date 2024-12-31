@@ -12,6 +12,7 @@ import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteResponse;
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
 import ro.unibuc.fmi.karate_auth_service.exceptions.IncompleteProfileException;
+import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_auth_service.services.AthleteService;
 
@@ -27,7 +28,7 @@ public class AthleteResource {
                     @ApiResponse(responseCode = "200", description = "Athlete information returned successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AthleteResponse.class))),
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
             })
-    @SecuredEndpoint
+    @SecuredEndpoint(roles = {Role.ATHLETE})
     @GetMapping("/me")
     public ResponseEntity<AthleteResponse> getMe() throws IncompleteProfileException {
         return ResponseEntity.ok(athleteService.getMe());
