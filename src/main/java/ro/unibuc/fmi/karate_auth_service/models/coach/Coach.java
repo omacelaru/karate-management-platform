@@ -12,7 +12,6 @@ import ro.unibuc.fmi.karate_auth_service.models.club.Club;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 
 import java.util.LinkedHashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Getter
