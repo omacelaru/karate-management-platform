@@ -1,5 +1,6 @@
 package ro.unibuc.fmi.karate_auth_service.services;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class UserService {
         return mapperUtils.mapToUserResponse(user);
     }
 
+    @Transactional
     public UserResponse updateMe(UserDetailsRequest userDetailsRequest) {
         User user = UserUtils.getCurrentUser();
         log.info("Updating user with email: {}", user.getEmail());

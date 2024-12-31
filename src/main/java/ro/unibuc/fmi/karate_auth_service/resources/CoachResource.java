@@ -4,15 +4,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachResponse;
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
 import ro.unibuc.fmi.karate_auth_service.exceptions.IncompleteProfileException;
+import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_auth_service.services.CoachService;
 
@@ -23,7 +26,7 @@ public class CoachResource {
     private final CoachService coachService;
 
     @Operation(summary = "Get all coaches paged", description = "Returns a list of all coaches paged")
-    @ApiResponse(responseCode = "200", description = "Coaches returned successfully")
+    @ApiResponse(responseCode = "200", description = "Coaches returned successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PagedModel.class)))
     @GetMapping
     public ResponseEntity<Page<CoachResponse>> getAllCoaches(Pageable pageable) {
         return ResponseEntity.ok(coachService.getAllCoaches(pageable));
@@ -34,7 +37,7 @@ public class CoachResource {
                     @ApiResponse(responseCode = "200", description = "Coach information returned successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CoachResponse.class))),
                     @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
             })
-    @SecuredEndpoint
+    @SecuredEndpoint(roles = {Role.COACH})
     @GetMapping("/me")
     public ResponseEntity<CoachResponse> getMe() throws IncompleteProfileException {
         return ResponseEntity.ok(coachService.getMe());
@@ -47,7 +50,7 @@ public class CoachResource {
             })
     @SecuredEndpoint
     @PostMapping
-    public ResponseEntity<CoachResponse> createCoach(@RequestBody CoachRequest coachRequest) {
+    public ResponseEntity<CoachResponse> createCoach(@RequestBody @Valid CoachRequest coachRequest) {
         return ResponseEntity.ok(coachService.createCoach(coachRequest));
     }
 }
