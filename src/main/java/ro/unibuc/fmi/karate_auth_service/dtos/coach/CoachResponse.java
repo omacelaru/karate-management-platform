@@ -15,8 +15,7 @@ import java.util.Set;
  * <p>Usage: This DTO is used for returning coach data from the backend to the client.</p>
  */
 @Schema(description = "Coach response containing personal details such as user details and a list of athletes.")
-public record CoachResponse(Long id,
-                            UserResponse user,
+public record CoachResponse(UserResponse user,
                             ClubResponse club,
                             @Size(max = 5) Set<AthleteResponse> athletes
 ) implements Serializable {
