@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.repositories.UserRepository;
 
@@ -23,17 +22,4 @@ public class UserUtils {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
-
-    public static User getCurrentUserIfHasRole(Role role) {
-        User user = getCurrentUser();
-        if (hasRole(user, role)) {
-            return user;
-        }
-        throw new IllegalArgumentException("Invalid role");
-    }
-
-    public static boolean hasRole(User user, Role role) {
-        return user.getRoles().contains(role);
-    }
-
 }
