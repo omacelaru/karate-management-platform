@@ -16,7 +16,6 @@ import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.repositories.ClubRepository;
 import ro.unibuc.fmi.karate_auth_service.repositories.CoachRepository;
 import ro.unibuc.fmi.karate_auth_service.utils.MapperUtils;
-import ro.unibuc.fmi.karate_auth_service.utils.UserUtils;
 
 import java.util.Optional;
 import java.util.Set;
@@ -35,8 +34,7 @@ public class ClubService {
     }
 
     @Transactional
-    public ClubResponse createClubByAdmin(@Valid ClubRequest clubRequest) {
-        User user = UserUtils.getCurrentUser();
+    public ClubResponse createClubByAdmin(User user, @Valid ClubRequest clubRequest) {
 
         validateClubRequest(clubRequest);
 
@@ -48,8 +46,7 @@ public class ClubService {
     }
 
     @Transactional
-    public ClubWithCoachesResponse createClubByCoach(@Valid ClubRequest clubRequest) {
-        User user = UserUtils.getCurrentUser();
+    public ClubWithCoachesResponse createClubByCoach(User user, @Valid ClubRequest clubRequest) {
 
         validateClubRequest(clubRequest);
 

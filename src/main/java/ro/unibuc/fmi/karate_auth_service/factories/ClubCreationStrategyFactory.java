@@ -5,17 +5,18 @@ import org.springframework.stereotype.Component;
 import ro.unibuc.fmi.karate_auth_service.dtos.club.ClubRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.club.ClubResponseInterface;
 import ro.unibuc.fmi.karate_auth_service.models.user.Role;
+import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.services.ClubService;
 
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 @Component
 @RequiredArgsConstructor
 public class ClubCreationStrategyFactory {
     private final ClubService clubService;
 
-    public Function<ClubRequest, ClubResponseInterface> getStrategy(Set<Role> roles) {
+    public BiFunction<User, ClubRequest, ClubResponseInterface> getStrategy(Set<Role> roles) {
         if (roles.contains(Role.ADMIN)) {
             return clubService::createClubByAdmin;
         } else if (roles.contains(Role.COACH)) {

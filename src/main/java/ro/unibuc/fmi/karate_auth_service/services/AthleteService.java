@@ -13,7 +13,6 @@ import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.repositories.AthleteRepository;
 import ro.unibuc.fmi.karate_auth_service.utils.MapperUtils;
-import ro.unibuc.fmi.karate_auth_service.utils.UserUtils;
 
 @Slf4j
 @Service
@@ -22,17 +21,17 @@ public class AthleteService {
     private final AthleteRepository athleteRepository;
     private final MapperUtils mapperUtils;
 
-    public AthleteResponse getMe() throws IncompleteProfileException {
-        User user = UserUtils.getCurrentUser();
+    public AthleteResponse getMe(User user) throws IncompleteProfileException {
         String email = user.getEmail();
+
         log.info("Getting athlete with email: {}", email);
         Athlete athlete = athleteRepository.findByUserEmail(email).orElseThrow(IncompleteProfileException::new);
+
         return mapperUtils.mapToAthleteResponse(athlete);
     }
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public AthleteResponse createAthlete(AthleteRequest athleteRequest) {
-        User user = UserUtils.getCurrentUser();
+    public AthleteResponse createAthlete(User user, AthleteRequest athleteRequest) {
         UserService.applyRolesToUser(user, Role.ATHLETE);
 
         Athlete athlete = mapperUtils.mapToAthlete(athleteRequest);

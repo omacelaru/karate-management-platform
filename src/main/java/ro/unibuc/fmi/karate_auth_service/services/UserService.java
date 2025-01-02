@@ -10,7 +10,6 @@ import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.repositories.UserRepository;
 import ro.unibuc.fmi.karate_auth_service.utils.MapperUtils;
-import ro.unibuc.fmi.karate_auth_service.utils.UserUtils;
 
 @Slf4j
 @Service
@@ -27,15 +26,13 @@ public class UserService {
         user.getRoles().add(role);
     }
 
-    public UserResponse getMe() {
-        User user = UserUtils.getCurrentUser();
+    public UserResponse getMe(User user) {
         log.info("Getting user with email: {}", user.getEmail());
         return mapperUtils.mapToUserResponse(user);
     }
 
     @Transactional
-    public UserResponse updateMe(UserDetailsRequest userDetailsRequest) {
-        User user = UserUtils.getCurrentUser();
+    public UserResponse updateMe(User user, UserDetailsRequest userDetailsRequest) {
         log.info("Updating user with email: {}", user.getEmail());
 
         user.setFirstName(userDetailsRequest.firstName());
