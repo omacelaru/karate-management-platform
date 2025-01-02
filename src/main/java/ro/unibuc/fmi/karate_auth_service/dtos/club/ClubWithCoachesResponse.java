@@ -16,5 +16,7 @@ import java.util.Set;
 public record ClubWithCoachesResponse(Long id,
                                       Set<CoachResponse> coaches,
                                       String name,
-                                      String acronym) implements Serializable {
+                                      String acronym
+) implements Serializable, ClubResponseInterface {
 }
+//todo either for coach in club

@@ -14,8 +14,7 @@ import java.io.Serializable;
  * during updates, and it is typically returned in the response body of an API call.</p>
  */
 @Schema(description = "Athlete response containing athletes information including roles, personal details, and measurements.")
-public record AthleteResponse(Long id,
-                              UserResponse user,
+public record AthleteResponse(UserResponse user,
                               Integer height, Integer weight
 ) implements Serializable {
 }
