@@ -12,6 +12,7 @@ import ro.unibuc.fmi.karate_auth_service.dtos.club.ClubResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.club.ClubWithCoachesResponse;
 import ro.unibuc.fmi.karate_auth_service.models.club.Club;
 import ro.unibuc.fmi.karate_auth_service.models.coach.Coach;
+import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.repositories.ClubRepository;
 import ro.unibuc.fmi.karate_auth_service.repositories.CoachRepository;
@@ -35,18 +36,21 @@ public class ClubService {
     }
 
     @Transactional
-    public ClubResponse createClub(@Valid ClubRequest clubRequest) {
-        User user = UserUtils.getCurrentUser();
+    public ClubResponse createClubByAdmin(@Valid ClubRequest clubRequest) {
+        User user = UserUtils.getCurrentUserIfHasRole(Role.ADMIN);
+
         validateClubRequest(clubRequest);
+
         log.info("Creating club {} by user-admin {}", clubRequest, user);
         Club club = mapperUtils.mapToClub(clubRequest);
+
         Club clubSaved = clubRepository.save(club);
         return mapperUtils.mapToClubResponse(clubSaved);
     }
 
     @Transactional
-    public ClubWithCoachesResponse createClubWithCoach(@Valid ClubRequest clubRequest) {
-        User user = UserUtils.getCurrentUser();
+    public ClubWithCoachesResponse createClubByCoach(@Valid ClubRequest clubRequest) {
+        User user = UserUtils.getCurrentUserIfHasRole(Role.COACH);
 
         validateClubRequest(clubRequest);
 

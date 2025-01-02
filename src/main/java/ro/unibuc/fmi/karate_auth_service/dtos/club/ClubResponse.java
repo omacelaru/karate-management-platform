@@ -13,5 +13,5 @@ import java.io.Serializable;
 public record ClubResponse(Long id,
                            String name,
                            String acronym
-) implements Serializable {
+) implements Serializable, ClubResponseInterface {
 }
