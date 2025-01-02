@@ -10,12 +10,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachResponse;
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
 import ro.unibuc.fmi.karate_auth_service.exceptions.IncompleteProfileException;
 import ro.unibuc.fmi.karate_auth_service.models.user.Role;
+import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_auth_service.services.CoachService;
 
@@ -39,8 +41,10 @@ public class CoachResource {
             })
     @SecuredEndpoint(roles = {Role.COACH})
     @GetMapping("/me")
-    public ResponseEntity<CoachResponse> getMe() throws IncompleteProfileException {
-        return ResponseEntity.ok(coachService.getMe());
+    public ResponseEntity<CoachResponse> getMe(
+            @AuthenticationPrincipal User user
+    ) throws IncompleteProfileException {
+        return ResponseEntity.ok(coachService.getMe(user));
     }
 
     @Operation(summary = "Create a new coach", description = "Creates a new coach",
@@ -49,8 +53,11 @@ public class CoachResource {
                     @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
             })
     @SecuredEndpoint
-    @PostMapping
-    public ResponseEntity<CoachResponse> createCoach(@RequestBody @Valid CoachRequest coachRequest) {
-        return ResponseEntity.ok(coachService.createCoach(coachRequest));
+    @PostMapping("/me")
+    public ResponseEntity<CoachResponse> createCoach(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid CoachRequest coachRequest
+    ) {
+        return ResponseEntity.ok(coachService.createCoach(user, coachRequest));
     }
 }

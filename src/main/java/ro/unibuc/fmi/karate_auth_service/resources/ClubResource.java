@@ -24,7 +24,7 @@ import ro.unibuc.fmi.karate_auth_service.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_auth_service.services.ClubService;
 
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 @RestController
 @RequestMapping("/api/v1/clubs")
@@ -51,10 +51,13 @@ public class ClubResource {
             })
     @PostMapping()
     @SecuredEndpoint(roles = {Role.ADMIN, Role.COACH})
-    public ResponseEntity<ClubResponseInterface> createClub(@RequestBody @Valid ClubRequest clubRequest, @AuthenticationPrincipal User user) {
+    public ResponseEntity<ClubResponseInterface> createClub(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid ClubRequest clubRequest
+    ) {
         Set<Role> roles = user.getRoles();
-        Function<ClubRequest, ClubResponseInterface> strategy = clubCreationStrategyFactory.getStrategy(roles);
-        return ResponseEntity.ok(strategy.apply(clubRequest));
+        BiFunction<User, ClubRequest, ClubResponseInterface> strategy = clubCreationStrategyFactory.getStrategy(roles);
+        return ResponseEntity.ok(strategy.apply(user, clubRequest));
     }
     //todo de exemplu, Location: /clubs/{id}). Acesta este un detaliu important care este adesea folosit în REST pentru a permite clientului să acceseze imediat resursa creată.
 
