@@ -12,7 +12,6 @@ import ro.unibuc.fmi.karate_auth_service.dtos.club.ClubResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.club.ClubWithCoachesResponse;
 import ro.unibuc.fmi.karate_auth_service.models.club.Club;
 import ro.unibuc.fmi.karate_auth_service.models.coach.Coach;
-import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.repositories.ClubRepository;
 import ro.unibuc.fmi.karate_auth_service.repositories.CoachRepository;
@@ -37,7 +36,7 @@ public class ClubService {
 
     @Transactional
     public ClubResponse createClubByAdmin(@Valid ClubRequest clubRequest) {
-        User user = UserUtils.getCurrentUserIfHasRole(Role.ADMIN);
+        User user = UserUtils.getCurrentUser();
 
         validateClubRequest(clubRequest);
 
@@ -50,7 +49,7 @@ public class ClubService {
 
     @Transactional
     public ClubWithCoachesResponse createClubByCoach(@Valid ClubRequest clubRequest) {
-        User user = UserUtils.getCurrentUserIfHasRole(Role.COACH);
+        User user = UserUtils.getCurrentUser();
 
         validateClubRequest(clubRequest);
 
