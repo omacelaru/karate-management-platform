@@ -7,12 +7,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteResponse;
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
 import ro.unibuc.fmi.karate_auth_service.exceptions.IncompleteProfileException;
 import ro.unibuc.fmi.karate_auth_service.models.user.Role;
+import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_auth_service.services.AthleteService;
 
@@ -30,8 +32,10 @@ public class AthleteResource {
             })
     @SecuredEndpoint(roles = {Role.ATHLETE})
     @GetMapping("/me")
-    public ResponseEntity<AthleteResponse> getMe() throws IncompleteProfileException {
-        return ResponseEntity.ok(athleteService.getMe());
+    public ResponseEntity<AthleteResponse> getMe(
+            @AuthenticationPrincipal User user
+    ) throws IncompleteProfileException {
+        return ResponseEntity.ok(athleteService.getMe(user));
     }
 
 
@@ -43,7 +47,10 @@ public class AthleteResource {
             })
     @SecuredEndpoint
     @PostMapping("/me")
-    public ResponseEntity<AthleteResponse> createAthleteProfile(@RequestBody @Valid AthleteRequest athleteRequest) {
-        return ResponseEntity.ok(athleteService.createAthlete(athleteRequest));
+    public ResponseEntity<AthleteResponse> createAthleteProfile(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid AthleteRequest athleteRequest
+    ) {
+        return ResponseEntity.ok(athleteService.createAthlete(user, athleteRequest));
     }
 }

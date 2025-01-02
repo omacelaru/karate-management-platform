@@ -7,10 +7,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ro.unibuc.fmi.karate_auth_service.dtos.user.UserDetailsRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.user.UserResponse;
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
+import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_auth_service.services.UserService;
 
@@ -28,8 +30,10 @@ public class UserResource {
             })
     @SecuredEndpoint
     @GetMapping("/me")
-    public ResponseEntity<UserResponse> getMe() {
-        return ResponseEntity.ok(userService.getMe());
+    public ResponseEntity<UserResponse> getMe(
+            @AuthenticationPrincipal User user
+    ) {
+        return ResponseEntity.ok(userService.getMe(user));
     }
 
     @Operation(summary = "Update logged in user information",
@@ -40,8 +44,10 @@ public class UserResource {
             })
     @SecuredEndpoint
     @PatchMapping("/me")
-    public ResponseEntity<UserResponse> updateMe(@RequestBody @Valid UserDetailsRequest userDetailsRequest) {
-        return ResponseEntity.ok(userService.updateMe(userDetailsRequest));
+    public ResponseEntity<UserResponse> updateMe(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid UserDetailsRequest userDetailsRequest) {
+        return ResponseEntity.ok(userService.updateMe(user, userDetailsRequest));
     }
 
 }

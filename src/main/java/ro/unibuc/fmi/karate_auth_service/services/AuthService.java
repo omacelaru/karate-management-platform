@@ -53,10 +53,8 @@ public class AuthService {
         return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
     }
 
-    public AuthResponse refreshToken(HttpServletRequest request) {
+    public AuthResponse refreshToken(User user, HttpServletRequest request) {
         String refreshToken = jwtTokenService.extractRefreshToken(request);
-        String userEmail = jwtTokenService.extractUserEmailFromRefreshToken(refreshToken);
-        User user = userRepository.findByEmail(userEmail).orElseThrow();
         String accessToken = jwtTokenService.generateAccessToken(user);
         return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
     }

@@ -15,7 +15,6 @@ import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.repositories.CoachRepository;
 import ro.unibuc.fmi.karate_auth_service.utils.MapperUtils;
-import ro.unibuc.fmi.karate_auth_service.utils.UserUtils;
 
 @Slf4j
 @Service
@@ -29,16 +28,17 @@ public class CoachService {
         return coachRepository.findAll(pageable).map(mapperUtils::mapToCoachResponse);
     }
 
-    public CoachResponse getMe() throws IncompleteProfileException {
-        User user = UserUtils.getCurrentUser();
+    public CoachResponse getMe(User user) throws IncompleteProfileException {
         String email = user.getEmail();
+
         log.info("Getting coach with email: {}", email);
-        return coachRepository.findByUserEmail(email).map(mapperUtils::mapToCoachResponse).orElseThrow(IncompleteProfileException::new);
+        Coach coach = coachRepository.findByUserEmail(email).orElseThrow(IncompleteProfileException::new);
+
+        return mapperUtils.mapToCoachResponse(coach);
     }
 
     @Transactional
-    public CoachResponse createCoach(@Valid CoachRequest coachRequest) {
-        User user = UserUtils.getCurrentUser();
+    public CoachResponse createCoach(User user, @Valid CoachRequest coachRequest) {
         UserService.applyRolesToUser(user, Role.COACH);
 
         Coach coach = mapperUtils.mapToCoach(coachRequest);

@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ro.unibuc.fmi.karate_auth_service.dtos.auth.AuthRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.auth.AuthResponse;
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
+import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_auth_service.services.AuthService;
 
@@ -57,7 +59,10 @@ public class AuthResource {
             })
     @SecuredEndpoint
     @PostMapping("/refresh-token")
-    public ResponseEntity<AuthResponse> refreshToken(HttpServletRequest request) {
-        return ResponseEntity.ok(authService.refreshToken(request));
+    public ResponseEntity<AuthResponse> refreshToken(
+            @AuthenticationPrincipal User user,
+            HttpServletRequest request
+    ) {
+        return ResponseEntity.ok(authService.refreshToken(user, request));
     }
 }
