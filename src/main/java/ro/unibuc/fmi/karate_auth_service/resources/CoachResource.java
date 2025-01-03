@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachResponse;
+import ro.unibuc.fmi.karate_auth_service.dtos.request.CoachCreationResponse;
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
 import ro.unibuc.fmi.karate_auth_service.exceptions.IncompleteProfileException;
 import ro.unibuc.fmi.karate_auth_service.models.user.Role;
@@ -54,10 +55,10 @@ public class CoachResource {
             })
     @SecuredEndpoint
     @PostMapping("/me")
-    public ResponseEntity<CoachResponse> createCoach(
+    public ResponseEntity<CoachCreationResponse> CoachCreation(
             @AuthenticationPrincipal User user,
             @RequestBody @Valid CoachRequest coachRequest
     ) {
-        return ResponseEntity.ok(coachService.createCoach(user, coachRequest));
+        return ResponseEntity.ok(coachService.createCoachCreationRequest(user, coachRequest));
     }
 }

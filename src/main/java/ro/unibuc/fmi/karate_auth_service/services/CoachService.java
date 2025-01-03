@@ -1,26 +1,35 @@
 package ro.unibuc.fmi.karate_auth_service.services;
 
-import jakarta.transaction.Transactional;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachResponse;
+import ro.unibuc.fmi.karate_auth_service.dtos.request.CoachCreationResponse;
 import ro.unibuc.fmi.karate_auth_service.exceptions.IncompleteProfileException;
 import ro.unibuc.fmi.karate_auth_service.models.coach.Coach;
+import ro.unibuc.fmi.karate_auth_service.models.request.RequestWithRolesApproval;
+import ro.unibuc.fmi.karate_auth_service.models.request.coach.CoachCreationRequest;
 import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.repositories.CoachRepository;
+import ro.unibuc.fmi.karate_auth_service.repositories.RequestInfoRepository;
 import ro.unibuc.fmi.karate_auth_service.utils.MapperUtils;
+
+import java.util.Set;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CoachService {
     private final CoachRepository coachRepository;
+    private final RequestInfoRepository<RequestWithRolesApproval> coachCreationRequestRepository;
     private final MapperUtils mapperUtils;
 
     public Page<CoachResponse> getAllCoaches(Pageable pageable) {
@@ -37,15 +46,15 @@ public class CoachService {
         return mapperUtils.mapToCoachResponse(coach);
     }
 
-    @Transactional
-    public CoachResponse createCoach(User user, @Valid CoachRequest coachRequest) {
-        UserService.applyRolesToUser(user, Role.COACH);
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public CoachCreationResponse createCoachCreationRequest(User user, @Valid CoachRequest coachRequest) {
+        log.info("Creating coach creation request for user with email: {}", user.getEmail());
+        CoachCreationRequest coachCreationRequest = mapperUtils.mapToCoachCreationRequest(user, coachRequest);
+        coachCreationRequest.setApproverRoles(Set.of(Role.ADMIN));
+        coachCreationRequest.setLastUpdatedById(user.getId());
 
-        Coach coach = mapperUtils.mapToCoach(coachRequest);
-        coach.setUser(user);
+        coachCreationRequestRepository.save(coachCreationRequest);
 
-        Coach coachSaved = coachRepository.save(coach);
-        return mapperUtils.mapToCoachResponse(coachSaved);
-
+        return mapperUtils.mapToCoachCreationResponse(coachCreationRequest);
     }
 }
