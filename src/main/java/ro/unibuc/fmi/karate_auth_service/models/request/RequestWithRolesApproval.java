@@ -1,12 +1,11 @@
 package ro.unibuc.fmi.karate_auth_service.models.request;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Getter
@@ -14,9 +13,12 @@ import java.util.Set;
 @ToString
 @SuperBuilder
 @RequiredArgsConstructor
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@MappedSuperclass
 @AllArgsConstructor
 public abstract class RequestWithRolesApproval extends RequestInfo {
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "request_approver_roles", joinColumns = @JoinColumn(name = "request_id"))
     @Column(name = "approver_roles", nullable = false)
-    private Set<Role> approverRoles;
+    @Enumerated(EnumType.STRING)
+    private Set<Role> approverRoles = new LinkedHashSet<>();
 }
