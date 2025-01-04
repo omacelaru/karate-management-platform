@@ -2,7 +2,6 @@ package ro.unibuc.fmi.karate_auth_service.utils;
 
 import jakarta.validation.Valid;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.auth.AuthResponse;
@@ -39,8 +38,7 @@ public interface MapperUtils {
 
     Club mapToClub(@Valid ClubRequest clubRequest);
 
-    @Mapping(target = "createdById", source = "user.id")
-    CoachCreationRequest mapToCoachCreationRequest(User user, @Valid CoachRequest coachRequest);
+    CoachCreationRequest mapToCoachCreationRequest(@Valid CoachRequest coachRequest);
 
     CoachCreationResponse mapToCoachCreationResponse(CoachCreationRequest coachCreationRequest);
 }

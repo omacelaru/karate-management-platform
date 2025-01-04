@@ -48,10 +48,10 @@ public class CoachResource {
         return ResponseEntity.ok(coachService.getMe(user));
     }
 
-    @Operation(summary = "Create a new coach", description = "Creates a new coach",
+    @Operation(summary = "Create a coach creation request", description = "Creates a coach creation request for the logged in user",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Coach created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CoachResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
+                    @ApiResponse(responseCode = "200", description = "Coach creation request created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CoachCreationResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
             })
     @SecuredEndpoint
     @PostMapping("/me")

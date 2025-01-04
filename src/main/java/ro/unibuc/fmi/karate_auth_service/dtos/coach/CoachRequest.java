@@ -1,6 +1,7 @@
 package ro.unibuc.fmi.karate_auth_service.dtos.coach;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import ro.unibuc.fmi.karate_auth_service.models.license.LicenseInfo;
 
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @Schema(name = "CoachRequest", description = "DTO representing the request for creating a coach. It includes necessary information about the coach's license.")
 public record CoachRequest(
         @Schema(description = "Information about the coach's license, which includes the series and number of the license.")
+        @Valid
         LicenseInfo licenseInfo
 ) implements Serializable {
 }

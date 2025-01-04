@@ -36,8 +36,7 @@ public record CoachCreationResponse(
         RequestStatus status,
         Long createdById,
         Long lastUpdatedById,
-        String note,
-        Set<Role> roles,
+        Set<Role> approverRoles,
         LicenseInfo licenseInfo
 ) implements Serializable {
 }
