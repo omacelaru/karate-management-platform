@@ -2,7 +2,6 @@ package ro.unibuc.fmi.karate_auth_service.models.license;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 @Embeddable
