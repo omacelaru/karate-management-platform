@@ -5,7 +5,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum RequestType {
-    COACH_CREATION("COACH_CREATION");
-    private final String type;
+public enum RequestScope {
+    USER("USER"),
+    ROLES("ROLES");
+
+    private final String scope;
 }

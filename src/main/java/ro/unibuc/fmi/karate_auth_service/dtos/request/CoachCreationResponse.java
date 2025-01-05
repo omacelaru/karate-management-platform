@@ -38,5 +38,5 @@ public record CoachCreationResponse(
         Long lastUpdatedById,
         Set<Role> approverRoles,
         LicenseInfo licenseInfo
-) implements Serializable {
+) implements Serializable, RequestWithRolesApprovalResponseInterface {
 }

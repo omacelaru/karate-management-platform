@@ -6,15 +6,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.CoachCreationResponse;
+import ro.unibuc.fmi.karate_auth_service.dtos.request.RequestInfoResponseInterface;
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
+import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_auth_service.services.RequestService;
@@ -26,11 +28,51 @@ public class RequestResource {
     private final RequestService requestService;
 
 
-    @Operation(summary = "Create a coach creation request", description = "Creates a coach creation request for the logged in user",
+    @Operation(
+            summary = "Fetch user-specific paginated requests",
+            description = "Returns a paginated list of requests made by the currently authenticated user. This endpoint allows the user to retrieve requests in a paginated format for better performance when there are many requests.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Coach creation request created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CoachCreationResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully retrieved the user's requests in a paginated format",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PagedModel.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authenticated",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
+            })
+    @SecuredEndpoint
+    @GetMapping("/me")
+    public ResponseEntity<Page<? extends RequestInfoResponseInterface>> getRequestsMadeByMe(
+            @AuthenticationPrincipal User user,
+            Pageable pageable,
+            @RequestParam(defaultValue = "COACH_CREATION") RequestType requestType
+    ) {
+        return ResponseEntity.ok(requestService.getRequestsMadeByMe(user, pageable, requestType));
+    }
+
+
+    @Operation(
+            summary = "Create a coach creation request",
+            description = "Creates a request for coach creation for the logged-in user. This endpoint processes a request to create a coach, accepting detailed input information for the coach's creation.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully created the coach creation request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = CoachCreationResponse.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request: The provided data is invalid or incomplete",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authorized to create a coach request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
             })
     @SecuredEndpoint
     @PostMapping("/coach")

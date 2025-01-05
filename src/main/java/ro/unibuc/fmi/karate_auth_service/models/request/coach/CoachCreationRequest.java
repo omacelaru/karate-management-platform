@@ -26,7 +26,7 @@ public class CoachCreationRequest extends RequestWithRolesApproval {
 
     public void prePersist() {
         super.prePersist();
-        this.setType(RequestType.COACH_REQUEST);
+        this.setType(RequestType.COACH_CREATION);
         this.setStatus(RequestStatus.PENDING);
     }
 }

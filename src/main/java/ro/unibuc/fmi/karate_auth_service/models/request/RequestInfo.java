@@ -20,6 +20,9 @@ public abstract class RequestInfo extends BaseEntity {
     @Column(name = "request_status", nullable = false)
     private RequestStatus status;
 
+    @Column(name = "request_scope", nullable = false)
+    private RequestScope scope;
+
     @Column(name = "created_by_id", nullable = false)
     private Long createdById;
 

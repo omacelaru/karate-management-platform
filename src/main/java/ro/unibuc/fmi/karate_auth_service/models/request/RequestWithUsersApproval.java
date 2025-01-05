@@ -20,8 +20,8 @@ public abstract class RequestWithUsersApproval extends RequestInfo {
     @ToString.Exclude
     @ManyToMany(cascade = CascadeType.DETACH)
     @JoinTable(name = "requests_assigned_users",
-            joinColumns = @JoinColumn(name = "requestWithUsersApproval_id"),
-            inverseJoinColumns = @JoinColumn(name = "users_id"))
+            joinColumns = @JoinColumn(name = "request_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users = new LinkedHashSet<>();
 
 }
