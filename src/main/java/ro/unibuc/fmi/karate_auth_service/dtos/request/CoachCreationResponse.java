@@ -1,6 +1,7 @@
 package ro.unibuc.fmi.karate_auth_service.dtos.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import ro.unibuc.fmi.karate_auth_service.dtos.user.UserResponse;
 import ro.unibuc.fmi.karate_auth_service.models.license.LicenseInfo;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
@@ -34,7 +35,7 @@ public record CoachCreationResponse(
         Long id,
         RequestType type,
         RequestStatus status,
-        Long createdById,
+        UserResponse createdBy,
         Long lastUpdatedById,
         Set<Role> approverRoles,
         LicenseInfo licenseInfo

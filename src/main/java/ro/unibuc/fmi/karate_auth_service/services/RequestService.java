@@ -48,7 +48,7 @@ public class RequestService {
 
         CoachCreationRequest coachCreationRequest = mapperUtils.mapToCoachCreationRequest(coachRequest);
         coachCreationRequest.setApproverRoles(Set.of(Role.ADMIN));
-        coachCreationRequest.setCreatedById(user.getId());
+        coachCreationRequest.setCreatedBy(user);
         coachCreationRequest.setLastUpdatedById(user.getId());
 
         coachCreationRequestRepository.save(coachCreationRequest);

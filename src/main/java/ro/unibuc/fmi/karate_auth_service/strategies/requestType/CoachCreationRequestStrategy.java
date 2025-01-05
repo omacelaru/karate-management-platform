@@ -56,11 +56,10 @@ public class CoachCreationRequestStrategy implements RequestTypeStrategy {
         CoachCreationRequest updatedRequest = coachCreationRequestRepository.save(coachCreationRequest);
 
         if (status == RequestStatus.ACCEPTED) {
-            User coachToBeCreated = userRepository.findById(updatedRequest.getCreatedById())
-                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+            User userToBePromoteToCoach = updatedRequest.getCreatedBy();
             CoachRequest coachRequest = mapperUtils.mapToCoachRequest(updatedRequest);
             log.info("Creating coach for user with email: {}", user.getEmail());
-            coachService.createCoach(coachToBeCreated, coachRequest);
+            coachService.createCoach(userToBePromoteToCoach, coachRequest);
         } else {
             log.info("Request with id {} was rejected", requestId);
         }

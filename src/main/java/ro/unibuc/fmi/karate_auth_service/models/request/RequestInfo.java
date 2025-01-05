@@ -1,12 +1,10 @@
 package ro.unibuc.fmi.karate_auth_service.models.request;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_auth_service.models.BaseEntity;
+import ro.unibuc.fmi.karate_auth_service.models.user.User;
 
 @Getter
 @Setter
@@ -28,8 +26,10 @@ public abstract class RequestInfo extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private RequestScope scope;
 
-    @Column(name = "created_by_id", nullable = false)
-    private Long createdById;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by_id", nullable = false)
+    @ToString.Exclude
+    private User createdBy;
 
     @Column(name = "last_updated_by_id", nullable = false)
     private Long lastUpdatedById;
