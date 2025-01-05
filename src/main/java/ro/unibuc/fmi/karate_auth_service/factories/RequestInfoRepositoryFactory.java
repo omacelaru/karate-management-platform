@@ -15,12 +15,12 @@ public class RequestInfoRepositoryFactory {
     private final CoachCreationRequestRepository coachCreationRequestRepository;
 
     public RequestInfoRepository<? extends RequestInfo> getRepository(RequestType requestType) {
-        switch (requestType) {
-            case COACH_CREATION:
-                return coachCreationRequestRepository;
-            default:
+        return switch (requestType) {
+            case COACH_CREATION -> coachCreationRequestRepository;
+            default -> {
                 log.error("No repository found for request type: {}", requestType);
                 throw new IllegalArgumentException("No repository found for request type: " + requestType);
-        }
+            }
+        };
     }
 }

@@ -20,7 +20,12 @@ public class CoachCreationRequestStrategy implements RequestTypeStrategy {
     private final MapperUtils mapperUtils;
 
     @Override
-    public Page<? extends RequestInfoResponseInterface> getRequests(User user, Pageable pageable) {
+    public Page<? extends RequestInfoResponseInterface> getRequestsMadeByMe(User user, Pageable pageable) {
         return coachCreationRequestRepository.findAllByCreatedById(user.getId(), pageable).map(mapperUtils::mapToCoachCreationResponse);
+    }
+
+    @Override
+    public Page<? extends RequestInfoResponseInterface> getRequestsAssignedToMe(User user, Pageable pageable) {
+        return coachCreationRequestRepository.findAllByApproverRolesIn(user.getRoles(), pageable).map(mapperUtils::mapToCoachCreationResponse);
     }
 }

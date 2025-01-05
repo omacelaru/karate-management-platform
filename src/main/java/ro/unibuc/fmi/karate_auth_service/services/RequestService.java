@@ -58,6 +58,11 @@ public class RequestService {
 
     public Page<? extends RequestInfoResponseInterface> getRequestsMadeByMe(User user, Pageable pageable, RequestType requestType) {
         log.info("Getting requests made by user with email: {}", user.getEmail());
-        return strategyFactory.getStrategy(requestType).getRequests(user, pageable);
+        return strategyFactory.getStrategy(requestType).getRequestsMadeByMe(user, pageable);
+    }
+
+    public Page<? extends RequestInfoResponseInterface> getRequestsAssignedToMe(User user, Pageable pageable, RequestType requestType) {
+        log.info("Getting requests assigned to user with email: {}", user.getEmail());
+        return strategyFactory.getStrategy(requestType).getRequestsAssignedToMe(user, pageable);
     }
 }

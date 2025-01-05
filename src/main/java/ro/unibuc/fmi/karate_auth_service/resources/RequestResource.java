@@ -44,13 +44,38 @@ public class RequestResource {
                     )
             })
     @SecuredEndpoint
-    @GetMapping("/me")
+    @GetMapping("/made-by-me")
     public ResponseEntity<Page<? extends RequestInfoResponseInterface>> getRequestsMadeByMe(
             @AuthenticationPrincipal User user,
             Pageable pageable,
             @RequestParam(defaultValue = "COACH_CREATION") RequestType requestType
     ) {
         return ResponseEntity.ok(requestService.getRequestsMadeByMe(user, pageable, requestType));
+    }
+
+    @Operation(
+            summary = "Fetch user-specific paginated requests",
+            description = "Returns a paginated list of requests assigned to the currently authenticated user. This endpoint allows the user to retrieve requests in a paginated format for better performance when there are many requests.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully retrieved the user's requests in a paginated format",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = PagedModel.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authenticated",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
+            })
+    @SecuredEndpoint
+    @GetMapping("/assigned-to-me")
+    public ResponseEntity<Page<? extends RequestInfoResponseInterface>> getRequestsAssignedToMe(
+            @AuthenticationPrincipal User user,
+            Pageable pageable,
+            @RequestParam(defaultValue = "COACH_CREATION") RequestType requestType
+    ) {
+        return ResponseEntity.ok(requestService.getRequestsAssignedToMe(user, pageable, requestType));
     }
 
 

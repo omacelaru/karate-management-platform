@@ -7,7 +7,9 @@ import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 
 public interface RequestTypeStrategy {
-    Page<? extends RequestInfoResponseInterface> getRequests(User user, Pageable pageable);
+    Page<? extends RequestInfoResponseInterface> getRequestsMadeByMe(User user, Pageable pageable);
+
+    Page<? extends RequestInfoResponseInterface> getRequestsAssignedToMe(User user, Pageable pageable);
 
     RequestType getRequestType();
 }
