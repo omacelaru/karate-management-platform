@@ -10,10 +10,12 @@ import ro.unibuc.fmi.karate_auth_service.dtos.club.ClubResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.club.ClubWithCoachesResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachResponse;
+import ro.unibuc.fmi.karate_auth_service.dtos.request.CoachCreationResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.user.UserResponse;
 import ro.unibuc.fmi.karate_auth_service.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_auth_service.models.club.Club;
 import ro.unibuc.fmi.karate_auth_service.models.coach.Coach;
+import ro.unibuc.fmi.karate_auth_service.models.request.coach.CoachCreationRequest;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 
 @Mapper(componentModel = "spring")
@@ -35,4 +37,10 @@ public interface MapperUtils {
     ClubResponse mapToClubResponse(Club club);
 
     Club mapToClub(@Valid ClubRequest clubRequest);
+
+    CoachCreationRequest mapToCoachCreationRequest(@Valid CoachRequest coachRequest);
+
+    CoachCreationResponse mapToCoachCreationResponse(CoachCreationRequest coachCreationRequest);
+
+    CoachRequest mapToCoachRequest(CoachCreationRequest updatedRequest);
 }

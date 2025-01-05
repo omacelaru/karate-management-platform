@@ -1,12 +1,13 @@
 package ro.unibuc.fmi.karate_auth_service.services;
 
-import jakarta.transaction.Transactional;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachResponse;
 import ro.unibuc.fmi.karate_auth_service.exceptions.IncompleteProfileException;

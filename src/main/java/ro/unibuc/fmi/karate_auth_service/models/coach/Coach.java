@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_auth_service.models.BaseEntity;
 import ro.unibuc.fmi.karate_auth_service.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_auth_service.models.club.Club;
+import ro.unibuc.fmi.karate_auth_service.models.license.LicenseInfo;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 
 import java.util.LinkedHashSet;
@@ -22,9 +23,13 @@ import java.util.Set;
 @Entity
 @Table(name = "coaches")
 public class Coach extends BaseEntity {
+
     @OneToOne(cascade = CascadeType.PERSIST)
     @MapsId
     private User user;
+
+    @Embedded()
+    private LicenseInfo licenseInfo;
 
     @ManyToMany(cascade = CascadeType.DETACH)
     @JoinTable(name = "coaches_athletes",
