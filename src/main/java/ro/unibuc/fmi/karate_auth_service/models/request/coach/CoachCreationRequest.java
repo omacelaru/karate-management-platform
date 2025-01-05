@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_auth_service.models.license.LicenseInfo;
+import ro.unibuc.fmi.karate_auth_service.models.request.RequestScope;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestWithRolesApproval;
@@ -28,5 +29,6 @@ public class CoachCreationRequest extends RequestWithRolesApproval {
         super.prePersist();
         this.setType(RequestType.COACH_CREATION);
         this.setStatus(RequestStatus.PENDING);
+        this.setScope(RequestScope.ROLES);
     }
 }

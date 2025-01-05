@@ -41,4 +41,6 @@ public interface MapperUtils {
     CoachCreationRequest mapToCoachCreationRequest(@Valid CoachRequest coachRequest);
 
     CoachCreationResponse mapToCoachCreationResponse(CoachCreationRequest coachCreationRequest);
+
+    CoachRequest mapToCoachRequest(CoachCreationRequest updatedRequest);
 }

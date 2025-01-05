@@ -66,6 +66,7 @@ public class RequestService {
         return strategyFactory.getStrategy(requestType).getRequestsAssignedToMe(user, pageable);
     }
 
+    @Transactional
     public RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestType requestType, RequestStatus status) {
         if (status != RequestStatus.ACCEPTED && status != RequestStatus.REJECTED) {
             log.error("Invalid status: {} for request with id: {}. Valid statuses are: ACCEPTED, REJECTED", status, requestId);
