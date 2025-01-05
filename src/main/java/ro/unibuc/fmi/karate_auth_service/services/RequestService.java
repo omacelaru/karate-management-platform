@@ -65,4 +65,13 @@ public class RequestService {
         log.info("Getting requests assigned to user with email: {}", user.getEmail());
         return strategyFactory.getStrategy(requestType).getRequestsAssignedToMe(user, pageable);
     }
+
+    public RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestType requestType, RequestStatus status) {
+        if (status != RequestStatus.ACCEPTED && status != RequestStatus.REJECTED) {
+            log.error("Invalid status: {} for request with id: {}. Valid statuses are: ACCEPTED, REJECTED", status, requestId);
+            throw new IllegalArgumentException("Invalid status: " + status + " for request with id: " + requestId);
+        }
+        log.info("Updating request with id: {} to status: {}", requestId, status);
+        return strategyFactory.getStrategy(requestType).updateRequestStatus(user, requestId, status);
+    }
 }

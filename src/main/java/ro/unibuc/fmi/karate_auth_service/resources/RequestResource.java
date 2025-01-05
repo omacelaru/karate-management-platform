@@ -16,6 +16,7 @@ import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.CoachCreationResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.RequestInfoResponseInterface;
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
+import ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.security.SecuredEndpoint;
@@ -78,6 +79,46 @@ public class RequestResource {
         return ResponseEntity.ok(requestService.getRequestsAssignedToMe(user, pageable, requestType));
     }
 
+    @Operation(
+            summary = "Update the status of a request",
+            description = "Allows the authenticated user to update the status of a specific request (e.g., ACCEPTED or REJECTED) by providing the request ID and the new status.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully updated the status of the request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestInfoResponseInterface.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Invalid request or status",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Request not found",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authenticated",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden: User does not have permission to update the request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
+            })
+    @SecuredEndpoint
+    @PatchMapping("/{requestId}/status")
+    public ResponseEntity<RequestInfoResponseInterface> updateRequestStatus(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long requestId,
+            @RequestParam(defaultValue = "COACH_CREATION") RequestType requestType,
+            @RequestParam(defaultValue = "ACCEPTED") RequestStatus status
+    ) {
+        return ResponseEntity.ok(requestService.updateRequestStatus(user, requestId, requestType, status));
+    }
 
     @Operation(
             summary = "Create a coach creation request",

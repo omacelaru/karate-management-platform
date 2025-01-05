@@ -11,6 +11,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 
@@ -30,6 +31,21 @@ public class GlobalExceptionHandler {
         log.error("Bad bind request: {}", error.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex, WebRequest request) {
+        String errorMessage = String.format("Invalid value for parameter '%s'", ex.getValue());
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                errorMessage,
+                request.getDescription(false),
+                LocalDateTime.now().toString()
+        );
+        log.error("Bad argument type mismatch between {} and {}", ex.getValue(), ex.getRequiredType());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+    }
+
 
     @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class, BadRequestException.class})
     public ResponseEntity<ApiError> handleIllegalArgumentException(Exception error, WebRequest request) {

@@ -5,9 +5,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_auth_service.models.request.coach.CoachCreationRequest;
-import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 
 public interface CoachCreationRequestRepository extends RequestInfoRepository<CoachCreationRequest> {
@@ -15,7 +15,9 @@ public interface CoachCreationRequestRepository extends RequestInfoRepository<Co
 
     Page<CoachCreationRequest> findAllByCreatedById(@NonNull Long createdById, Pageable pageable);
 
-    Page<CoachCreationRequest> findAllByApproverRolesIn(Set<Role> approverRoles, Pageable pageable);
+    Page<CoachCreationRequest> findAllByApproverRolesIn(Set<?> approverRoles, Pageable pageable);
+
+    Optional<CoachCreationRequest> findByIdAndApproverRolesIn(Long id, Set<?> approverRoles);
 
 
 }
