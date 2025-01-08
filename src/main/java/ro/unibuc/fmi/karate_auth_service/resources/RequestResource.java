@@ -221,13 +221,12 @@ public class RequestResource {
                     )
             })
     @SecuredEndpoint
-    @PatchMapping("/coach/{requestId}")
+    @PatchMapping("/coach")
     public ResponseEntity<RequestInfoResponseInterface> editCoachCreationRequest(
             @AuthenticationPrincipal User user,
-            @PathVariable Long requestId,
             @RequestBody @Valid CoachRequest coachRequest
     ) {
-        return ResponseEntity.ok(requestService.editRequest(user, RequestType.COACH_CREATION, requestId, coachRequest));
+        return ResponseEntity.ok(requestService.editRequest(user, RequestType.COACH_CREATION, coachRequest));
     }
 
     @Operation(
@@ -261,13 +260,12 @@ public class RequestResource {
                     )
             })
     @SecuredEndpoint
-    @PatchMapping("/referee/{requestId}")
+    @PatchMapping("/referee")
     public ResponseEntity<RequestInfoResponseInterface> editRefereeCreationRequest(
             @AuthenticationPrincipal User user,
-            @PathVariable Long requestId,
             @RequestBody @Valid RefereeRequest refereeRequest
     ) {
-        return ResponseEntity.ok(requestService.editRequest(user, RequestType.REFEREE_CREATION, requestId, refereeRequest));
+        return ResponseEntity.ok(requestService.editRequest(user, RequestType.REFEREE_CREATION, refereeRequest));
     }
 
     @Operation(

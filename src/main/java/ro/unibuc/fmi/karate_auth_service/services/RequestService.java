@@ -44,9 +44,9 @@ public class RequestService {
     }
 
     @Transactional
-    public RequestInfoResponseInterface editRequest(User user, RequestType requestType, Long requestId, Object request) {
-        log.info("Editing request with id: {}", requestId);
-        return strategyFactory.getStrategy(requestType).editRequest(user, requestId, request);
+    public RequestInfoResponseInterface editRequest(User user, RequestType requestType, Object request) {
+        log.info("Editing request for user with email: {}", user.getEmail());
+        return strategyFactory.getStrategy(requestType).editRequest(user, request);
     }
 
     @Transactional

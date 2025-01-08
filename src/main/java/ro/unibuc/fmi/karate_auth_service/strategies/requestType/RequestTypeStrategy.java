@@ -20,7 +20,7 @@ public interface RequestTypeStrategy {
 
     RequestInfoResponseInterface createRequest(User user, Object request, Set<?> approvers);
 
-    RequestInfoResponseInterface editRequest(User user, Long requestId, Object request);
+    RequestInfoResponseInterface editRequest(User user, Object request);
 
     RequestInfoResponseInterface revokeRequest(User user, Long requestId);
 
