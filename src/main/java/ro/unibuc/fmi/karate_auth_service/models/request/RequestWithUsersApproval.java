@@ -13,15 +13,14 @@ import java.util.Set;
 @ToString
 @SuperBuilder
 @RequiredArgsConstructor
-@MappedSuperclass
 @AllArgsConstructor
-public abstract class RequestWithUsersApproval extends RequestInfo {
-
-    @ToString.Exclude
-    @ManyToMany(cascade = CascadeType.DETACH)
-    @JoinTable(name = "requests_assigned_users",
+@MappedSuperclass
+public class RequestWithUsersApproval extends RequestInfo {
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "requests_approver_users",
             joinColumns = @JoinColumn(name = "request_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @ToString.Exclude
+    @Column(name = "approver_users", nullable = false)
     private Set<User> users = new LinkedHashSet<>();
-
 }

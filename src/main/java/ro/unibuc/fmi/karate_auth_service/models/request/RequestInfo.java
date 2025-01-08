@@ -11,8 +11,10 @@ import ro.unibuc.fmi.karate_auth_service.models.user.User;
 @ToString
 @SuperBuilder
 @RequiredArgsConstructor
-@MappedSuperclass
 @AllArgsConstructor
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "request_info")
 public abstract class RequestInfo extends BaseEntity {
     //TODO - create joined entity for request info
     @Column(name = "request_type", nullable = false)
