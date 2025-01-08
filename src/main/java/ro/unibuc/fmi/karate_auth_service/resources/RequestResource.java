@@ -271,4 +271,84 @@ public class RequestResource {
         return ResponseEntity.ok(requestService.editRequest(user, RequestType.REFEREE_CREATION, requestId, refereeRequest));
     }
 
+    @Operation(
+            summary = "Revoke an existing request",
+            description = "Allows the authenticated user to revoke an existing request by providing the request ID.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully revoked the request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestInfoResponseInterface.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request: The provided data is invalid or incomplete",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authenticated",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden: User does not have permission to revoke the request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Request not found",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
+            })
+    @SecuredEndpoint
+    @DeleteMapping("/{requestId}")
+    public ResponseEntity<RequestInfoResponseInterface> revokeRequest(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long requestId,
+            @RequestParam(defaultValue = "COACH_CREATION") RequestType requestType
+    ) {
+        return ResponseEntity.ok(requestService.revokeRequest(user, requestType, requestId));
+    }
+
+    @Operation(
+            summary = "Activate an existing request",
+            description = "Allows the authenticated user to activate an existing request by providing the request ID.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully activated the request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestInfoResponseInterface.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request: The provided data is invalid or incomplete",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authenticated",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden: User does not have permission to activate the request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Request not found",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
+            })
+    @SecuredEndpoint
+    @PatchMapping("/{requestId}/activate")
+    public ResponseEntity<RequestInfoResponseInterface> activateCoachCreationRequest(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long requestId,
+            @RequestParam(defaultValue = "COACH_CREATION") RequestType requestType
+    ) {
+        return ResponseEntity.ok(requestService.activateRequest(user, requestType, requestId));
+    }
+
 }

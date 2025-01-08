@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.RequestInfoResponseInterface;
+import ro.unibuc.fmi.karate_auth_service.exceptions.RequestNotFoundException;
 import ro.unibuc.fmi.karate_auth_service.factories.RequestInfoRepositoryFactory;
 import ro.unibuc.fmi.karate_auth_service.factories.RequestScopeStrategyFactory;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestInfo;
@@ -27,6 +28,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     protected final MapperUtils mapperUtils;
     private final RequestInfoRepositoryFactory repositoryFactory;
     private final RequestScopeStrategyFactory scopeStrategyFactory;
+    private final Set<RequestStatus> activeStatuses = Set.of(RequestStatus.PENDING, RequestStatus.IN_PROGRESS, RequestStatus.PARTIALLY_COMPLETED);
 
     public abstract RequestType getRequestType();
 
@@ -55,8 +57,9 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Transactional
     public RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestStatus status) {
         log.info("Updating request with id: {} to status: {}", requestId, status);
-        RequestInfo request = getRepository().findByIdAndApproverRolesInAndStatusInAndType(requestId, user.getRoles(), Set.of(RequestStatus.PENDING), getRequestType())
-                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
+        //TODO - check if scope is roles or users
+        RequestInfo request = getRepository().findByIdAndApproverRolesInAndStatusInAndType(requestId, user.getRoles(), activeStatuses, getRequestType())
+                .orElseThrow(() -> new RequestNotFoundException(requestId, activeStatuses));
 
         validateRequestStatus(request, status);
 
@@ -102,14 +105,39 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Transactional
     public RequestInfoResponseInterface editRequest(User user, Long requestId, Object request) {
         log.info("Editing request with id: {}", requestId);
-        RequestInfo existingRequestToBeUpdated = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.PENDING), getRequestType())
-                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
+        RequestInfo existingRequestToBeUpdated = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), activeStatuses, getRequestType())
+                .orElseThrow(() -> new RequestNotFoundException(requestId, activeStatuses));
 
         RequestInfo updatedRequest = mapToEntity(user, request);
 
         updateSpecificFields(existingRequestToBeUpdated, updatedRequest);
 
-        return mapToResponse(getRepository().save(existingRequestToBeUpdated));
+        return mapToResponse(existingRequestToBeUpdated);
+    }
+
+    @Override
+    @Transactional
+    public RequestInfoResponseInterface revokeRequest(User user, Long requestId) {
+        log.info("Deleting request with id: {}", requestId);
+        RequestInfo request = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), activeStatuses, getRequestType())
+                .orElseThrow(() -> new RequestNotFoundException(requestId, activeStatuses));
+        request.setStatus(RequestStatus.REVOKED);
+        request.setLastUpdatedById(user.getId());
+
+        return mapToResponse(request);
+    }
+
+    @Override
+    @Transactional
+    public RequestInfoResponseInterface activateRequest(User user, Long requestId) {
+        log.info("Activating request with id: {}", requestId);
+        RequestInfo request = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.REVOKED), getRequestType())
+                .orElseThrow(() -> new RequestNotFoundException(requestId, Set.of(RequestStatus.REVOKED)));
+
+        request.setStatus(RequestStatus.PENDING);
+        request.setLastUpdatedById(user.getId());
+
+        return mapToResponse(request);
     }
 
     protected void validateRequestStatus(RequestInfo request, RequestStatus status) {
