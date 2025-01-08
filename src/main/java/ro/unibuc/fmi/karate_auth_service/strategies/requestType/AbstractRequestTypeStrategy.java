@@ -28,6 +28,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     protected final MapperUtils mapperUtils;
     private final RequestInfoRepositoryFactory repositoryFactory;
     private final RequestScopeStrategyFactory scopeStrategyFactory;
+    private final Set<RequestStatus> activeStatuses = Set.of(RequestStatus.PENDING, RequestStatus.IN_PROGRESS, RequestStatus.PARTIALLY_COMPLETED);
 
     public abstract RequestType getRequestType();
 
@@ -57,8 +58,8 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     public RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestStatus status) {
         log.info("Updating request with id: {} to status: {}", requestId, status);
         //TODO - check if scope is roles or users
-        RequestInfo request = getRepository().findByIdAndApproverRolesInAndStatusInAndType(requestId, user.getRoles(), Set.of(RequestStatus.PENDING), getRequestType())
-                .orElseThrow(() -> new RequestNotFoundException(RequestStatus.PENDING));
+        RequestInfo request = getRepository().findByIdAndApproverRolesInAndStatusInAndType(requestId, user.getRoles(), activeStatuses, getRequestType())
+                .orElseThrow(() -> new RequestNotFoundException(requestId, activeStatuses));
 
         validateRequestStatus(request, status);
 
@@ -104,8 +105,8 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Transactional
     public RequestInfoResponseInterface editRequest(User user, Long requestId, Object request) {
         log.info("Editing request with id: {}", requestId);
-        RequestInfo existingRequestToBeUpdated = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.PENDING), getRequestType())
-                .orElseThrow(() -> new RequestNotFoundException(RequestStatus.PENDING));
+        RequestInfo existingRequestToBeUpdated = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), activeStatuses, getRequestType())
+                .orElseThrow(() -> new RequestNotFoundException(requestId, activeStatuses));
 
         RequestInfo updatedRequest = mapToEntity(user, request);
 
@@ -118,8 +119,8 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Transactional
     public RequestInfoResponseInterface revokeRequest(User user, Long requestId) {
         log.info("Deleting request with id: {}", requestId);
-        RequestInfo request = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.PENDING), getRequestType())
-                .orElseThrow(() -> new RequestNotFoundException(RequestStatus.PENDING));
+        RequestInfo request = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), activeStatuses, getRequestType())
+                .orElseThrow(() -> new RequestNotFoundException(requestId, activeStatuses));
         request.setStatus(RequestStatus.REVOKED);
         request.setLastUpdatedById(user.getId());
 
@@ -131,7 +132,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     public RequestInfoResponseInterface activateRequest(User user, Long requestId) {
         log.info("Activating request with id: {}", requestId);
         RequestInfo request = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.REVOKED), getRequestType())
-                .orElseThrow(() -> new RequestNotFoundException(RequestStatus.REVOKED));
+                .orElseThrow(() -> new RequestNotFoundException(requestId, Set.of(RequestStatus.REVOKED)));
 
         request.setStatus(RequestStatus.PENDING);
         request.setLastUpdatedById(user.getId());
