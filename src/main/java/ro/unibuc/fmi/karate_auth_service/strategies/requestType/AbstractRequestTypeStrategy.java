@@ -30,7 +30,6 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
 
     public abstract RequestType getRequestType();
 
-    @SuppressWarnings("unchecked")
     protected <T extends RequestInfo> RequestInfoRepository<T> getRepository() {
         return repositoryFactory.getRepository(getRequestType());
     }
@@ -75,7 +74,8 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     public RequestInfoResponseInterface createRequest(User user, Object request, Set<?> approvers) {
         if (isDuplicateRequest(user)) {
             log.error("Duplicate request {}", request);
-            throw new IllegalStateException("Duplicate request");
+            //todo set location where to edit the request
+            throw new IllegalStateException("Duplicate request found. You can edit the existing request");
         }
 
         RequestInfo newRequest = mapToEntity(user, request);
