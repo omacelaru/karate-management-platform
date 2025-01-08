@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum RequestScope {
-    USER("USER"),
+    USERS("USERS"),
     ROLES("ROLES");
 
     private final String scope;

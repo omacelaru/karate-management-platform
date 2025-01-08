@@ -18,6 +18,7 @@ import ro.unibuc.fmi.karate_auth_service.dtos.user.UserResponse;
 import ro.unibuc.fmi.karate_auth_service.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_auth_service.models.club.Club;
 import ro.unibuc.fmi.karate_auth_service.models.coach.Coach;
+import ro.unibuc.fmi.karate_auth_service.models.referee.Referee;
 import ro.unibuc.fmi.karate_auth_service.models.request.coach.CoachCreationRequest;
 import ro.unibuc.fmi.karate_auth_service.models.request.referee.RefereeCreationRequest;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
@@ -52,4 +53,8 @@ public interface MapperUtils {
     RefereeCreationRequest mapToRefereeCreationRequest(@Valid RefereeRequest refereeRequest);
 
     RefereeCreationResponse mapToRefereeCreationResponse(RefereeCreationRequest refereeCreationRequest);
+
+    RefereeRequest mapToRefereeRequest(RefereeCreationRequest request);
+
+    Referee mapToReferee(@Valid RefereeRequest refereeRequest);
 }

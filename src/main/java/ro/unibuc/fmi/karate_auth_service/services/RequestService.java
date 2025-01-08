@@ -14,8 +14,11 @@ import ro.unibuc.fmi.karate_auth_service.factories.RequestInfoRepositoryFactory;
 import ro.unibuc.fmi.karate_auth_service.factories.RequestTypeStrategyFactory;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
+import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.utils.MapperUtils;
+
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -38,10 +41,6 @@ public class RequestService {
 
     @Transactional
     public RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestType requestType, RequestStatus status) {
-        if (status != RequestStatus.ACCEPTED && status != RequestStatus.REJECTED) {
-            log.error("Invalid status: {} for request with id: {}. Valid statuses are: ACCEPTED, REJECTED", status, requestId);
-            throw new IllegalArgumentException("Invalid status: " + status + " for request with id: " + requestId);
-        }
         log.info("Updating request with id: {} to status: {}", requestId, status);
         return strategyFactory.getStrategy(requestType).updateRequestStatus(user, requestId, status);
     }
@@ -102,13 +101,13 @@ public class RequestService {
     @Transactional
     public RequestInfoResponseInterface createCoachCreationRequest(User user, @Valid CoachRequest coachRequest) {
         log.info("Creating coach creation request for user with email: {}", user.getEmail());
-        return strategyFactory.getStrategy(RequestType.COACH_CREATION).createRequest(user, coachRequest);
+        return strategyFactory.getStrategy(RequestType.COACH_CREATION).createRequest(user, coachRequest, Set.of(Role.ADMIN));
     }
 
     @Transactional
     public RequestInfoResponseInterface createRefereeCreationRequest(User user, @Valid RefereeRequest refereeRequest) {
         log.info("Creating referee creation request for user with email: {}", user.getEmail());
-        return strategyFactory.getStrategy(RequestType.REFEREE_CREATION).createRequest(user, refereeRequest);
+        return strategyFactory.getStrategy(RequestType.REFEREE_CREATION).createRequest(user, refereeRequest, Set.of(Role.ADMIN));
     }
 
 
