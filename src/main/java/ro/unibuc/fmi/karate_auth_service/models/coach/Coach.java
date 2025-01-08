@@ -1,7 +1,6 @@
 package ro.unibuc.fmi.karate_auth_service.models.coach;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
