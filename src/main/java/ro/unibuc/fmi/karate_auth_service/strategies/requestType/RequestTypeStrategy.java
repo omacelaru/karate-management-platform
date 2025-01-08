@@ -15,4 +15,6 @@ public interface RequestTypeStrategy {
     Page<? extends RequestInfoResponseInterface> getRequestsAssignedToMe(User user, Pageable pageable);
 
     RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestStatus status);
+
+    RequestInfoResponseInterface createRequest(User user, Object request);
 }
