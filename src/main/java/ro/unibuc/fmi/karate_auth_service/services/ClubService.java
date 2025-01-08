@@ -35,10 +35,9 @@ public class ClubService {
 
     @Transactional
     public ClubResponse createClubByAdmin(User user, @Valid ClubRequest clubRequest) {
-
+        log.info("Creating club {} by user-admin {}", clubRequest, user);
         validateClubRequest(clubRequest);
 
-        log.info("Creating club {} by user-admin {}", clubRequest, user);
         Club club = mapperUtils.mapToClub(clubRequest);
 
         Club clubSaved = clubRepository.save(club);
@@ -47,16 +46,16 @@ public class ClubService {
 
     @Transactional
     public ClubWithCoachesResponse createClubByCoach(User user, @Valid ClubRequest clubRequest) {
-
+        log.info("Creating club {} by user-coach {}", clubRequest, user);
         validateClubRequest(clubRequest);
 
         Coach coach = coachRepository.findByUserEmail(user.getEmail()).orElseThrow();
         Optional<Club> clubOptional = clubRepository.findByCoachesUserEmail(user.getEmail());
         if (clubOptional.isPresent()) {
+            log.error("Coach already has a club");
             throw new IllegalArgumentException("Coach already has a club");
         }
 
-        log.info("Creating club {} with coach {}", clubRequest, coach);
         Club club = mapperUtils.mapToClub(clubRequest);
         coach.setClub(club);
         club.setCoaches(Set.of(coach));
@@ -67,9 +66,11 @@ public class ClubService {
 
     private void validateClubRequest(ClubRequest clubRequest) {
         if (clubRepository.existsClubByName(clubRequest.name())) {
+            log.error("Club name already exists");
             throw new IllegalArgumentException("Club name already exists");
         }
         if (clubRepository.existsClubByAcronym(clubRequest.acronym())) {
+            log.error("Club acronym already exists");
             throw new IllegalArgumentException("Club acronym already exists");
         }
     }

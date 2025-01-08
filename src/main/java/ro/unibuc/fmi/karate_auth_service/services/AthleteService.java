@@ -32,6 +32,7 @@ public class AthleteService {
 
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public AthleteResponse createAthlete(User user, AthleteRequest athleteRequest) {
+        log.info("Creating athlete for user with email: {}", user.getEmail());
         UserService.applyRolesToUser(user, Role.ATHLETE);
 
         Athlete athlete = mapperUtils.mapToAthlete(athleteRequest);

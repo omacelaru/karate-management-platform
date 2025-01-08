@@ -36,12 +36,14 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
 
     @Override
     public Page<? extends RequestInfoResponseInterface> getRequestsMadeByMe(User user, Pageable pageable) {
+        log.info("Getting requests made by user with email: {}", user.getEmail());
         return getRepository().findAllByCreatedById(user.getId(), pageable)
                 .map(this::mapToResponse);
     }
 
     @Override
     public Page<? extends RequestInfoResponseInterface> getRequestsAssignedToMe(User user, Pageable pageable) {
+        log.info("Getting requests assigned to user with email: {}", user.getEmail());
         return getRepository().findAllByApproverRolesInAndStatusIn(
                 user.getRoles(),
                 Set.of(RequestStatus.PENDING, RequestStatus.IN_PROGRESS, RequestStatus.PARTIALLY_COMPLETED),
@@ -52,6 +54,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Override
     @Transactional
     public RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestStatus status) {
+        log.info("Updating request with id: {} to status: {}", requestId, status);
         RequestInfo request = getRepository().findByIdAndApproverRolesInAndStatusInAndType(requestId, user.getRoles(), Set.of(RequestStatus.PENDING), getRequestType())
                 .orElseThrow(() -> new IllegalArgumentException("Request not found"));
 
@@ -63,6 +66,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
         RequestInfo updatedRequest = getRepository().save(request);
 
         if (status == RequestStatus.ACCEPTED) {
+            log.info("Handling accepted request with id: {}", requestId);
             handleAcceptedRequest(user, updatedRequest);
         }
 
@@ -72,6 +76,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Override
     @Transactional
     public RequestInfoResponseInterface createRequest(User user, Object request, Set<?> approvers) {
+        log.info("Creating request for user with email: {}", user.getEmail());
         if (isUserAlreadyHasRequestedRole(user)) {
             log.error("User {} already has the requested role", user.getId());
             throw new IllegalStateException("User already has the requested role.");
@@ -96,6 +101,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Override
     @Transactional
     public RequestInfoResponseInterface editRequest(User user, Long requestId, Object request) {
+        log.info("Editing request with id: {}", requestId);
         RequestInfo existingRequestToBeUpdated = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.PENDING), getRequestType())
                 .orElseThrow(() -> new IllegalArgumentException("Request not found"));
 

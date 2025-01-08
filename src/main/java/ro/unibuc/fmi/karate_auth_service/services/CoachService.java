@@ -40,6 +40,7 @@ public class CoachService {
 
     @Transactional
     public void createCoach(User user, @Valid CoachRequest coachRequest) {
+        log.info("Creating coach for user with email: {}", user.getEmail());
         UserService.applyRolesToUser(user, Role.COACH);
 
         Coach coach = mapperUtils.mapToCoach(coachRequest);
