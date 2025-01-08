@@ -1,19 +1,15 @@
 package ro.unibuc.fmi.karate_auth_service.services;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
-import ro.unibuc.fmi.karate_auth_service.dtos.referee.RefereeRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.RequestInfoResponseInterface;
 import ro.unibuc.fmi.karate_auth_service.factories.RequestTypeStrategyFactory;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
-import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 
 import java.util.Set;
@@ -41,16 +37,14 @@ public class RequestService {
     }
 
     @Transactional
-    public RequestInfoResponseInterface createCoachCreationRequest(User user, @Valid CoachRequest coachRequest) {
-        log.info("Creating coach creation request for user with email: {}", user.getEmail());
-        return strategyFactory.getStrategy(RequestType.COACH_CREATION).createRequest(user, coachRequest, Set.of(Role.ADMIN));
+    public RequestInfoResponseInterface createRequest(User user, RequestType requestType, Object request, Set<?> approvers) {
+        log.info("Creating request for user with email: {}", user.getEmail());
+        return strategyFactory.getStrategy(requestType).createRequest(user, request, approvers);
     }
 
     @Transactional
-    public RequestInfoResponseInterface createRefereeCreationRequest(User user, @Valid RefereeRequest refereeRequest) {
-        log.info("Creating referee creation request for user with email: {}", user.getEmail());
-        return strategyFactory.getStrategy(RequestType.REFEREE_CREATION).createRequest(user, refereeRequest, Set.of(Role.ADMIN));
+    public RequestInfoResponseInterface editRequest(User user, RequestType requestType, Long requestId, Object request) {
+        log.info("Editing request with id: {}", requestId);
+        return strategyFactory.getStrategy(requestType).editRequest(user, requestId, request);
     }
-
-
 }

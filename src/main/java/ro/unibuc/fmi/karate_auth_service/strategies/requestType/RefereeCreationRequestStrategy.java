@@ -11,6 +11,7 @@ import ro.unibuc.fmi.karate_auth_service.factories.RequestScopeStrategyFactory;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestInfo;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
 import ro.unibuc.fmi.karate_auth_service.models.request.referee.RefereeCreationRequest;
+import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.services.RefereeService;
 import ro.unibuc.fmi.karate_auth_service.utils.MapperUtils;
@@ -26,6 +27,21 @@ public class RefereeCreationRequestStrategy extends AbstractRequestTypeStrategy 
     public RefereeCreationRequestStrategy(MapperUtils mapperUtils, RequestInfoRepositoryFactory repositoryFactory, RequestScopeStrategyFactory scopeStrategyFactory, RefereeService refereeService) {
         super(mapperUtils, repositoryFactory, scopeStrategyFactory);
         this.refereeService = refereeService;
+    }
+
+    @Override
+    protected void updateSpecificFields(RequestInfo existingRequest, RequestInfo updatedRequest) {
+        if (existingRequest instanceof RefereeCreationRequest existingRefereeRequest && updatedRequest instanceof RefereeCreationRequest updatedRefereeRequest) {
+            existingRefereeRequest.setLicenseInfo(updatedRefereeRequest.getLicenseInfo());
+            existingRefereeRequest.setCategory(updatedRefereeRequest.getCategory());
+        } else {
+            throw new IllegalArgumentException("Invalid request type");
+        }
+    }
+
+    @Override
+    protected boolean isUserAlreadyHasRequestedRole(User user) {
+        return user.getRoles().contains(Role.REFEREE);
     }
 
     @Override

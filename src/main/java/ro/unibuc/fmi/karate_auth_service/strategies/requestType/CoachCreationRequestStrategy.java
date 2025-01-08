@@ -11,6 +11,7 @@ import ro.unibuc.fmi.karate_auth_service.factories.RequestScopeStrategyFactory;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestInfo;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
 import ro.unibuc.fmi.karate_auth_service.models.request.coach.CoachCreationRequest;
+import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.services.CoachService;
 import ro.unibuc.fmi.karate_auth_service.utils.MapperUtils;
@@ -27,6 +28,22 @@ public class CoachCreationRequestStrategy extends AbstractRequestTypeStrategy {
         super(mapperUtils, repositoryFactory, scopeStrategyFactory);
         this.coachService = coachService;
     }
+
+
+    @Override
+    protected void updateSpecificFields(RequestInfo existingRequest, RequestInfo updatedRequest) {
+        if (existingRequest instanceof CoachCreationRequest existingCoachRequest && updatedRequest instanceof CoachCreationRequest updatedCoachRequest) {
+            existingCoachRequest.setLicenseInfo(updatedCoachRequest.getLicenseInfo());
+        } else {
+            throw new IllegalArgumentException("Invalid request type");
+        }
+    }
+
+    @Override
+    protected boolean isUserAlreadyHasRequestedRole(User user) {
+        return user.getRoles().contains(Role.COACH);
+    }
+
 
     @Override
     protected void handleAcceptedRequest(User user, RequestInfo request) {

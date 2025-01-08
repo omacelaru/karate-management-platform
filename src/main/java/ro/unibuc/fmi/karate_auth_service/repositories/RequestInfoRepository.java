@@ -8,6 +8,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.lang.NonNull;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestInfo;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus;
+import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -21,5 +22,7 @@ public interface RequestInfoRepository<T extends RequestInfo> extends JpaReposit
 
     Page<T> findAllByApproverRolesInAndStatusIn(Set<?> approverRoles, Collection<RequestStatus> statuses, Pageable pageable);
 
-    Optional<T> findByIdAndApproverRolesIn(Long id, Set<?> approverRoles);
+    Optional<T> findByIdAndApproverRolesInAndStatusInAndType(Long id, Set<?> approverRoles, Collection<RequestStatus> statuses, RequestType type);
+
+    Optional<T> findByIdAndCreatedByIdAndStatusInAndType(Long id, Long createdById, Collection<RequestStatus> statuses, RequestType type);
 }

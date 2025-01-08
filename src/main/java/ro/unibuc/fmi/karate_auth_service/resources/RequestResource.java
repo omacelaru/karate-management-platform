@@ -19,9 +19,12 @@ import ro.unibuc.fmi.karate_auth_service.dtos.request.RequestInfoResponseInterfa
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
+import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_auth_service.services.RequestService;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/requests")
@@ -95,11 +98,6 @@ public class RequestResource {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
                     ),
                     @ApiResponse(
-                            responseCode = "404",
-                            description = "Request not found",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
-                    ),
-                    @ApiResponse(
                             responseCode = "401",
                             description = "Unauthorized: User is not authenticated",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
@@ -108,7 +106,12 @@ public class RequestResource {
                             responseCode = "403",
                             description = "Forbidden: User does not have permission to update the request",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
-                    )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Request not found",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
             })
     @SecuredEndpoint
     @PatchMapping("/{requestId}/status")
@@ -120,6 +123,11 @@ public class RequestResource {
     ) {
         return ResponseEntity.ok(requestService.updateRequestStatus(user, requestId, requestType, status));
     }
+
+
+    //--------------------------------------------------------------------------------
+    //---------------------------------- CREATE REQUEST ------------------------------
+    //--------------------------------------------------------------------------------
 
     @Operation(
             summary = "Create a coach creation request",
@@ -147,15 +155,120 @@ public class RequestResource {
             @AuthenticationPrincipal User user,
             @RequestBody @Valid CoachRequest coachRequest
     ) {
-        return ResponseEntity.ok(requestService.createCoachCreationRequest(user, coachRequest));
+        return ResponseEntity.ok(requestService.createRequest(user, RequestType.COACH_CREATION, coachRequest, Set.of(Role.ADMIN)));
     }
 
+    @Operation(
+            summary = "Create a referee creation request",
+            description = "Creates a request for referee creation for the logged-in user. This endpoint processes a request to create a referee, accepting detailed input information for the referee's creation.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully created the referee creation request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestInfoResponseInterface.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request: The provided data is invalid or incomplete",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authorized to create a referee request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
+            })
     @SecuredEndpoint
     @PostMapping("/referee")
     public ResponseEntity<RequestInfoResponseInterface> refereeCreation(
             @AuthenticationPrincipal User user,
             @RequestBody @Valid RefereeRequest refereeRequest
     ) {
-        return ResponseEntity.ok(requestService.createRefereeCreationRequest(user, refereeRequest));
+        return ResponseEntity.ok(requestService.createRequest(user, RequestType.REFEREE_CREATION, refereeRequest, Set.of(Role.ADMIN)));
     }
+
+    //--------------------------------------------------------------------------------
+    //---------------------------------- EDIT REQUEST --------------------------------
+    //--------------------------------------------------------------------------------
+
+    @Operation(
+            summary = "Edit an existing coach creation request",
+            description = "Allows the authenticated user to edit an existing coach creation request by providing the request ID and updated details.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully edited the coach creation request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestInfoResponseInterface.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request: The provided data is invalid or incomplete",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authenticated",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden: User does not have permission to edit the request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Request not found",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
+            })
+    @SecuredEndpoint
+    @PatchMapping("/coach/{requestId}")
+    public ResponseEntity<RequestInfoResponseInterface> editCoachCreationRequest(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long requestId,
+            @RequestBody @Valid CoachRequest coachRequest
+    ) {
+        return ResponseEntity.ok(requestService.editRequest(user, RequestType.COACH_CREATION, requestId, coachRequest));
+    }
+
+    @Operation(
+            summary = "Edit an existing referee creation request",
+            description = "Allows the authenticated user to edit an existing referee creation request by providing the request ID and updated details.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully edited the referee creation request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestInfoResponseInterface.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request: The provided data is invalid or incomplete",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authenticated",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden: User does not have permission to edit the request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Request not found",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
+            })
+    @SecuredEndpoint
+    @PatchMapping("/referee/{requestId}")
+    public ResponseEntity<RequestInfoResponseInterface> editRefereeCreationRequest(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long requestId,
+            @RequestBody @Valid RefereeRequest refereeRequest
+    ) {
+        return ResponseEntity.ok(requestService.editRequest(user, RequestType.REFEREE_CREATION, requestId, refereeRequest));
+    }
+
 }

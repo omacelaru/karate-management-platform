@@ -19,4 +19,6 @@ public interface RequestTypeStrategy {
     RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestStatus status);
 
     RequestInfoResponseInterface createRequest(User user, Object request, Set<?> approvers);
+
+    RequestInfoResponseInterface editRequest(User user, Long requestId, Object request);
 }
