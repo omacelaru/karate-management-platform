@@ -21,4 +21,6 @@ public interface RequestTypeStrategy {
     RequestInfoResponseInterface createRequest(User user, Object request, Set<?> approvers);
 
     RequestInfoResponseInterface editRequest(User user, Long requestId, Object request);
+
+    RequestInfoResponseInterface deleteRequest(User user, Long requestId);
 }

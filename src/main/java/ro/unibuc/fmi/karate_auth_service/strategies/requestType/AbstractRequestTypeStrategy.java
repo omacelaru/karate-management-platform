@@ -55,6 +55,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Transactional
     public RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestStatus status) {
         log.info("Updating request with id: {} to status: {}", requestId, status);
+        //TODO - check if scope is roles or users
         RequestInfo request = getRepository().findByIdAndApproverRolesInAndStatusInAndType(requestId, user.getRoles(), Set.of(RequestStatus.PENDING), getRequestType())
                 .orElseThrow(() -> new IllegalArgumentException("Request not found"));
 
@@ -109,7 +110,20 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
 
         updateSpecificFields(existingRequestToBeUpdated, updatedRequest);
 
-        return mapToResponse(getRepository().save(existingRequestToBeUpdated));
+        return mapToResponse(existingRequestToBeUpdated);
+    }
+
+    @Override
+    @Transactional
+    public RequestInfoResponseInterface deleteRequest(User user, Long requestId) {
+        log.info("Deleting request with id: {}", requestId);
+        RequestInfo request = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.PENDING), getRequestType())
+                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
+
+        request.setStatus(RequestStatus.REVOKED);
+        request.setLastUpdatedById(user.getId());
+
+        return mapToResponse(request);
     }
 
     protected void validateRequestStatus(RequestInfo request, RequestStatus status) {

@@ -271,4 +271,86 @@ public class RequestResource {
         return ResponseEntity.ok(requestService.editRequest(user, RequestType.REFEREE_CREATION, requestId, refereeRequest));
     }
 
+    //--------------------------------------------------------------------------------
+    //---------------------------------- DELETE REQUEST ------------------------------
+    //--------------------------------------------------------------------------------
+
+    @Operation(
+            summary = "Delete an existing coach creation request",
+            description = "Allows the authenticated user to delete an existing coach creation request by providing the request ID.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully deleted the coach creation request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestInfoResponseInterface.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request: The provided data is invalid or incomplete",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authenticated",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden: User does not have permission to delete the request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Request not found",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
+            })
+    @SecuredEndpoint
+    @DeleteMapping("/coach/{requestId}")
+    public ResponseEntity<RequestInfoResponseInterface> deleteCoachCreationRequest(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long requestId
+    ) {
+        return ResponseEntity.ok(requestService.deleteRequest(user, RequestType.COACH_CREATION, requestId));
+    }
+
+    @Operation(
+            summary = "Delete an existing referee creation request",
+            description = "Allows the authenticated user to delete an existing referee creation request by providing the request ID.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully deleted the referee creation request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestInfoResponseInterface.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request: The provided data is invalid or incomplete",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authenticated",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden: User does not have permission to delete the request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Request not found",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
+            })
+    @SecuredEndpoint
+    @DeleteMapping("/referee/{requestId}")
+    public ResponseEntity<RequestInfoResponseInterface> deleteRefereeCreationRequest(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long requestId
+    ) {
+        return ResponseEntity.ok(requestService.deleteRequest(user, RequestType.REFEREE_CREATION, requestId));
+    }
+
 }

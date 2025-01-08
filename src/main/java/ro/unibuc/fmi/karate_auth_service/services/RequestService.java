@@ -47,4 +47,10 @@ public class RequestService {
         log.info("Editing request with id: {}", requestId);
         return strategyFactory.getStrategy(requestType).editRequest(user, requestId, request);
     }
+
+    @Transactional
+    public RequestInfoResponseInterface deleteRequest(User user, RequestType requestType, Long requestId) {
+        log.info("Deleting request with id: {}", requestId);
+        return strategyFactory.getStrategy(requestType).deleteRequest(user, requestId);
+    }
 }

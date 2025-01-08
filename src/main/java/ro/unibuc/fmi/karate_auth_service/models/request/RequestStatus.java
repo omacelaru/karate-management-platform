@@ -10,6 +10,8 @@ public enum RequestStatus {
     ACCEPTED("ACCEPTED"),
     IN_PROGRESS("IN_PROGRESS"),
     PARTIALLY_COMPLETED("PARTIALLY_COMPLETED"),
-    REJECTED("REJECTED");
+    REJECTED("REJECTED"),
+    REVOKED("REVOKED");
+
     private final String status;
 }
