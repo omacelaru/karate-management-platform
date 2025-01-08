@@ -11,11 +11,14 @@ import ro.unibuc.fmi.karate_auth_service.dtos.request.RequestInfoResponseInterfa
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
 import ro.unibuc.fmi.karate_auth_service.models.request.coach.CoachCreationRequest;
+import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.repositories.CoachCreationRequestRepository;
 import ro.unibuc.fmi.karate_auth_service.repositories.UserRepository;
 import ro.unibuc.fmi.karate_auth_service.services.CoachService;
 import ro.unibuc.fmi.karate_auth_service.utils.MapperUtils;
+
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -35,7 +38,9 @@ public class CoachCreationRequestStrategy implements RequestTypeStrategy {
 
     @Override
     public Page<? extends RequestInfoResponseInterface> getRequestsAssignedToMe(User user, Pageable pageable) {
-        return coachCreationRequestRepository.findAllByApproverRolesIn(user.getRoles(), pageable).map(mapperUtils::mapToCoachCreationResponse);
+        return coachCreationRequestRepository.findAllByApproverRolesInAndStatusIn(user.getRoles(),
+                Set.of(RequestStatus.PENDING, RequestStatus.IN_PROGRESS, RequestStatus.PARTIALLY_COMPLETED),
+                pageable).map(mapperUtils::mapToCoachCreationResponse);
     }
 
     @Override
@@ -65,5 +70,29 @@ public class CoachCreationRequestStrategy implements RequestTypeStrategy {
         }
 
         return mapperUtils.mapToCoachCreationResponse(updatedRequest);
+    }
+
+    @Override
+    public RequestInfoResponseInterface createRequest(User user, Object request) {
+        if (user.getRoles().contains(Role.COACH)) {
+            log.error("A coach already exists for user with email: {}", user.getEmail());
+            throw new IllegalStateException("You already have a coach account. If you need to make changes, you can edit your current account.");
+        }
+        if (coachCreationRequestRepository.existsByCreatedByIdAndStatusIn(user.getId(), Set.of(RequestStatus.PENDING))) {
+            log.error("A pending coach creation request already exists for user with email: {}", user.getEmail());
+            //todo set location where to edit the request
+            throw new IllegalStateException("You already have a pending coach creation request. If you need to make changes, you can edit your current request.");
+        }
+
+        log.info("Creating coach creation request for user with email: {}", user.getEmail());
+
+        CoachCreationRequest coachCreationRequest = mapperUtils.mapToCoachCreationRequest((CoachRequest) request);
+        coachCreationRequest.setApproverRoles(Set.of(Role.ADMIN));
+        coachCreationRequest.setCreatedBy(user);
+        coachCreationRequest.setLastUpdatedById(user.getId());
+
+        coachCreationRequestRepository.save(coachCreationRequest);
+
+        return mapperUtils.mapToCoachCreationResponse(coachCreationRequest);
     }
 }

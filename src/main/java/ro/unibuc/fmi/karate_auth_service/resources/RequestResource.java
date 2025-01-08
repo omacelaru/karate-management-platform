@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
+import ro.unibuc.fmi.karate_auth_service.dtos.referee.RefereeRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.CoachCreationResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.RequestInfoResponseInterface;
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
@@ -142,10 +143,19 @@ public class RequestResource {
             })
     @SecuredEndpoint
     @PostMapping("/coach")
-    public ResponseEntity<CoachCreationResponse> coachCreation(
+    public ResponseEntity<RequestInfoResponseInterface> coachCreation(
             @AuthenticationPrincipal User user,
             @RequestBody @Valid CoachRequest coachRequest
     ) {
         return ResponseEntity.ok(requestService.createCoachCreationRequest(user, coachRequest));
+    }
+
+    @SecuredEndpoint
+    @PostMapping("/referee")
+    public ResponseEntity<RequestInfoResponseInterface> refereeCreation(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid RefereeRequest refereeRequest
+    ) {
+        return ResponseEntity.ok(requestService.createRefereeCreationRequest(user, refereeRequest));
     }
 }
