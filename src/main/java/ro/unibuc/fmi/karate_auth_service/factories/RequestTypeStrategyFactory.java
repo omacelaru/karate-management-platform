@@ -3,6 +3,7 @@ package ro.unibuc.fmi.karate_auth_service.factories;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ro.unibuc.fmi.karate_auth_service.exceptions.RequestNotFoundException;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
 import ro.unibuc.fmi.karate_auth_service.strategies.requestType.RequestTypeStrategy;
 
@@ -32,5 +33,13 @@ public class RequestTypeStrategyFactory {
             throw new IllegalArgumentException("No strategy found for request type: " + requestType);
         }
         return strategy;
+    }
+
+    public RequestType getRequestType(Long requestId) {
+        return requestTypeStrategyMap.values().stream()
+                .filter(strategy -> strategy.isRequestType(requestId))
+                .findFirst()
+                .map(RequestTypeStrategy::getRequestType)
+                .orElseThrow(() -> new RequestNotFoundException(requestId));
     }
 }

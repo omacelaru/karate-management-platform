@@ -31,8 +31,9 @@ public class RequestService {
     }
 
     @Transactional
-    public RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestType requestType, RequestStatus status) {
+    public RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestStatus status) {
         log.info("Updating request with id: {} to status: {}", requestId, status);
+        RequestType requestType = strategyFactory.getRequestType(requestId);
         return strategyFactory.getStrategy(requestType).updateRequestStatus(user, requestId, status);
     }
 
@@ -43,19 +44,22 @@ public class RequestService {
     }
 
     @Transactional
-    public RequestInfoResponseInterface editRequest(User user, RequestType requestType, Long requestId, Object request) {
-        log.info("Editing request with id: {}", requestId);
-        return strategyFactory.getStrategy(requestType).editRequest(user, requestId, request);
+    public RequestInfoResponseInterface editRequest(User user, RequestType requestType, Object request) {
+        log.info("Editing request for user with email: {}", user.getEmail());
+        return strategyFactory.getStrategy(requestType).editRequest(user, request);
     }
 
     @Transactional
-    public RequestInfoResponseInterface revokeRequest(User user, RequestType requestType, Long requestId) {
+    public RequestInfoResponseInterface revokeRequest(User user, Long requestId) {
         log.info("Deleting request with id: {}", requestId);
+        RequestType requestType = strategyFactory.getRequestType(requestId);
         return strategyFactory.getStrategy(requestType).revokeRequest(user, requestId);
     }
 
-    public RequestInfoResponseInterface activateRequest(User user, RequestType requestType, Long requestId) {
+    public RequestInfoResponseInterface activateRequest(User user, Long requestId) {
         log.info("Activating request with id: {}", requestId);
+        RequestType requestType = strategyFactory.getRequestType(requestId);
         return strategyFactory.getStrategy(requestType).activateRequest(user, requestId);
     }
+
 }
