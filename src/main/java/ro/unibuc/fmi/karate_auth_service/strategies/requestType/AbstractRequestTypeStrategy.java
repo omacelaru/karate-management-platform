@@ -36,12 +36,14 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
 
     @Override
     public Page<? extends RequestInfoResponseInterface> getRequestsMadeByMe(User user, Pageable pageable) {
+        log.info("Getting requests made by user with email: {}", user.getEmail());
         return getRepository().findAllByCreatedById(user.getId(), pageable)
                 .map(this::mapToResponse);
     }
 
     @Override
     public Page<? extends RequestInfoResponseInterface> getRequestsAssignedToMe(User user, Pageable pageable) {
+        log.info("Getting requests assigned to user with email: {}", user.getEmail());
         return getRepository().findAllByApproverRolesInAndStatusIn(
                 user.getRoles(),
                 Set.of(RequestStatus.PENDING, RequestStatus.IN_PROGRESS, RequestStatus.PARTIALLY_COMPLETED),
@@ -52,10 +54,11 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Override
     @Transactional
     public RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestStatus status) {
-        RequestInfo request = getRepository().findByIdAndApproverRolesIn(requestId, user.getRoles())
+        log.info("Updating request with id: {} to status: {}", requestId, status);
+        RequestInfo request = getRepository().findByIdAndApproverRolesInAndStatusInAndType(requestId, user.getRoles(), Set.of(RequestStatus.PENDING), getRequestType())
                 .orElseThrow(() -> new IllegalArgumentException("Request not found"));
 
-        validateRequest(request, status);
+        validateRequestStatus(request, status);
 
         request.setStatus(status);
         request.setLastUpdatedById(user.getId());
@@ -63,6 +66,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
         RequestInfo updatedRequest = getRepository().save(request);
 
         if (status == RequestStatus.ACCEPTED) {
+            log.info("Handling accepted request with id: {}", requestId);
             handleAcceptedRequest(user, updatedRequest);
         }
 
@@ -72,6 +76,11 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Override
     @Transactional
     public RequestInfoResponseInterface createRequest(User user, Object request, Set<?> approvers) {
+        log.info("Creating request for user with email: {}", user.getEmail());
+        if (isUserAlreadyHasRequestedRole(user)) {
+            log.error("User {} already has the requested role", user.getId());
+            throw new IllegalStateException("User already has the requested role.");
+        }
         if (isDuplicateRequest(user)) {
             log.error("Duplicate request {}", request);
             //todo set location where to edit the request
@@ -89,23 +98,34 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
         return mapToResponse(getRepository().save(newRequest));
     }
 
-    protected boolean isDuplicateRequest(User user) {
-        return getRepository().existsByCreatedByIdAndStatusIn(user.getId(), Set.of(RequestStatus.PENDING));
+    @Override
+    @Transactional
+    public RequestInfoResponseInterface editRequest(User user, Long requestId, Object request) {
+        log.info("Editing request with id: {}", requestId);
+        RequestInfo existingRequestToBeUpdated = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.PENDING), getRequestType())
+                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
+
+        RequestInfo updatedRequest = mapToEntity(user, request);
+
+        updateSpecificFields(existingRequestToBeUpdated, updatedRequest);
+
+        return mapToResponse(getRepository().save(existingRequestToBeUpdated));
     }
 
-    protected void validateRequest(RequestInfo request, RequestStatus status) {
+    protected void validateRequestStatus(RequestInfo request, RequestStatus status) {
         if (status != RequestStatus.ACCEPTED && status != RequestStatus.REJECTED) {
             log.error("Invalid status: {} for request with id: {}. Valid statuses are: ACCEPTED, REJECTED", status, request.getId());
             throw new IllegalArgumentException("Invalid status: " + status + " for request with id: " + request.getId());
         }
-        if (request.getStatus() != RequestStatus.PENDING) {
-            log.error("Request with id: {} is not pending", request.getId());
-            throw new IllegalArgumentException("Request is not pending");
-        }
-        if (request.getType() != getRequestType()) {
-            throw new IllegalArgumentException("Request type does not match");
-        }
     }
+
+    protected boolean isDuplicateRequest(User user) {
+        return getRepository().existsByCreatedByIdAndStatusIn(user.getId(), Set.of(RequestStatus.PENDING));
+    }
+
+    protected abstract boolean isUserAlreadyHasRequestedRole(User user);
+
+    protected abstract void updateSpecificFields(RequestInfo existingRequest, RequestInfo updatedRequest);
 
     protected abstract void handleAcceptedRequest(User user, RequestInfo request);
 

@@ -1,6 +1,7 @@
 package ro.unibuc.fmi.karate_auth_service.factories;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ro.unibuc.fmi.karate_auth_service.dtos.club.ClubRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.club.ClubResponseInterface;
@@ -11,6 +12,7 @@ import ro.unibuc.fmi.karate_auth_service.services.ClubService;
 import java.util.Set;
 import java.util.function.BiFunction;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ClubCreationStrategyFactory {
@@ -22,6 +24,7 @@ public class ClubCreationStrategyFactory {
         } else if (roles.contains(Role.COACH)) {
             return clubService::createClubByCoach;
         } else {
+            log.error("User does not have the necessary roles to create a club");
             throw new IllegalArgumentException("User does not have the necessary roles to create a club");
         }
     }

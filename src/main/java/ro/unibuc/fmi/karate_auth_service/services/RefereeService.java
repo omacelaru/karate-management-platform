@@ -21,6 +21,7 @@ public class RefereeService {
 
     @Transactional
     public void createReferee(User user, @Valid RefereeRequest refereeRequest) {
+        log.info("Creating referee for user with email: {}", user.getEmail());
         UserService.applyRolesToUser(user, Role.REFEREE);
 
         Referee referee = mapperUtils.mapToReferee(refereeRequest);
