@@ -115,12 +115,25 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
 
     @Override
     @Transactional
-    public RequestInfoResponseInterface deleteRequest(User user, Long requestId) {
+    public RequestInfoResponseInterface revokeRequest(User user, Long requestId) {
         log.info("Deleting request with id: {}", requestId);
         RequestInfo request = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.PENDING), getRequestType())
                 .orElseThrow(() -> new IllegalArgumentException("Request not found"));
 
         request.setStatus(RequestStatus.REVOKED);
+        request.setLastUpdatedById(user.getId());
+
+        return mapToResponse(request);
+    }
+
+    @Override
+    @Transactional
+    public RequestInfoResponseInterface activateRequest(User user, Long requestId) {
+        log.info("Activating request with id: {}", requestId);
+        RequestInfo request = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.REVOKED), getRequestType())
+                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
+
+        request.setStatus(RequestStatus.PENDING);
         request.setLastUpdatedById(user.getId());
 
         return mapToResponse(request);

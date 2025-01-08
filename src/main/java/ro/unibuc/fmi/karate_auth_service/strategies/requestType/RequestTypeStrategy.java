@@ -22,5 +22,7 @@ public interface RequestTypeStrategy {
 
     RequestInfoResponseInterface editRequest(User user, Long requestId, Object request);
 
-    RequestInfoResponseInterface deleteRequest(User user, Long requestId);
+    RequestInfoResponseInterface revokeRequest(User user, Long requestId);
+
+    RequestInfoResponseInterface activateRequest(User user, Long requestId);
 }
