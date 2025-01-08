@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum RequestType {
     COACH_CREATION("COACH_CREATION"),
-    REFEREE_CREATION("REFEREE_CREATION");
+    REFEREE_CREATION("REFEREE_CREATION"),
+    ATHLETE_CREATION("ATHLETE_CREATION");
 
     private final String type;
 }
