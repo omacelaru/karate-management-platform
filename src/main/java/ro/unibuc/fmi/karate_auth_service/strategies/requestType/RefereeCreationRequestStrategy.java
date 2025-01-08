@@ -32,8 +32,7 @@ public class RefereeCreationRequestStrategy extends AbstractRequestTypeStrategy 
     @Override
     protected void updateSpecificFields(RequestInfo existingRequest, RequestInfo updatedRequest) {
         if (existingRequest instanceof RefereeCreationRequest existingRefereeRequest && updatedRequest instanceof RefereeCreationRequest updatedRefereeRequest) {
-            existingRefereeRequest.setLicenseInfo(updatedRefereeRequest.getLicenseInfo());
-            existingRefereeRequest.setCategory(updatedRefereeRequest.getCategory());
+            existingRefereeRequest.setRefereeRequest(updatedRefereeRequest.getRefereeRequest());
         } else {
             throw new IllegalArgumentException("Invalid request type");
         }

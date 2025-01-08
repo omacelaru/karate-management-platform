@@ -33,7 +33,7 @@ public class CoachCreationRequestStrategy extends AbstractRequestTypeStrategy {
     @Override
     protected void updateSpecificFields(RequestInfo existingRequest, RequestInfo updatedRequest) {
         if (existingRequest instanceof CoachCreationRequest existingCoachRequest && updatedRequest instanceof CoachCreationRequest updatedCoachRequest) {
-            existingCoachRequest.setLicenseInfo(updatedCoachRequest.getLicenseInfo());
+            existingCoachRequest.setCoachRequest(updatedCoachRequest.getCoachRequest());
         } else {
             throw new IllegalArgumentException("Invalid request type");
         }

@@ -1,10 +1,12 @@
 package ro.unibuc.fmi.karate_auth_service.dtos.referee;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import ro.unibuc.fmi.karate_auth_service.models.license.LicenseInfo;
+import ro.unibuc.fmi.karate_auth_service.models.referee.RefereeCategory;
 
 import java.io.Serializable;
 
@@ -22,7 +24,7 @@ public record RefereeRequest(@Valid
                              LicenseInfo licenseInfo,
 
                              @NotNull
-                             @Pattern(regexp = "^[A-D]$", message = "Category must be one of A, B, C, D")
-                             String category
+                             @Enumerated(EnumType.STRING)
+                             RefereeCategory category
 ) implements Serializable {
 }
