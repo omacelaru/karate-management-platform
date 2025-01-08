@@ -25,4 +25,6 @@ public interface RequestTypeStrategy {
     RequestInfoResponseInterface revokeRequest(User user, Long requestId);
 
     RequestInfoResponseInterface activateRequest(User user, Long requestId);
+
+    boolean isRequestType(Long requestId);
 }

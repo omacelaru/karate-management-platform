@@ -30,6 +30,6 @@ public class UserRequestScopeStrategy implements RequestScopeStrategy {
         }
 
         RequestWithUsersApproval requestWithUsersApproval = (RequestWithUsersApproval) request;
-        requestWithUsersApproval.setUsers(users);
+        requestWithUsersApproval.setApproverUsers(users);
     }
 }

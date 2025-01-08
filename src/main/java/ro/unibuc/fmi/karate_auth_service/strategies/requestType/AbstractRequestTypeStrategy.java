@@ -147,6 +147,10 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
         }
     }
 
+    public boolean isRequestType(Long requestId) {
+        return getRepository().existsById(requestId);
+    }
+
     protected boolean isDuplicateRequest(User user) {
         return getRepository().existsByCreatedByIdAndStatusIn(user.getId(), Set.of(RequestStatus.PENDING));
     }

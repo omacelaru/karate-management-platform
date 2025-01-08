@@ -118,10 +118,9 @@ public class RequestResource {
     public ResponseEntity<RequestInfoResponseInterface> updateRequestStatus(
             @AuthenticationPrincipal User user,
             @PathVariable Long requestId,
-            @RequestParam(defaultValue = "COACH_CREATION") RequestType requestType,
             @RequestParam(defaultValue = "ACCEPTED") RequestStatus status
     ) {
-        return ResponseEntity.ok(requestService.updateRequestStatus(user, requestId, requestType, status));
+        return ResponseEntity.ok(requestService.updateRequestStatus(user, requestId, status));
     }
 
 
@@ -305,10 +304,9 @@ public class RequestResource {
     @DeleteMapping("/{requestId}")
     public ResponseEntity<RequestInfoResponseInterface> revokeRequest(
             @AuthenticationPrincipal User user,
-            @PathVariable Long requestId,
-            @RequestParam(defaultValue = "COACH_CREATION") RequestType requestType
+            @PathVariable Long requestId
     ) {
-        return ResponseEntity.ok(requestService.revokeRequest(user, requestType, requestId));
+        return ResponseEntity.ok(requestService.revokeRequest(user, requestId));
     }
 
     @Operation(
@@ -345,10 +343,9 @@ public class RequestResource {
     @PatchMapping("/{requestId}/activate")
     public ResponseEntity<RequestInfoResponseInterface> activateCoachCreationRequest(
             @AuthenticationPrincipal User user,
-            @PathVariable Long requestId,
-            @RequestParam(defaultValue = "COACH_CREATION") RequestType requestType
+            @PathVariable Long requestId
     ) {
-        return ResponseEntity.ok(requestService.activateRequest(user, requestType, requestId));
+        return ResponseEntity.ok(requestService.activateRequest(user, requestId));
     }
 
 }
