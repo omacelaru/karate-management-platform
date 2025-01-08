@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.RequestInfoResponseInterface;
+import ro.unibuc.fmi.karate_auth_service.exceptions.RequestNotFoundException;
 import ro.unibuc.fmi.karate_auth_service.factories.RequestInfoRepositoryFactory;
 import ro.unibuc.fmi.karate_auth_service.factories.RequestScopeStrategyFactory;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestInfo;
@@ -57,7 +58,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
         log.info("Updating request with id: {} to status: {}", requestId, status);
         //TODO - check if scope is roles or users
         RequestInfo request = getRepository().findByIdAndApproverRolesInAndStatusInAndType(requestId, user.getRoles(), Set.of(RequestStatus.PENDING), getRequestType())
-                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
+                .orElseThrow(RequestNotFoundException::new);
 
         validateRequestStatus(request, status);
 
@@ -104,7 +105,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     public RequestInfoResponseInterface editRequest(User user, Long requestId, Object request) {
         log.info("Editing request with id: {}", requestId);
         RequestInfo existingRequestToBeUpdated = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.PENDING), getRequestType())
-                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
+                .orElseThrow(RequestNotFoundException::new);
 
         RequestInfo updatedRequest = mapToEntity(user, request);
 
@@ -118,7 +119,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     public RequestInfoResponseInterface revokeRequest(User user, Long requestId) {
         log.info("Deleting request with id: {}", requestId);
         RequestInfo request = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.PENDING), getRequestType())
-                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
+                .orElseThrow(RequestNotFoundException::new);
 
         request.setStatus(RequestStatus.REVOKED);
         request.setLastUpdatedById(user.getId());
@@ -131,7 +132,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     public RequestInfoResponseInterface activateRequest(User user, Long requestId) {
         log.info("Activating request with id: {}", requestId);
         RequestInfo request = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.REVOKED), getRequestType())
-                .orElseThrow(() -> new IllegalArgumentException("Request not found"));
+                .orElseThrow(RequestNotFoundException::new);
 
         request.setStatus(RequestStatus.PENDING);
         request.setLastUpdatedById(user.getId());
