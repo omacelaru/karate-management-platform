@@ -58,7 +58,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
         log.info("Updating request with id: {} to status: {}", requestId, status);
         //TODO - check if scope is roles or users
         RequestInfo request = getRepository().findByIdAndApproverRolesInAndStatusInAndType(requestId, user.getRoles(), Set.of(RequestStatus.PENDING), getRequestType())
-                .orElseThrow(RequestNotFoundException::new);
+                .orElseThrow(() -> new RequestNotFoundException(RequestStatus.PENDING));
 
         validateRequestStatus(request, status);
 
@@ -105,7 +105,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     public RequestInfoResponseInterface editRequest(User user, Long requestId, Object request) {
         log.info("Editing request with id: {}", requestId);
         RequestInfo existingRequestToBeUpdated = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.PENDING), getRequestType())
-                .orElseThrow(RequestNotFoundException::new);
+                .orElseThrow(() -> new RequestNotFoundException(RequestStatus.PENDING));
 
         RequestInfo updatedRequest = mapToEntity(user, request);
 
@@ -119,8 +119,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     public RequestInfoResponseInterface revokeRequest(User user, Long requestId) {
         log.info("Deleting request with id: {}", requestId);
         RequestInfo request = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.PENDING), getRequestType())
-                .orElseThrow(RequestNotFoundException::new);
-
+                .orElseThrow(() -> new RequestNotFoundException(RequestStatus.PENDING));
         request.setStatus(RequestStatus.REVOKED);
         request.setLastUpdatedById(user.getId());
 
@@ -132,7 +131,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     public RequestInfoResponseInterface activateRequest(User user, Long requestId) {
         log.info("Activating request with id: {}", requestId);
         RequestInfo request = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), Set.of(RequestStatus.REVOKED), getRequestType())
-                .orElseThrow(RequestNotFoundException::new);
+                .orElseThrow(() -> new RequestNotFoundException(RequestStatus.REVOKED));
 
         request.setStatus(RequestStatus.PENDING);
         request.setLastUpdatedById(user.getId());
