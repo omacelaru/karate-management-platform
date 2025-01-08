@@ -14,6 +14,7 @@ import ro.unibuc.fmi.karate_auth_service.models.user.User;
 @MappedSuperclass
 @AllArgsConstructor
 public abstract class RequestInfo extends BaseEntity {
+    //TODO - create joined entity for request info
     @Column(name = "request_type", nullable = false)
     @Enumerated(EnumType.STRING)
     protected RequestType type;
