@@ -39,14 +39,12 @@ public class CoachService {
     }
 
     @Transactional
-    public CoachResponse createCoach(User user, @Valid CoachRequest coachRequest) {
+    public void createCoach(User user, @Valid CoachRequest coachRequest) {
         UserService.applyRolesToUser(user, Role.COACH);
 
         Coach coach = mapperUtils.mapToCoach(coachRequest);
         coach.setUser(user);
 
-        Coach coachSaved = coachRepository.save(coach);
-        return mapperUtils.mapToCoachResponse(coachSaved);
-
+        coachRepository.save(coach);
     }
 }

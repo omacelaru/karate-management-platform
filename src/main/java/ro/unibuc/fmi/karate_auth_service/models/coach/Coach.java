@@ -28,7 +28,7 @@ public class Coach extends BaseEntity {
     @MapsId
     private User user;
 
-    @Embedded()
+    @Embedded
     private LicenseInfo licenseInfo;
 
     @ManyToMany(cascade = CascadeType.DETACH)

@@ -16,8 +16,7 @@ import java.util.Set;
 @MappedSuperclass
 @AllArgsConstructor
 public abstract class RequestWithRolesApproval extends RequestInfo {
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "request_approver_roles", joinColumns = @JoinColumn(name = "request_id"))
+    @ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "approver_roles", nullable = false)
     @Enumerated(EnumType.STRING)
     private Set<Role> approverRoles = new LinkedHashSet<>();
