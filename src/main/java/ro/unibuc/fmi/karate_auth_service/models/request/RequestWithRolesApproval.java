@@ -13,10 +13,9 @@ import java.util.Set;
 @ToString
 @SuperBuilder
 @RequiredArgsConstructor
-@MappedSuperclass
 @AllArgsConstructor
+@MappedSuperclass
 public abstract class RequestWithRolesApproval extends RequestInfo {
-    @CollectionTable(name = "requests_approver_roles", joinColumns = @JoinColumn(name = "request_id"))
     @ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "approver_roles", nullable = false)
     @Enumerated(EnumType.STRING)

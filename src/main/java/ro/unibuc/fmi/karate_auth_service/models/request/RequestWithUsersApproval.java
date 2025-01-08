@@ -17,10 +17,9 @@ import java.util.Set;
 @MappedSuperclass
 public class RequestWithUsersApproval extends RequestInfo {
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "requests_approver_users",
-            joinColumns = @JoinColumn(name = "request_id"),
+    @JoinTable(joinColumns = @JoinColumn(name = "request_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @ToString.Exclude
     @Column(name = "approver_users", nullable = false)
-    private Set<User> users = new LinkedHashSet<>();
+    private Set<User> approverUsers = new LinkedHashSet<>();
 }
