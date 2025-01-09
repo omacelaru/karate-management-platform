@@ -4,7 +4,7 @@ import ro.unibuc.fmi.karate_auth_service.dtos.user.UserResponse;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
 
-public sealed interface RequestInfoResponseInterface permits RequestWithRolesApprovalResponse {
+public sealed interface RequestInfoResponseInterface permits RequestWithRolesApprovalResponse, RequestWithUsersApprovalResponse {
     Long getId();
 
     RequestType getType();
@@ -12,4 +12,6 @@ public sealed interface RequestInfoResponseInterface permits RequestWithRolesApp
     RequestStatus getStatus();
 
     UserResponse getCreatedBy();
+
+    Long getLastUpdatedById();
 }

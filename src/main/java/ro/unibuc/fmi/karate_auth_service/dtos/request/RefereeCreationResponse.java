@@ -1,8 +1,10 @@
 package ro.unibuc.fmi.karate_auth_service.dtos.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Embedded;
 import lombok.Getter;
 import lombok.Setter;
+import ro.unibuc.fmi.karate_auth_service.dtos.referee.RefereeRequest;
 import ro.unibuc.fmi.karate_auth_service.models.license.LicenseInfo;
 import ro.unibuc.fmi.karate_auth_service.models.referee.RefereeCategory;
 import ro.unibuc.fmi.karate_auth_service.models.request.referee.RefereeCreationRequest;
@@ -30,6 +32,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 public final class RefereeCreationResponse extends RequestWithRolesApprovalResponse implements Serializable {
-    LicenseInfo licenseInfo;
-    RefereeCategory category;
+    @Embedded
+    private RefereeRequest refereeRequest;
 }
