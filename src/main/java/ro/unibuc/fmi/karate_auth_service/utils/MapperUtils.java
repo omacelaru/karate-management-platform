@@ -45,15 +45,20 @@ public interface MapperUtils {
 
     CoachCreationRequest mapToCoachCreationRequest(@Valid CoachRequest coachRequest);
 
-    @Mapping(target = "licenseInfo", source = "licenseInfo")
+    @Mapping(target = "licenseInfo", source = "coachRequest.licenseInfo")
     CoachCreationResponse mapToCoachCreationResponse(CoachCreationRequest coachCreationRequest);
 
+    @Mapping(target = "licenseInfo", source = "coachRequest.licenseInfo")
     CoachRequest mapToCoachRequest(CoachCreationRequest updatedRequest);
 
     RefereeCreationRequest mapToRefereeCreationRequest(@Valid RefereeRequest refereeRequest);
 
+    @Mapping(target = "licenseInfo", source = "refereeRequest.licenseInfo")
+    @Mapping(target = "category", source = "refereeRequest.category")
     RefereeCreationResponse mapToRefereeCreationResponse(RefereeCreationRequest refereeCreationRequest);
 
+    @Mapping(target = "licenseInfo", source = "refereeRequest.licenseInfo")
+    @Mapping(target = "category", source = "refereeRequest.category")
     RefereeRequest mapToRefereeRequest(RefereeCreationRequest request);
 
     Referee mapToReferee(@Valid RefereeRequest refereeRequest);

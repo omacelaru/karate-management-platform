@@ -4,7 +4,12 @@ import ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus;
 
 import java.util.Set;
 
-public class RequestNotFoundException extends RuntimeException {
+public class RequestNotFoundException extends IllegalArgumentException {
+
+    public RequestNotFoundException(Long requestId) {
+        super(String.format("Request with ID %d not found.", requestId));
+    }
+
     public RequestNotFoundException(Long requestId, Set<RequestStatus> expectedStatuses) {
         super(buildMessage(requestId, expectedStatuses));
     }

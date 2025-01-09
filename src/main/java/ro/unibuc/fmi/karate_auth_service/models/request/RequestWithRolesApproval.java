@@ -13,8 +13,8 @@ import java.util.Set;
 @ToString
 @SuperBuilder
 @RequiredArgsConstructor
-@MappedSuperclass
 @AllArgsConstructor
+@MappedSuperclass
 public abstract class RequestWithRolesApproval extends RequestInfo {
     @ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "approver_roles", nullable = false)

@@ -103,11 +103,11 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
 
     @Override
     @Transactional
-    public RequestInfoResponseInterface editRequest(User user, Long requestId, Object request) {
-        log.info("Editing request with id: {}", requestId);
-        RequestInfo existingRequestToBeUpdated = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), activeStatuses, getRequestType())
-                .orElseThrow(() -> new RequestNotFoundException(requestId, activeStatuses));
+    public RequestInfoResponseInterface editRequest(User user, Object request) {
+        RequestInfo existingRequestToBeUpdated = getRepository().findByCreatedBy_IdAndStatusInAndType(user.getId(), activeStatuses, getRequestType())
+                .orElseThrow(() -> new RequestNotFoundException(null, activeStatuses));
 
+        log.info("Editing request ID {} for user with email: {}", existingRequestToBeUpdated.getId(), user.getEmail());
         RequestInfo updatedRequest = mapToEntity(user, request);
 
         updateSpecificFields(existingRequestToBeUpdated, updatedRequest);
@@ -145,6 +145,10 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
             log.error("Invalid status: {} for request with id: {}. Valid statuses are: ACCEPTED, REJECTED", status, request.getId());
             throw new IllegalArgumentException("Invalid status: " + status + " for request with id: " + request.getId());
         }
+    }
+
+    public boolean isRequestType(Long requestId) {
+        return getRepository().existsById(requestId);
     }
 
     protected boolean isDuplicateRequest(User user) {

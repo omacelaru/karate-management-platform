@@ -25,4 +25,6 @@ public interface RequestInfoRepository<T extends RequestInfo> extends JpaReposit
     Optional<T> findByIdAndApproverRolesInAndStatusInAndType(Long id, Set<?> approverRoles, Collection<RequestStatus> statuses, RequestType type);
 
     Optional<T> findByIdAndCreatedByIdAndStatusInAndType(Long id, Long createdById, Collection<RequestStatus> statuses, RequestType type);
+
+    Optional<T> findByCreatedBy_IdAndStatusInAndType(Long id, Collection<RequestStatus> statuses, RequestType type);
 }
