@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
                 request.getDescription(false),
                 LocalDateTime.now().toString()
         );
-        log.error("Bad request: {}", error.getMessage());
+        log.warn("Bad request: {}", error.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
