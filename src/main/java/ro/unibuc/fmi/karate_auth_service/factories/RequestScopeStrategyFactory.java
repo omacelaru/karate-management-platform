@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestScope;
+import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
 import ro.unibuc.fmi.karate_auth_service.strategies.requestScope.RequestScopeStrategy;
 
 import java.util.List;
@@ -32,5 +33,9 @@ public class RequestScopeStrategyFactory {
             throw new IllegalArgumentException("No strategy found for request scope: " + requestScope);
         }
         return strategy;
+    }
+
+    public RequestScopeStrategy getStrategy(RequestType requestType) {
+        return getStrategy(requestType.getRequestScope());
     }
 }
