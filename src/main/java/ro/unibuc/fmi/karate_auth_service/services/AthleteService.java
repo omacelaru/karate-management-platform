@@ -3,16 +3,18 @@ package ro.unibuc.fmi.karate_auth_service.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteResponse;
 import ro.unibuc.fmi.karate_auth_service.exceptions.IncompleteProfileException;
 import ro.unibuc.fmi.karate_auth_service.models.athelte.Athlete;
+import ro.unibuc.fmi.karate_auth_service.models.coach.Coach;
 import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.repositories.AthleteRepository;
 import ro.unibuc.fmi.karate_auth_service.utils.MapperUtils;
+
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -20,6 +22,7 @@ import ro.unibuc.fmi.karate_auth_service.utils.MapperUtils;
 public class AthleteService {
     private final AthleteRepository athleteRepository;
     private final MapperUtils mapperUtils;
+    private final ClubService clubService;
 
     public AthleteResponse getMe(User user) throws IncompleteProfileException {
         String email = user.getEmail();
@@ -30,16 +33,17 @@ public class AthleteService {
         return mapperUtils.mapToAthleteResponse(athlete);
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
-    public AthleteResponse createAthlete(User user, AthleteRequest athleteRequest) {
+    @Transactional
+    public void createAthlete(User user, AthleteRequest athleteRequest) {
         log.info("Creating athlete for user with email: {}", user.getEmail());
         UserService.applyRolesToUser(user, Role.ATHLETE);
 
         Athlete athlete = mapperUtils.mapToAthlete(athleteRequest);
         athlete.setUser(user);
 
-        Athlete athleteSaved = athleteRepository.save(athlete);
-        return mapperUtils.mapToAthleteResponse(athleteSaved);
-    }
+        Set<Coach> coaches = clubService.getCoachesForClub(athleteRequest.clubId());
+        athlete.setCoaches(coaches);
 
+        athleteRepository.save(athlete);
+    }
 }

@@ -2,6 +2,7 @@ package ro.unibuc.fmi.karate_auth_service.services;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -73,5 +74,10 @@ public class ClubService {
             log.error("Club acronym already exists");
             throw new IllegalArgumentException("Club acronym already exists");
         }
+    }
+
+    public Set<Coach> getCoachesForClub(@NotNull Long clubId) {
+        log.info("Getting coaches for club with id: {}", clubId);
+        return coachRepository.findAllByClubId(clubId);
     }
 }

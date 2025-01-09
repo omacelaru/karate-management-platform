@@ -40,7 +40,13 @@ public class Athlete extends BaseEntity {
     @Max(value = 200, message = "Weight must be no greater than 200 kg")
     private Integer weight;
 
-    @ManyToMany(mappedBy = "athletes", cascade = CascadeType.DETACH)
+    @NotNull(message = "At least one coach is required")
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "athlete_coach",
+            joinColumns = @JoinColumn(name = "athlete_id"),
+            inverseJoinColumns = @JoinColumn(name = "coach_id")
+    )
     private Set<Coach> coaches = new LinkedHashSet<>();
 
 }

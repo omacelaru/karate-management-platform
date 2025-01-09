@@ -31,10 +31,7 @@ public class Coach extends BaseEntity {
     @Embedded
     private LicenseInfo licenseInfo;
 
-    @ManyToMany(cascade = CascadeType.DETACH)
-    @JoinTable(name = "coaches_athletes",
-            joinColumns = @JoinColumn(name = "coach_id"),
-            inverseJoinColumns = @JoinColumn(name = "athlete_id"))
+    @ManyToMany(mappedBy = "coaches")
     private Set<Athlete> athletes = new LinkedHashSet<>();
 
     //TODO- set LAZY on all fetch types
