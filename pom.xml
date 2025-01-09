@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.0</version>
+        <version>3.4.1</version>
         <!--        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
     </parent>
     <groupId>ro.unibuc.fmi</groupId>
     <artifactId>karate-auth-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0</version>
     <name>karate-auth-service</name>
     <description>
         Auth service for Karate competition platform. Manages user registration, authentication, and user roles
