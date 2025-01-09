@@ -2,12 +2,18 @@ package ro.unibuc.fmi.karate_auth_service.strategies.requestScope;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestInfo;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestScope;
+import ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestWithUsersApproval;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
+import ro.unibuc.fmi.karate_auth_service.repositories.RequestInfoRepository;
+import ro.unibuc.fmi.karate_auth_service.repositories.RequestWithUsersApprovalRepository;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,6 +22,16 @@ import java.util.stream.Collectors;
 @Component
 public class UserRequestScopeStrategy implements RequestScopeStrategy {
     private final RequestScope requestScope = RequestScope.USERS;
+
+    @SuppressWarnings("unchecked")
+    private <T extends RequestInfo> RequestWithUsersApprovalRepository<RequestWithUsersApproval> validateRepository(RequestInfoRepository<T> repository) {
+        if (repository instanceof RequestWithUsersApprovalRepository<?>) {
+            return (RequestWithUsersApprovalRepository<RequestWithUsersApproval>) repository;
+        } else {
+            log.error("Repository is not of type RequestWithUsersApprovalRepository");
+            throw new IllegalArgumentException("Repository is not of type RequestWithUsersApprovalRepository");
+        }
+    }
 
     @Override
     public void setApprovers(RequestInfo request, Set<?> approvers) {
@@ -31,5 +47,17 @@ public class UserRequestScopeStrategy implements RequestScopeStrategy {
 
         RequestWithUsersApproval requestWithUsersApproval = (RequestWithUsersApproval) request;
         requestWithUsersApproval.setApproverUsers(users);
+    }
+
+    @Override
+    public <T extends RequestInfo> Page<? extends RequestInfo> getRequestsAssignedToMe(User user, Pageable pageable, RequestInfoRepository<T> repository) {
+        RequestWithUsersApprovalRepository<RequestWithUsersApproval> validRepository = validateRepository(repository);
+        return validRepository.findAllByApproverUsersContainingAndStatusIn(user, RequestStatus.ACTIVE_STATUSES, pageable);
+    }
+
+    @Override
+    public Optional<? extends RequestInfo> getRequestAssignedToMeById(Long requestId, User user, Pageable pageable, RequestInfoRepository<? extends RequestInfo> repository) {
+        RequestWithUsersApprovalRepository<RequestWithUsersApproval> validRepository = validateRepository(repository);
+        return validRepository.findByIdAndApproverUsersContainingAndStatusIn(requestId, Set.of(user), RequestStatus.ACTIVE_STATUSES);
     }
 }

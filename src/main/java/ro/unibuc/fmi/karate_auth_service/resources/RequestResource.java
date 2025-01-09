@@ -12,6 +12,7 @@ import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.referee.RefereeRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.CoachCreationResponse;
@@ -19,12 +20,9 @@ import ro.unibuc.fmi.karate_auth_service.dtos.request.RequestInfoResponseInterfa
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
-import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_auth_service.services.RequestService;
-
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/requests")
@@ -154,7 +152,7 @@ public class RequestResource {
             @AuthenticationPrincipal User user,
             @RequestBody @Valid CoachRequest coachRequest
     ) {
-        return ResponseEntity.ok(requestService.createRequest(user, RequestType.COACH_CREATION, coachRequest, Set.of(Role.ADMIN)));
+        return ResponseEntity.ok(requestService.createRequest(user, RequestType.COACH_CREATION, coachRequest));
     }
 
     @Operation(
@@ -183,7 +181,37 @@ public class RequestResource {
             @AuthenticationPrincipal User user,
             @RequestBody @Valid RefereeRequest refereeRequest
     ) {
-        return ResponseEntity.ok(requestService.createRequest(user, RequestType.REFEREE_CREATION, refereeRequest, Set.of(Role.ADMIN)));
+        return ResponseEntity.ok(requestService.createRequest(user, RequestType.REFEREE_CREATION, refereeRequest));
+    }
+
+
+    @Operation(
+            summary = "Create an athlete creation request",
+            description = "Creates a request for athlete creation for the logged-in user. This endpoint processes a request to create an athlete, accepting detailed input information for the athlete's creation.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully created the athlete creation request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestInfoResponseInterface.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request: The provided data is invalid or incomplete",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authorized to create an athlete request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
+            })
+    @SecuredEndpoint
+    @PostMapping("/athlete")
+    public ResponseEntity<RequestInfoResponseInterface> athleteCreation(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid AthleteRequest athleteRequest
+    ) {
+        return ResponseEntity.ok(requestService.createRequest(user, RequestType.ATHLETE_CREATION, athleteRequest));
     }
 
     //--------------------------------------------------------------------------------

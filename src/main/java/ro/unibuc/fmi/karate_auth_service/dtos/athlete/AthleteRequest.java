@@ -15,6 +15,9 @@ import java.io.Serializable;
 @Schema(description = "Athlete request containing personal details such as height and weight.")
 //TODO all DTO have message for filed with validation rules
 public record AthleteRequest(
+        @NotNull(message = "Club ID must not be null")
+        Long clubId,
+
         @NotNull
         @Min(message = "Height must be at least 50 cm", value = 50)
         @Max(message = "Height must be no greater than 250 cm", value = 250)

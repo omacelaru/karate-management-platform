@@ -12,8 +12,6 @@ import ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 
-import java.util.Set;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -38,9 +36,9 @@ public class RequestService {
     }
 
     @Transactional
-    public RequestInfoResponseInterface createRequest(User user, RequestType requestType, Object request, Set<?> approvers) {
+    public RequestInfoResponseInterface createRequest(User user, RequestType requestType, Object request) {
         log.info("Creating request for user with email: {}", user.getEmail());
-        return strategyFactory.getStrategy(requestType).createRequest(user, request, approvers);
+        return strategyFactory.getStrategy(requestType).createRequest(user, request);
     }
 
     @Transactional

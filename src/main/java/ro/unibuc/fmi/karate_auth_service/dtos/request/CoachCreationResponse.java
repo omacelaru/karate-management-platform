@@ -1,8 +1,10 @@
 package ro.unibuc.fmi.karate_auth_service.dtos.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Embedded;
 import lombok.Getter;
 import lombok.Setter;
+import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_auth_service.models.license.LicenseInfo;
 import ro.unibuc.fmi.karate_auth_service.models.request.coach.CoachCreationRequest;
 
@@ -27,5 +29,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 public final class CoachCreationResponse extends RequestWithRolesApprovalResponse implements Serializable {
-    LicenseInfo licenseInfo;
+    @Embedded
+    private CoachRequest coachRequest;
 }

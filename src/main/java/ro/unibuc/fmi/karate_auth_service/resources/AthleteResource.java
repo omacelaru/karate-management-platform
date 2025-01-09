@@ -4,12 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteRequest;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteResponse;
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
 import ro.unibuc.fmi.karate_auth_service.exceptions.IncompleteProfileException;
@@ -36,21 +36,5 @@ public class AthleteResource {
             @AuthenticationPrincipal User user
     ) throws IncompleteProfileException {
         return ResponseEntity.ok(athleteService.getMe(user));
-    }
-
-
-    @Operation(summary = "Create a new athlete",
-            description = "Creates a new athlete",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "Athlete created successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = AthleteResponse.class))),
-                    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
-            })
-    @SecuredEndpoint
-    @PostMapping("/me")
-    public ResponseEntity<AthleteResponse> createAthleteProfile(
-            @AuthenticationPrincipal User user,
-            @RequestBody @Valid AthleteRequest athleteRequest
-    ) {
-        return ResponseEntity.ok(athleteService.createAthlete(user, athleteRequest));
     }
 }
