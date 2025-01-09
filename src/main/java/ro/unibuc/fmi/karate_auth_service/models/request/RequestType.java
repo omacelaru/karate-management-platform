@@ -11,4 +11,11 @@ public enum RequestType {
     ATHLETE_CREATION("ATHLETE_CREATION");
 
     private final String type;
+
+    public RequestScope getRequestScope() {
+        return switch (this) {
+            case COACH_CREATION, REFEREE_CREATION -> RequestScope.ROLES;
+            case ATHLETE_CREATION -> RequestScope.USERS;
+        };
+    }
 }

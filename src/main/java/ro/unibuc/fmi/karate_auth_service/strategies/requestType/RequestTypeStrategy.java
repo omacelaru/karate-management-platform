@@ -7,8 +7,6 @@ import ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 
-import java.util.Set;
-
 public interface RequestTypeStrategy {
     RequestType getRequestType();
 
@@ -18,7 +16,7 @@ public interface RequestTypeStrategy {
 
     RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestStatus status);
 
-    RequestInfoResponseInterface createRequest(User user, Object request, Set<?> approvers);
+    RequestInfoResponseInterface createRequest(User user, Object request);
 
     RequestInfoResponseInterface editRequest(User user, Object request);
 

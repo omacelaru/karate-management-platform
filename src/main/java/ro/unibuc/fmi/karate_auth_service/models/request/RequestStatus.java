@@ -3,6 +3,8 @@ package ro.unibuc.fmi.karate_auth_service.models.request;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Set;
+
 @Getter
 @AllArgsConstructor
 public enum RequestStatus {
@@ -14,4 +16,6 @@ public enum RequestStatus {
     REVOKED("REVOKED");
 
     private final String status;
+
+    public static final Set<RequestStatus> ACTIVE_STATUSES = Set.of(PENDING, IN_PROGRESS, PARTIALLY_COMPLETED);
 }

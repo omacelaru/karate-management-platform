@@ -16,6 +16,8 @@ import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.services.CoachService;
 import ro.unibuc.fmi.karate_auth_service.utils.MapperUtils;
 
+import java.util.Set;
+
 @Slf4j
 @Component
 public class CoachCreationRequestStrategy extends AbstractRequestTypeStrategy {
@@ -29,6 +31,10 @@ public class CoachCreationRequestStrategy extends AbstractRequestTypeStrategy {
         this.coachService = coachService;
     }
 
+    @Override
+    protected boolean isUserAlreadyHasRequestedRole(User user) {
+        return user.getRoles().contains(Role.COACH);
+    }
 
     @Override
     protected void updateSpecificFields(RequestInfo existingRequest, RequestInfo updatedRequest) {
@@ -40,17 +46,16 @@ public class CoachCreationRequestStrategy extends AbstractRequestTypeStrategy {
     }
 
     @Override
-    protected boolean isUserAlreadyHasRequestedRole(User user) {
-        return user.getRoles().contains(Role.COACH);
-    }
-
-
-    @Override
     protected void handleAcceptedRequest(User user, RequestInfo request) {
         User userToBePromoteToCoach = request.getCreatedBy();
         CoachRequest coachRequest = mapperUtils.mapToCoachRequest((CoachCreationRequest) request);
         log.info("Creating coach for user with email: {}", user.getEmail());
         coachService.createCoach(userToBePromoteToCoach, coachRequest);
+    }
+
+    @Override
+    protected Set<?> handleApprovers(User user, Object request) {
+        return Set.of(Role.ADMIN);
     }
 
     @Override

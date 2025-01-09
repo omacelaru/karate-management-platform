@@ -18,7 +18,10 @@ import ro.unibuc.fmi.karate_auth_service.repositories.RequestInfoRepository;
 import ro.unibuc.fmi.karate_auth_service.strategies.requestScope.RequestScopeStrategy;
 import ro.unibuc.fmi.karate_auth_service.utils.MapperUtils;
 
+import java.util.Optional;
 import java.util.Set;
+
+import static ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus.ACTIVE_STATUSES;
 
 
 @Slf4j
@@ -28,7 +31,6 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     protected final MapperUtils mapperUtils;
     private final RequestInfoRepositoryFactory repositoryFactory;
     private final RequestScopeStrategyFactory scopeStrategyFactory;
-    private final Set<RequestStatus> activeStatuses = Set.of(RequestStatus.PENDING, RequestStatus.IN_PROGRESS, RequestStatus.PARTIALLY_COMPLETED);
 
     public abstract RequestType getRequestType();
 
@@ -46,11 +48,9 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Override
     public Page<? extends RequestInfoResponseInterface> getRequestsAssignedToMe(User user, Pageable pageable) {
         log.info("Getting requests assigned to user with email: {}", user.getEmail());
-        return getRepository().findAllByApproverRolesInAndStatusIn(
-                user.getRoles(),
-                Set.of(RequestStatus.PENDING, RequestStatus.IN_PROGRESS, RequestStatus.PARTIALLY_COMPLETED),
-                pageable
-        ).map(this::mapToResponse);
+        RequestScopeStrategy strategy = scopeStrategyFactory.getStrategy(getRequestType());
+        Page<? extends RequestInfo> requestInfos = strategy.getRequestsAssignedToMe(user, pageable, getRepository());
+        return requestInfos.map(this::mapToResponse);
     }
 
     @Override
@@ -58,8 +58,10 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     public RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestStatus status) {
         log.info("Updating request with id: {} to status: {}", requestId, status);
         //TODO - check if scope is roles or users
-        RequestInfo request = getRepository().findByIdAndApproverRolesInAndStatusInAndType(requestId, user.getRoles(), activeStatuses, getRequestType())
-                .orElseThrow(() -> new RequestNotFoundException(requestId, activeStatuses));
+        RequestScopeStrategy strategy = scopeStrategyFactory.getStrategy(getRequestType());
+        Optional<? extends RequestInfo> optionalRequest = strategy.getRequestAssignedToMeById(requestId, user, Pageable.unpaged(), getRepository());
+
+        RequestInfo request = optionalRequest.orElseThrow(() -> new RequestNotFoundException(requestId, ACTIVE_STATUSES));
 
         validateRequestStatus(request, status);
 
@@ -78,7 +80,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
 
     @Override
     @Transactional
-    public RequestInfoResponseInterface createRequest(User user, Object request, Set<?> approvers) {
+    public RequestInfoResponseInterface createRequest(User user, Object request) {
         log.info("Creating request for user with email: {}", user.getEmail());
         if (isUserAlreadyHasRequestedRole(user)) {
             log.error("User {} already has the requested role", user.getId());
@@ -92,6 +94,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
 
         RequestInfo newRequest = mapToEntity(user, request);
 
+        Set<?> approvers = handleApprovers(user, request);
         RequestScopeStrategy strategy = scopeStrategyFactory.getStrategy(newRequest.getScope());
         strategy.setApprovers(newRequest, approvers);
 
@@ -104,8 +107,8 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Override
     @Transactional
     public RequestInfoResponseInterface editRequest(User user, Object request) {
-        RequestInfo existingRequestToBeUpdated = getRepository().findByCreatedBy_IdAndStatusInAndType(user.getId(), activeStatuses, getRequestType())
-                .orElseThrow(() -> new RequestNotFoundException(null, activeStatuses));
+        RequestInfo existingRequestToBeUpdated = getRepository().findByCreatedBy_IdAndStatusInAndType(user.getId(), ACTIVE_STATUSES, getRequestType())
+                .orElseThrow(() -> new RequestNotFoundException(null, ACTIVE_STATUSES));
 
         log.info("Editing request ID {} for user with email: {}", existingRequestToBeUpdated.getId(), user.getEmail());
         RequestInfo updatedRequest = mapToEntity(user, request);
@@ -119,8 +122,8 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Transactional
     public RequestInfoResponseInterface revokeRequest(User user, Long requestId) {
         log.info("Deleting request with id: {}", requestId);
-        RequestInfo request = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), activeStatuses, getRequestType())
-                .orElseThrow(() -> new RequestNotFoundException(requestId, activeStatuses));
+        RequestInfo request = getRepository().findByIdAndCreatedByIdAndStatusInAndType(requestId, user.getId(), ACTIVE_STATUSES, getRequestType())
+                .orElseThrow(() -> new RequestNotFoundException(requestId, ACTIVE_STATUSES));
         request.setStatus(RequestStatus.REVOKED);
         request.setLastUpdatedById(user.getId());
 
@@ -160,6 +163,8 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     protected abstract void updateSpecificFields(RequestInfo existingRequest, RequestInfo updatedRequest);
 
     protected abstract void handleAcceptedRequest(User user, RequestInfo request);
+
+    protected abstract Set<?> handleApprovers(User user, Object request);
 
     protected abstract RequestInfo mapToEntity(User user, Object request);
 

@@ -16,6 +16,8 @@ import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.services.RefereeService;
 import ro.unibuc.fmi.karate_auth_service.utils.MapperUtils;
 
+import java.util.Set;
+
 @Slf4j
 @Component
 public class RefereeCreationRequestStrategy extends AbstractRequestTypeStrategy {
@@ -49,6 +51,11 @@ public class RefereeCreationRequestStrategy extends AbstractRequestTypeStrategy 
         RefereeRequest refereeRequest = mapperUtils.mapToRefereeRequest((RefereeCreationRequest) request);
         log.info("Creating referee for user with email: {}", user.getEmail());
         refereeService.createReferee(userToBePromoteToReferee, refereeRequest);
+    }
+
+    @Override
+    protected Set<?> handleApprovers(User user, Object request) {
+        return Set.of(Role.ADMIN);
     }
 
     @Override
