@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestInfo;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
+import ro.unibuc.fmi.karate_auth_service.repositories.AthleteCreationRequestRepository;
 import ro.unibuc.fmi.karate_auth_service.repositories.CoachCreationRequestRepository;
 import ro.unibuc.fmi.karate_auth_service.repositories.RefereeCreationRequestRepository;
 import ro.unibuc.fmi.karate_auth_service.repositories.RequestInfoRepository;
@@ -18,6 +19,7 @@ import java.util.Map;
 public class RequestInfoRepositoryFactory {
     private final CoachCreationRequestRepository coachCreationRequestRepository;
     private final RefereeCreationRequestRepository refereeCreationRequestRepository;
+    private final AthleteCreationRequestRepository athleteCreationRequestRepository;
 
     private Map<RequestType, RequestInfoRepository<? extends RequestInfo>> repositoryMap;
 
@@ -25,7 +27,8 @@ public class RequestInfoRepositoryFactory {
     private void initRepositoryMap() {
         repositoryMap = Map.of(
                 RequestType.COACH_CREATION, coachCreationRequestRepository,
-                RequestType.REFEREE_CREATION, refereeCreationRequestRepository
+                RequestType.REFEREE_CREATION, refereeCreationRequestRepository,
+                RequestType.ATHLETE_CREATION, athleteCreationRequestRepository
         );
     }
 
