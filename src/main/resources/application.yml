@@ -4,7 +4,7 @@ spring:
 
   # Server Configuration
   datasource:
-    url: jdbc:postgresql://localhost:5432/karate_users_db
+    url: jdbc:postgresql://localhost:5480/karate_users_db
     username: karate_user
     password: Karate.user2025
     driver-class-name: org.postgresql.Driver
@@ -29,3 +29,14 @@ jwt:
   secret-signing-key: VVBnjmJk/7zALlGMV2MTY/DeRxzecHINfsxU16d+A/gX+ta4lrnnM7nJRNPhDm6Vrt8EGXGRfUwbAkiWQWT4U1C6UZ+LXNx4bNVttqrTKOJNU17gyXIGQL+MFAIz0FCDqKZrOLGpE3RCnkLsJRbgo76gMdNvhGCcEm8JkHoLsXTSXJamuBDhheQD/wreedFrkzph4+XQ+NFSQ9PUMUy7/W1JwJcgLO8Dti8RUShJXXIxH0ed4q77kOpH7A0DOSvdr062geYmgI3mScOHJMI1R0ymPheDE5PDgfyYR/bdlcgt7RWPkDBe34WGeNdxdOktZKSLsDjUWe7ywZf5MpaZgQ==
   access-token-expiration: 900000 # 15 minutes in milliseconds
   refresh-token-expiration: 604800000 # 7 days in milliseconds
+
+# Frontend Configuration
+frontend:
+  url: http://localhost:5173
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
