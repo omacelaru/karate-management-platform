@@ -18,10 +18,10 @@ FROM openjdk:23-jdk-slim
 WORKDIR /app
 
 # Copy the .jar file from the build stage
-COPY --from=builder /app/target/karate-auth-service*.jar /app/karate-auth-service.jar
+COPY --from=builder /app/target/karate-management-platform*.jar /app/karate-management-platform.jar
 
 # Expose the port that the application will listen on
 EXPOSE 8080
 
 # Command to run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "/app/karate-auth-service.jar"]
+ENTRYPOINT ["java", "-jar", "/app/karate-management-platform.jar"]
