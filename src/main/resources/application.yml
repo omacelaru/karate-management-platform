@@ -19,6 +19,19 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: true
 
+  # Mail Configuration
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: karate.platform@gmail.com
+    password: Karate.platform2025
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 # Swagger Configuration
 springdoc:
   api-docs.enabled: true
@@ -29,6 +42,10 @@ jwt:
   secret-signing-key: VVBnjmJk/7zALlGMV2MTY/DeRxzecHINfsxU16d+A/gX+ta4lrnnM7nJRNPhDm6Vrt8EGXGRfUwbAkiWQWT4U1C6UZ+LXNx4bNVttqrTKOJNU17gyXIGQL+MFAIz0FCDqKZrOLGpE3RCnkLsJRbgo76gMdNvhGCcEm8JkHoLsXTSXJamuBDhheQD/wreedFrkzph4+XQ+NFSQ9PUMUy7/W1JwJcgLO8Dti8RUShJXXIxH0ed4q77kOpH7A0DOSvdr062geYmgI3mScOHJMI1R0ymPheDE5PDgfyYR/bdlcgt7RWPkDBe34WGeNdxdOktZKSLsDjUWe7ywZf5MpaZgQ==
   access-token-expiration: 900000 # 15 minutes in milliseconds
   refresh-token-expiration: 604800000 # 7 days in milliseconds
+
+# Domain Configuration
+domain:
+  url: http://localhost:8080
 
 # Frontend Configuration
 frontend:
