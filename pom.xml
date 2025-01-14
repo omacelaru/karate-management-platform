@@ -9,11 +9,11 @@
         <!--        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
     </parent>
     <groupId>ro.unibuc.fmi</groupId>
-    <artifactId>karate-auth-service</artifactId>
+    <artifactId>karate-management-platform</artifactId>
     <version>0.1.0</version>
-    <name>karate-auth-service</name>
+    <name>karate-management-platform</name>
     <description>
-        Auth service for Karate competition platform. Manages user registration, authentication, and user roles
+        Karate Management Platform is a REST API that provides endpoints for managing karate tournaments.
     </description>
     <url/>
     <licenses>

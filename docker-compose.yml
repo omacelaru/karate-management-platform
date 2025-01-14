@@ -4,7 +4,7 @@ services:
   # PostgreSQL 13
   postgres:
     image: postgres:13
-    container_name: postgres-auth-container
+    container_name: postgres-DB
     environment:
       POSTGRES_USER: karate_user
       POSTGRES_PASSWORD: Karate.user2025
@@ -16,11 +16,11 @@ services:
     networks:
       - app-network
 
-  # Microservice karate-auth-service (Spring Boot)
-  karate-auth-service:
+  # Microservice karate-management-platform (Spring Boot)
+  karate-management-platform:
     build:
       context: ./
-    container_name: karate-auth-service
+    container_name: karate-management-platform
     depends_on:
       - postgres
     environment:
