@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.club.ClubResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.user.UserResponse;
-import ro.unibuc.fmi.karate_auth_service.models.license.LicenseInfo;
+import ro.unibuc.fmi.karate_auth_service.models.embedded.license.LicenseInfo;
 
 import java.io.Serializable;
 import java.util.Set;

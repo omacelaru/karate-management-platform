@@ -1,4 +1,4 @@
-package ro.unibuc.fmi.karate_auth_service.models.license;
+package ro.unibuc.fmi.karate_auth_service.models.embedded.license;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

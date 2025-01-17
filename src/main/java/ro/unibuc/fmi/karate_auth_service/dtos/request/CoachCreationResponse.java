@@ -5,7 +5,7 @@ import jakarta.persistence.Embedded;
 import lombok.Getter;
 import lombok.Setter;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
-import ro.unibuc.fmi.karate_auth_service.models.license.LicenseInfo;
+import ro.unibuc.fmi.karate_auth_service.models.embedded.license.LicenseInfo;
 import ro.unibuc.fmi.karate_auth_service.models.request.coach.CoachCreationRequest;
 
 import java.io.Serializable;

@@ -2,7 +2,7 @@ package ro.unibuc.fmi.karate_auth_service.dtos.referee;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import ro.unibuc.fmi.karate_auth_service.dtos.user.UserResponse;
-import ro.unibuc.fmi.karate_auth_service.models.license.LicenseInfo;
+import ro.unibuc.fmi.karate_auth_service.models.embedded.license.LicenseInfo;
 import ro.unibuc.fmi.karate_auth_service.models.referee.RefereeCategory;
 
 import java.io.Serializable;

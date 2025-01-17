@@ -5,7 +5,7 @@ import jakarta.persistence.Embedded;
 import lombok.Getter;
 import lombok.Setter;
 import ro.unibuc.fmi.karate_auth_service.dtos.referee.RefereeRequest;
-import ro.unibuc.fmi.karate_auth_service.models.license.LicenseInfo;
+import ro.unibuc.fmi.karate_auth_service.models.embedded.license.LicenseInfo;
 import ro.unibuc.fmi.karate_auth_service.models.referee.RefereeCategory;
 import ro.unibuc.fmi.karate_auth_service.models.request.referee.RefereeCreationRequest;
 

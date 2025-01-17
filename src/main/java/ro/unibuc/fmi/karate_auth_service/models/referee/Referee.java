@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_auth_service.models.BaseEntity;
-import ro.unibuc.fmi.karate_auth_service.models.license.LicenseInfo;
+import ro.unibuc.fmi.karate_auth_service.models.embedded.license.LicenseInfo;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 
 @Getter
