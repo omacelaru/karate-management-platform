@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ro.unibuc.fmi.karate_auth_service.dtos.auth.AuthRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.auth.AuthResponse;
+import ro.unibuc.fmi.karate_auth_service.dtos.auth.ResetPasswordRequest;
 import ro.unibuc.fmi.karate_auth_service.exceptions.ApiError;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.security.SecuredEndpoint;
@@ -65,4 +66,20 @@ public class AuthResource {
     ) {
         return ResponseEntity.ok(authService.refreshToken(user, request));
     }
+
+    @Operation(summary = "Reset password",
+            description = "Resets the password using the token",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Password reset successfully", content = @Content),
+                    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
+            })
+    @SecuredEndpoint
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(
+            @AuthenticationPrincipal User user,
+            @RequestBody ResetPasswordRequest request
+    ) {
+        return ResponseEntity.ok(authService.resetPassword(user, request));
+    }
+
 }

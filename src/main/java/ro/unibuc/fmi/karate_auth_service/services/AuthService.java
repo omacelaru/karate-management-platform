@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ro.unibuc.fmi.karate_auth_service.dtos.auth.AuthRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.auth.AuthResponse;
+import ro.unibuc.fmi.karate_auth_service.dtos.auth.ResetPasswordRequest;
 import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.repositories.UserRepository;
@@ -65,5 +66,15 @@ public class AuthService {
         String refreshToken = jwtTokenService.extractRefreshToken(request);
         String accessToken = jwtTokenService.generateAccessToken(user);
         return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
+    }
+
+    public Void resetPassword(User user, ResetPasswordRequest request) {
+        log.info("Resetting password for user with email: {}", user.getEmail());
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), request.oldPassword()));
+
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
+        userRepository.save(user);
+        return null;
     }
 }
