@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ro.unibuc.fmi.karate_auth_service.dtos.auth.AuthRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.auth.AuthResponse;
+import ro.unibuc.fmi.karate_auth_service.dtos.auth.ResetPasswordRequest;
 import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.repositories.UserRepository;
@@ -41,6 +42,13 @@ public class AuthService {
     @Transactional
     public AuthResponse register(AuthRequest authRequest) {
         log.info("Registering user with email: {}", authRequest.email());
+        User user = createUser(authRequest);
+        String accessToken = jwtTokenService.generateAccessToken(user);
+        String refreshToken = jwtTokenService.generateRefreshToken(user);
+        return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
+    }
+
+    User createUser(AuthRequest authRequest) {
         if (userRepository.existsByEmail(authRequest.email())) {
             log.error("Email already exists");
             throw new IllegalArgumentException("Email already exists");
@@ -50,10 +58,7 @@ public class AuthService {
                 .password(passwordEncoder.encode(authRequest.password()))
                 .roles(Set.of(Role.USER))
                 .build();
-        userRepository.save(user);
-        String accessToken = jwtTokenService.generateAccessToken(user);
-        String refreshToken = jwtTokenService.generateRefreshToken(user);
-        return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
+        return userRepository.save(user);
     }
 
     public AuthResponse refreshToken(User user, HttpServletRequest request) {
@@ -61,5 +66,15 @@ public class AuthService {
         String refreshToken = jwtTokenService.extractRefreshToken(request);
         String accessToken = jwtTokenService.generateAccessToken(user);
         return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
+    }
+
+    public Void resetPassword(User user, ResetPasswordRequest request) {
+        log.info("Resetting password for user with email: {}", user.getEmail());
+
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), request.oldPassword()));
+
+        user.setPassword(passwordEncoder.encode(request.newPassword()));
+        userRepository.save(user);
+        return null;
     }
 }
