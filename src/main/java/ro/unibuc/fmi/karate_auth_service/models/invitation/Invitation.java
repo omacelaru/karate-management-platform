@@ -28,6 +28,10 @@ public class Invitation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private InvitationStatus status;
 
+    @Column(name = "type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private InvitationType type;
+
     @Column(name = "expires_at", nullable = false)
     private LocalDateTime expiresAt;
 

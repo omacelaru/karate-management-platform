@@ -41,6 +41,13 @@ public class AuthService {
     @Transactional
     public AuthResponse register(AuthRequest authRequest) {
         log.info("Registering user with email: {}", authRequest.email());
+        User user = createUser(authRequest);
+        String accessToken = jwtTokenService.generateAccessToken(user);
+        String refreshToken = jwtTokenService.generateRefreshToken(user);
+        return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
+    }
+
+    User createUser(AuthRequest authRequest) {
         if (userRepository.existsByEmail(authRequest.email())) {
             log.error("Email already exists");
             throw new IllegalArgumentException("Email already exists");
@@ -50,10 +57,7 @@ public class AuthService {
                 .password(passwordEncoder.encode(authRequest.password()))
                 .roles(Set.of(Role.USER))
                 .build();
-        userRepository.save(user);
-        String accessToken = jwtTokenService.generateAccessToken(user);
-        String refreshToken = jwtTokenService.generateRefreshToken(user);
-        return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
+        return userRepository.save(user);
     }
 
     public AuthResponse refreshToken(User user, HttpServletRequest request) {

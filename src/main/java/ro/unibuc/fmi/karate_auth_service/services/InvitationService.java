@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ro.unibuc.fmi.karate_auth_service.factories.InvitationTypeStrategyFactory;
 import ro.unibuc.fmi.karate_auth_service.models.invitation.Invitation;
 import ro.unibuc.fmi.karate_auth_service.models.invitation.InvitationStatus;
+import ro.unibuc.fmi.karate_auth_service.models.invitation.InvitationType;
 import ro.unibuc.fmi.karate_auth_service.repositories.InvitationRepository;
 
 import java.time.LocalDateTime;
@@ -17,9 +19,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class InvitationService {
     private final InvitationRepository invitationRepository;
+    private final InvitationTypeStrategyFactory invitationTypeStrategyFactory;
     private final EmailService emailService;
-    @Value("${domain.url}")
-    private String domainUrl;
 
     public void sendInvitation(String email, Long createdBy) {
         log.info("Sending invitation to email: {}", email);
@@ -32,18 +33,14 @@ public class InvitationService {
                 .email(email)
                 .token(token)
                 .status(InvitationStatus.PENDING)
+                .type(InvitationType.USER_INVITATION)
                 .expiresAt(expiresAt)
                 .createdBy(createdBy)
                 .build();
 
         invitationRepository.save(invitation);
 
-        String link = domainUrl + "/invitations/accept?token=" + token;
-        String text = "Click here to accept the invitation: " + link;
-        log.debug("Generated invitation link: {}", link);
-
-        emailService.sendInvitationEmail(email, "Invitation", text);
-
+        emailService.sendInvitationEmail(email, token);
     }
 
     public void acceptInvitation(String token) {
@@ -64,6 +61,7 @@ public class InvitationService {
         }
 
         invitation.setStatus(InvitationStatus.ACCEPTED);
+        invitationTypeStrategyFactory.getStrategy(invitation.getType()).handleAcceptInvitation(invitation);
         invitationRepository.save(invitation);
     }
 }
