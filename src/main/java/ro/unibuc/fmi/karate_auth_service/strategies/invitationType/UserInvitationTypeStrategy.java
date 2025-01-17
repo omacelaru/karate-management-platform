@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ro.unibuc.fmi.karate_auth_service.models.invitation.Invitation;
 import ro.unibuc.fmi.karate_auth_service.models.invitation.InvitationType;
-import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.services.EmailService;
 import ro.unibuc.fmi.karate_auth_service.services.UserService;
 
