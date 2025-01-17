@@ -28,6 +28,6 @@ public class UserInvitationTypeStrategy implements InvitationTypeStrategy {
 
         emailService.sendCredentialsEmail(email, password);
 
-        User user = userService.createUser(email, password);
+        userService.createUser(email, password);
     }
 }

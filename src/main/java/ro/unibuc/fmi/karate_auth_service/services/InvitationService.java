@@ -2,7 +2,6 @@ package ro.unibuc.fmi.karate_auth_service.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ro.unibuc.fmi.karate_auth_service.factories.InvitationTypeStrategyFactory;
 import ro.unibuc.fmi.karate_auth_service.models.invitation.Invitation;
