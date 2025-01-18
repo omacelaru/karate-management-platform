@@ -80,4 +80,9 @@ public class ClubService {
         log.info("Getting coaches for club with id: {}", clubId);
         return coachRepository.findAllByClubId(clubId);
     }
+
+    public Club getClub(@NotNull(message = "Club ID must not be null") Long clubId) {
+        log.info("Getting club with id: {}", clubId);
+        return clubRepository.findById(clubId).orElseThrow(() -> new IllegalArgumentException("Club not found"));
+    }
 }

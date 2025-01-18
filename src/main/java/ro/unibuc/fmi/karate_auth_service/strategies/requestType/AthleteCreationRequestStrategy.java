@@ -7,6 +7,7 @@ import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.RequestInfoResponseInterface;
 import ro.unibuc.fmi.karate_auth_service.factories.RequestInfoRepositoryFactory;
 import ro.unibuc.fmi.karate_auth_service.factories.RequestScopeStrategyFactory;
+import ro.unibuc.fmi.karate_auth_service.models.club.Club;
 import ro.unibuc.fmi.karate_auth_service.models.coach.Coach;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestInfo;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
@@ -58,7 +59,8 @@ public class AthleteCreationRequestStrategy extends AbstractRequestTypeStrategy 
 
     @Override
     protected Set<?> handleApprovers(User user, Object request) {
-        Set<Coach> coaches = clubService.getCoachesForClub(((AthleteRequest) request).clubId());
+        Club club = clubService.getClub(((AthleteCreationRequest) request).getAthleteRequest().clubId());
+        Set<Coach> coaches = club.getCoaches();
         return coaches.stream()
                 .map(Coach::getUser)
                 .collect(Collectors.toSet());

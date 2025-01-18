@@ -94,9 +94,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
 
         RequestInfo newRequest = mapToEntity(user, request);
 
-        Set<?> approvers = handleApprovers(user, request);
-        RequestScopeStrategy strategy = scopeStrategyFactory.getStrategy(newRequest.getScope());
-        strategy.setApprovers(newRequest, approvers);
+        processRequestApproval(user, newRequest);
 
         newRequest.setCreatedBy(user);
         newRequest.setLastUpdatedById(user.getId());
@@ -113,9 +111,18 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
         log.info("Editing request ID {} for user with email: {}", existingRequestToBeUpdated.getId(), user.getEmail());
         RequestInfo updatedRequest = mapToEntity(user, request);
 
+        processRequestApproval(user, updatedRequest);
+
         updateSpecificFields(existingRequestToBeUpdated, updatedRequest);
 
+
         return mapToResponse(existingRequestToBeUpdated);
+    }
+
+    private void processRequestApproval(User user, RequestInfo request) {
+        Set<?> approvers = handleApprovers(user, request);
+        RequestScopeStrategy strategy = scopeStrategyFactory.getStrategy(request.getScope());
+        strategy.setApprovers(request, approvers);
     }
 
     @Override
