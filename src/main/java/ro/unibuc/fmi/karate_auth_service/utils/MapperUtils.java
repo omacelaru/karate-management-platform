@@ -94,7 +94,7 @@ public interface MapperUtils {
     @Mapping(target = "taxRegistrationNumber", source = "organizerRequest.taxRegistrationNumber")
     OrganizerRequest mapToOrganizerRequest(OrganizerCreationRequest request);
 
-    OrganizerCreationRequest mapToOrganizerCreationRequest(OrganizerRequest request);
+    OrganizerCreationRequest mapToOrganizerCreationRequest(@Valid OrganizerRequest organizerRequest);
 
     OrganizerCreationResponse mapToOrganizerCreationResponse(OrganizerCreationRequest request);
 }
