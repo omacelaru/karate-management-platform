@@ -1,7 +1,6 @@
 package ro.unibuc.fmi.karate_auth_service.strategies.requestType;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,6 +10,7 @@ import ro.unibuc.fmi.karate_auth_service.factories.RequestInfoRepositoryFactory;
 import ro.unibuc.fmi.karate_auth_service.factories.RequestScopeStrategyFactory;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestInfo;
 import ro.unibuc.fmi.karate_auth_service.models.request.RequestType;
+import ro.unibuc.fmi.karate_auth_service.models.request.organizer.OrganizerCreationRequest;
 import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import ro.unibuc.fmi.karate_auth_service.models.user.User;
 import ro.unibuc.fmi.karate_auth_service.services.OrganizerService;
@@ -61,7 +61,7 @@ public class OrganizerCreationRequestStrategy extends AbstractRequestTypeStrateg
     @Override
     protected RequestInfo mapToEntity(User user, Object request) {
         OrganizerCreationRequest organizerCreationRequest = mapperUtils.mapToOrganizerCreationRequest((OrganizerRequest) request);
-        organizerCreationRequest.prePresist();
+        organizerCreationRequest.prePersist();
         return organizerCreationRequest;
     }
 
