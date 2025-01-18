@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
+import ro.unibuc.fmi.karate_auth_service.dtos.organizer.OrganizerRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.referee.RefereeRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.CoachCreationResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.RequestInfoResponseInterface;
@@ -212,6 +213,35 @@ public class RequestResource {
             @RequestBody @Valid AthleteRequest athleteRequest
     ) {
         return ResponseEntity.ok(requestService.createRequest(user, RequestType.ATHLETE_CREATION, athleteRequest));
+    }
+
+    @Operation(
+            summary = "Create an organizer creation request",
+            description = "Creates a request for organizer creation for the logged-in user. This endpoint processes a request to create an organizer, accepting detailed input information for the organizer's creation.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully created the organizer creation request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestInfoResponseInterface.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request: The provided data is invalid or incomplete",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authorized to create an organizer request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
+            })
+    @SecuredEndpoint
+    @PostMapping("/organizer")
+    public ResponseEntity<RequestInfoResponseInterface> organizerCreation(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid OrganizerRequest organizerRequest
+    ) {
+        return ResponseEntity.ok(requestService.createRequest(user, RequestType.ORGANIZER_CREATION, organizerRequest));
     }
 
     //--------------------------------------------------------------------------------

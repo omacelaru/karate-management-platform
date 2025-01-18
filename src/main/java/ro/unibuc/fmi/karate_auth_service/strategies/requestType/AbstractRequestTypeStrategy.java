@@ -29,8 +29,8 @@ import static ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus.ACT
 @RequiredArgsConstructor
 public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy {
     protected final MapperUtils mapperUtils;
-    private final RequestInfoRepositoryFactory repositoryFactory;
-    private final RequestScopeStrategyFactory scopeStrategyFactory;
+    protected final RequestInfoRepositoryFactory repositoryFactory;
+    protected final RequestScopeStrategyFactory scopeStrategyFactory;
 
     public abstract RequestType getRequestType();
 
