@@ -5,6 +5,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +27,13 @@ import ro.unibuc.fmi.karate_auth_service.services.AthleteService;
 public class AthleteResource {
     private final AthleteService athleteService;
 
+    @Operation(summary = "Get all athletes paged", description = "Returns a list of all athletes paged")
+    @ApiResponse(responseCode = "200", description = "Athletes returned successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PagedModel.class)))
+    @GetMapping
+    public ResponseEntity<Page<AthleteResponse>> getAllAthletes(Pageable pageable) {
+        return ResponseEntity.ok(athleteService.getAllAthletes(pageable));
+    }
+
     @Operation(summary = "Get logged in athlete information",
             description = "Returns information about the logged in athlete",
             responses = {
@@ -37,4 +47,6 @@ public class AthleteResource {
     ) throws IncompleteProfileException {
         return ResponseEntity.ok(athleteService.getMe(user));
     }
+
+
 }

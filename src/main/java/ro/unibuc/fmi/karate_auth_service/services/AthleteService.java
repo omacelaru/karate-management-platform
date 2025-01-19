@@ -2,6 +2,8 @@ package ro.unibuc.fmi.karate_auth_service.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteRequest;
@@ -23,6 +25,11 @@ public class AthleteService {
     private final AthleteRepository athleteRepository;
     private final MapperUtils mapperUtils;
     private final ClubService clubService;
+
+    public Page<AthleteResponse> getAllAthletes(Pageable pageable) {
+        log.info("Getting all athletes");
+        return athleteRepository.findAll(pageable).map(mapperUtils::mapToAthleteResponse);
+    }
 
     public AthleteResponse getMe(User user) throws IncompleteProfileException {
         String email = user.getEmail();
@@ -46,4 +53,6 @@ public class AthleteService {
 
         athleteRepository.save(athlete);
     }
+
+
 }
