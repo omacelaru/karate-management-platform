@@ -1,10 +1,8 @@
 ALTER TABLE organizer_creation_request_approver_roles
-DROP
-CONSTRAINT fk17jnpo79s8etfa94313o2xst7;
+    DROP CONSTRAINT fk17jnpo79s8etfa94313o2xst7;
 
 ALTER TABLE referee_creation_request_approver_roles
-DROP
-CONSTRAINT fkcl5uwuafxa5h8s2s0gled47hb;
+    DROP CONSTRAINT fkcl5uwuafxa5h8s2s0gled47hb;
 
 CREATE TABLE categories
 (
@@ -46,7 +44,6 @@ CREATE TABLE matches
     created_at       TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
     updated_at       TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
     scheduled_time   TIMESTAMP WITHOUT TIME ZONE             NOT NULL,
-    competition_id   BIGINT                                  NOT NULL,
     category_id      BIGINT                                  NOT NULL,
     result           VARCHAR(255),
     athlete_left_id  BIGINT                                  NOT NULL,
@@ -89,9 +86,6 @@ ALTER TABLE matches
 ALTER TABLE matches
     ADD CONSTRAINT FK_MATCHES_ON_CATEGORY FOREIGN KEY (category_id) REFERENCES categories (id);
 
-ALTER TABLE matches
-    ADD CONSTRAINT FK_MATCHES_ON_COMPETITION FOREIGN KEY (competition_id) REFERENCES competitions (id);
-
 ALTER TABLE match_referees
     ADD CONSTRAINT fk_matref_on_match FOREIGN KEY (match_id) REFERENCES matches (id);
 
@@ -115,48 +109,37 @@ DROP TABLE organizer_creation_request_approver_roles CASCADE;
 DROP TABLE referee_creation_request_approver_roles CASCADE;
 
 ALTER TABLE coach_creation_request_approver_roles
-DROP
-CONSTRAINT coach_creation_request_approver_roles_pkey;
+    DROP CONSTRAINT coach_creation_request_approver_roles_pkey;
 
 ALTER TABLE referee_creation_requests
-DROP
-COLUMN category;
+    DROP COLUMN category;
 
 ALTER TABLE referee_creation_requests
-DROP
-COLUMN license_number;
+    DROP COLUMN license_number;
 
 ALTER TABLE referee_creation_requests
-DROP
-COLUMN license_series;
+    DROP COLUMN license_series;
 
 ALTER TABLE referees
-DROP
-COLUMN category;
+    DROP COLUMN category;
 
 ALTER TABLE athlete_creation_requests
-DROP
-COLUMN club_id;
+    DROP COLUMN club_id;
 
 ALTER TABLE athlete_creation_requests
-DROP
-COLUMN height;
+    DROP COLUMN height;
 
 ALTER TABLE athlete_creation_requests
-DROP
-COLUMN weight;
+    DROP COLUMN weight;
 
 ALTER TABLE coach_creation_requests
-DROP
-COLUMN license_number;
+    DROP COLUMN license_number;
 
 ALTER TABLE coach_creation_requests
-DROP
-COLUMN license_series;
+    DROP COLUMN license_series;
 
 ALTER TABLE organizer_creation_requests
-DROP
-COLUMN trn_series;
+    DROP COLUMN trn_series;
 
 DROP SEQUENCE clubs_id_seq CASCADE;
 
@@ -167,21 +150,16 @@ DROP SEQUENCE request_info_id_seq CASCADE;
 DROP SEQUENCE users_id_seq CASCADE;
 
 ALTER TABLE coaches
-ALTER
-COLUMN license_number TYPE VARCHAR USING (license_number::VARCHAR);
+    ALTER COLUMN license_number TYPE VARCHAR USING (license_number::VARCHAR);
 
 ALTER TABLE referees
-ALTER
-COLUMN license_number TYPE VARCHAR USING (license_number::VARCHAR);
+    ALTER COLUMN license_number TYPE VARCHAR USING (license_number::VARCHAR);
 
 ALTER TABLE coaches
-ALTER
-COLUMN license_series TYPE VARCHAR USING (license_series::VARCHAR);
+    ALTER COLUMN license_series TYPE VARCHAR USING (license_series::VARCHAR);
 
 ALTER TABLE referees
-ALTER
-COLUMN license_series TYPE VARCHAR USING (license_series::VARCHAR);
+    ALTER COLUMN license_series TYPE VARCHAR USING (license_series::VARCHAR);
 
 ALTER TABLE organizers
-ALTER
-COLUMN trn_series TYPE VARCHAR USING (trn_series::VARCHAR);
+    ALTER COLUMN trn_series TYPE VARCHAR USING (trn_series::VARCHAR);

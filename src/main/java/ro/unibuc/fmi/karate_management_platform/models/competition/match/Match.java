@@ -29,10 +29,6 @@ public abstract class Match extends BaseEntity {
     private LocalDateTime scheduledTime;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "competition_id", nullable = false)
-    private Competition competition;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 

@@ -38,7 +38,4 @@ public class Competition extends BaseEntity {
 
     @OneToMany(mappedBy = "competition", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Category> categories;
-
-    @OneToMany(mappedBy = "competition", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Match> matches;
 }
