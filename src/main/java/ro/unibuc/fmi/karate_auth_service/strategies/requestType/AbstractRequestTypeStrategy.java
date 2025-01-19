@@ -57,7 +57,6 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Transactional
     public RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestStatus status) {
         log.info("Updating request with id: {} to status: {}", requestId, status);
-        //TODO - check if scope is roles or users
         RequestScopeStrategy strategy = scopeStrategyFactory.getStrategy(getRequestType());
         Optional<? extends RequestInfo> optionalRequest = strategy.getRequestAssignedToMeById(requestId, user, Pageable.unpaged(), getRepository());
 
