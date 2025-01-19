@@ -88,7 +88,7 @@ public interface MapperUtils {
     RefereeCreationResponse mapToRefereeCreationResponse(RefereeCreationRequest refereeCreationRequest);
 
     @Mapping(target = "licenseInfo", source = "refereeRequest.licenseInfo")
-    @Mapping(target = "category", source = "refereeRequest.category")
+    @Mapping(target = "refereeLevel", source = "refereeRequest.refereeLevel")
     RefereeRequest mapToRefereeRequest(RefereeCreationRequest request);
 
 

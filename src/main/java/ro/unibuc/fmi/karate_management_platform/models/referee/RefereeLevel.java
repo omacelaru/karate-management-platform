@@ -5,11 +5,11 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum RefereeCategory {
+public enum RefereeLevel {
     A("A"),
     B("B"),
     C("C"),
     D("D");
 
-    private final String category;
+    private final String level;
 }
