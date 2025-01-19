@@ -248,7 +248,6 @@ public class RequestResource {
     //---------------------------------- EDIT REQUEST --------------------------------
     //--------------------------------------------------------------------------------
 
-    //TODO edit organizer request and create organizerResource
     @Operation(
             summary = "Edit an existing coach creation request",
             description = "Allows the authenticated user to edit an existing coach creation request by providing the request ID and updated details.",

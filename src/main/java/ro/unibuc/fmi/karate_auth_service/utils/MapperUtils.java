@@ -12,6 +12,7 @@ import ro.unibuc.fmi.karate_auth_service.dtos.club.ClubWithCoachesResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.organizer.OrganizerRequest;
+import ro.unibuc.fmi.karate_auth_service.dtos.organizer.OrganizerResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.referee.RefereeRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.AthleteCreationResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.CoachCreationResponse;
@@ -91,11 +92,15 @@ public interface MapperUtils {
     // === Organizer Mapping ===
     Organizer mapToOrganizer(@Valid OrganizerRequest organizerRequest);
 
+    OrganizerResponse mapToOrganizerResponse(Organizer organizer);
+
     @Mapping(target = "taxRegistrationNumber", source = "organizerRequest.taxRegistrationNumber")
     OrganizerRequest mapToOrganizerRequest(OrganizerCreationRequest request);
 
     OrganizerCreationRequest mapToOrganizerCreationRequest(@Valid OrganizerRequest organizerRequest);
 
     OrganizerCreationResponse mapToOrganizerCreationResponse(OrganizerCreationRequest request);
+
+
 }
 
