@@ -29,8 +29,8 @@ import static ro.unibuc.fmi.karate_auth_service.models.request.RequestStatus.ACT
 @RequiredArgsConstructor
 public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy {
     protected final MapperUtils mapperUtils;
-    private final RequestInfoRepositoryFactory repositoryFactory;
-    private final RequestScopeStrategyFactory scopeStrategyFactory;
+    protected final RequestInfoRepositoryFactory repositoryFactory;
+    protected final RequestScopeStrategyFactory scopeStrategyFactory;
 
     public abstract RequestType getRequestType();
 
@@ -57,7 +57,6 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Transactional
     public RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestStatus status) {
         log.info("Updating request with id: {} to status: {}", requestId, status);
-        //TODO - check if scope is roles or users
         RequestScopeStrategy strategy = scopeStrategyFactory.getStrategy(getRequestType());
         Optional<? extends RequestInfo> optionalRequest = strategy.getRequestAssignedToMeById(requestId, user, Pageable.unpaged(), getRepository());
 
@@ -94,9 +93,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
 
         RequestInfo newRequest = mapToEntity(user, request);
 
-        Set<?> approvers = handleApprovers(user, request);
-        RequestScopeStrategy strategy = scopeStrategyFactory.getStrategy(newRequest.getScope());
-        strategy.setApprovers(newRequest, approvers);
+        processRequestApproval(user, newRequest);
 
         newRequest.setCreatedBy(user);
         newRequest.setLastUpdatedById(user.getId());
@@ -113,9 +110,18 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
         log.info("Editing request ID {} for user with email: {}", existingRequestToBeUpdated.getId(), user.getEmail());
         RequestInfo updatedRequest = mapToEntity(user, request);
 
+        processRequestApproval(user, updatedRequest);
+
         updateSpecificFields(existingRequestToBeUpdated, updatedRequest);
 
+
         return mapToResponse(existingRequestToBeUpdated);
+    }
+
+    private void processRequestApproval(User user, RequestInfo request) {
+        Set<?> approvers = handleApprovers(user, request);
+        RequestScopeStrategy strategy = scopeStrategyFactory.getStrategy(request.getScope());
+        strategy.setApprovers(request, approvers);
     }
 
     @Override

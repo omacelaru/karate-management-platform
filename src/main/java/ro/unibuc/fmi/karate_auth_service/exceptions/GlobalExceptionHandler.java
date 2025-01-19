@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class, BadRequestException.class})
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class, BadRequestException.class, IncompleteProfileException.class})
     public ResponseEntity<ApiError> handleIllegalArgumentException(Exception error, WebRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),

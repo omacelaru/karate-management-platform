@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ro.unibuc.fmi.karate_auth_service.dtos.athlete.AthleteRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachRequest;
+import ro.unibuc.fmi.karate_auth_service.dtos.organizer.OrganizerRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.referee.RefereeRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.CoachCreationResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.RequestInfoResponseInterface;
@@ -214,6 +215,35 @@ public class RequestResource {
         return ResponseEntity.ok(requestService.createRequest(user, RequestType.ATHLETE_CREATION, athleteRequest));
     }
 
+    @Operation(
+            summary = "Create an organizer creation request",
+            description = "Creates a request for organizer creation for the logged-in user. This endpoint processes a request to create an organizer, accepting detailed input information for the organizer's creation.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully created the organizer creation request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestInfoResponseInterface.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request: The provided data is invalid or incomplete",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authorized to create an organizer request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
+            })
+    @SecuredEndpoint
+    @PostMapping("/organizer")
+    public ResponseEntity<RequestInfoResponseInterface> organizerCreation(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid OrganizerRequest organizerRequest
+    ) {
+        return ResponseEntity.ok(requestService.createRequest(user, RequestType.ORGANIZER_CREATION, organizerRequest));
+    }
+
     //--------------------------------------------------------------------------------
     //---------------------------------- EDIT REQUEST --------------------------------
     //--------------------------------------------------------------------------------
@@ -294,6 +324,84 @@ public class RequestResource {
             @RequestBody @Valid RefereeRequest refereeRequest
     ) {
         return ResponseEntity.ok(requestService.editRequest(user, RequestType.REFEREE_CREATION, refereeRequest));
+    }
+
+    @Operation(
+            summary = "Edit an existing athlete creation request",
+            description = "Allows the authenticated user to edit an existing athlete creation request by providing the request ID and updated details.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully edited the athlete creation request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestInfoResponseInterface.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request: The provided data is invalid or incomplete",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authenticated",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden: User does not have permission to edit the request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Request not found",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
+            })
+    @SecuredEndpoint
+    @PatchMapping("/athlete")
+    public ResponseEntity<RequestInfoResponseInterface> editAthleteCreationRequest(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid AthleteRequest athleteRequest
+    ) {
+        return ResponseEntity.ok(requestService.editRequest(user, RequestType.ATHLETE_CREATION, athleteRequest));
+    }
+
+    @Operation(
+            summary = "Edit an existing organizer creation request",
+            description = "Allows the authenticated user to edit an existing organizer creation request by providing the request ID and updated details.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successfully edited the organizer creation request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = RequestInfoResponseInterface.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "400",
+                            description = "Bad request: The provided data is invalid or incomplete",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authenticated",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "Forbidden: User does not have permission to edit the request",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Request not found",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))
+                    )
+            })
+    @SecuredEndpoint
+    @PatchMapping("/organizer")
+    public ResponseEntity<RequestInfoResponseInterface> editOrganizerCreationRequest(
+            @AuthenticationPrincipal User user,
+            @RequestBody @Valid OrganizerRequest organizerRequest
+    ) {
+        return ResponseEntity.ok(requestService.editRequest(user, RequestType.ORGANIZER_CREATION, organizerRequest));
     }
 
     @Operation(

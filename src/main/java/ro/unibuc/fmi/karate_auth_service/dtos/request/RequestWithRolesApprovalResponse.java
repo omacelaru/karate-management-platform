@@ -9,7 +9,7 @@ import ro.unibuc.fmi.karate_auth_service.models.user.Role;
 import java.util.Set;
 
 @Data
-public sealed class RequestWithRolesApprovalResponse implements RequestInfoResponseInterface permits CoachCreationResponse, RefereeCreationResponse {
+public sealed class RequestWithRolesApprovalResponse implements RequestInfoResponseInterface permits CoachCreationResponse, OrganizerCreationResponse, RefereeCreationResponse {
     Long id;
     RequestType type;
     RequestStatus status;

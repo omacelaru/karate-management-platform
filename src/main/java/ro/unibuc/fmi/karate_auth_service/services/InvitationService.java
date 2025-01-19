@@ -3,6 +3,7 @@ package ro.unibuc.fmi.karate_auth_service.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ro.unibuc.fmi.karate_auth_service.factories.InvitationTypeStrategyFactory;
 import ro.unibuc.fmi.karate_auth_service.models.invitation.Invitation;
 import ro.unibuc.fmi.karate_auth_service.models.invitation.InvitationStatus;
@@ -21,6 +22,7 @@ public class InvitationService {
     private final InvitationTypeStrategyFactory invitationTypeStrategyFactory;
     private final EmailService emailService;
 
+    @Transactional
     public void sendInvitation(String email, Long createdBy) {
         log.info("Sending invitation to email: {}", email);
 
@@ -42,6 +44,8 @@ public class InvitationService {
         emailService.sendInvitationEmail(email, token);
     }
 
+
+    @Transactional
     public void acceptInvitation(String token) {
         log.info("Accepting invitation with token: {}", token);
         Optional<Invitation> optionalInvitation = invitationRepository.findByToken(token);

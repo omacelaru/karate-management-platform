@@ -2,7 +2,7 @@ package ro.unibuc.fmi.karate_auth_service.dtos.coach;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
-import ro.unibuc.fmi.karate_auth_service.models.license.LicenseInfo;
+import ro.unibuc.fmi.karate_auth_service.models.embedded.license.LicenseInfo;
 
 import java.io.Serializable;
 
