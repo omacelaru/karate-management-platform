@@ -1,0 +1,63 @@
+package ro.unibuc.fmi.karate_management_platform.services;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ro.unibuc.fmi.karate_management_platform.dtos.request.RequestInfoResponseInterface;
+import ro.unibuc.fmi.karate_management_platform.factories.RequestTypeStrategyFactory;
+import ro.unibuc.fmi.karate_management_platform.models.request.RequestStatus;
+import ro.unibuc.fmi.karate_management_platform.models.request.RequestType;
+import ro.unibuc.fmi.karate_management_platform.models.user.User;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class RequestService {
+    private final RequestTypeStrategyFactory strategyFactory;
+
+    public Page<? extends RequestInfoResponseInterface> getRequestsMadeByMe(User user, Pageable pageable, RequestType requestType) {
+        log.info("Getting requests made by user with email: {}", user.getEmail());
+        return strategyFactory.getStrategy(requestType).getRequestsMadeByMe(user, pageable);
+    }
+
+    public Page<? extends RequestInfoResponseInterface> getRequestsAssignedToMe(User user, Pageable pageable, RequestType requestType) {
+        log.info("Getting requests assigned to user with email: {}", user.getEmail());
+        return strategyFactory.getStrategy(requestType).getRequestsAssignedToMe(user, pageable);
+    }
+
+    @Transactional
+    public RequestInfoResponseInterface updateRequestStatus(User user, Long requestId, RequestStatus status) {
+        log.info("Updating request with id: {} to status: {}", requestId, status);
+        RequestType requestType = strategyFactory.getRequestType(requestId);
+        return strategyFactory.getStrategy(requestType).updateRequestStatus(user, requestId, status);
+    }
+
+    @Transactional
+    public RequestInfoResponseInterface createRequest(User user, RequestType requestType, Object request) {
+        log.info("Creating request for user with email: {}", user.getEmail());
+        return strategyFactory.getStrategy(requestType).createRequest(user, request);
+    }
+
+    @Transactional
+    public RequestInfoResponseInterface editRequest(User user, RequestType requestType, Object request) {
+        log.info("Editing request for user with email: {}", user.getEmail());
+        return strategyFactory.getStrategy(requestType).editRequest(user, request);
+    }
+
+    @Transactional
+    public RequestInfoResponseInterface revokeRequest(User user, Long requestId) {
+        log.info("Deleting request with id: {}", requestId);
+        RequestType requestType = strategyFactory.getRequestType(requestId);
+        return strategyFactory.getStrategy(requestType).revokeRequest(user, requestId);
+    }
+
+    public RequestInfoResponseInterface activateRequest(User user, Long requestId) {
+        log.info("Activating request with id: {}", requestId);
+        RequestType requestType = strategyFactory.getRequestType(requestId);
+        return strategyFactory.getStrategy(requestType).activateRequest(user, requestId);
+    }
+
+}
