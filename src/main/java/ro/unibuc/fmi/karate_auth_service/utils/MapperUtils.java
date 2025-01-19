@@ -14,6 +14,7 @@ import ro.unibuc.fmi.karate_auth_service.dtos.coach.CoachResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.organizer.OrganizerRequest;
 import ro.unibuc.fmi.karate_auth_service.dtos.organizer.OrganizerResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.referee.RefereeRequest;
+import ro.unibuc.fmi.karate_auth_service.dtos.referee.RefereeResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.AthleteCreationResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.CoachCreationResponse;
 import ro.unibuc.fmi.karate_auth_service.dtos.request.OrganizerCreationResponse;
@@ -80,6 +81,8 @@ public interface MapperUtils {
     // === Referee Mapping ===
     Referee mapToReferee(@Valid RefereeRequest refereeRequest);
 
+    RefereeResponse mapToRefereeResponse(Referee referee);
+
     RefereeCreationRequest mapToRefereeCreationRequest(@Valid RefereeRequest refereeRequest);
 
     RefereeCreationResponse mapToRefereeCreationResponse(RefereeCreationRequest refereeCreationRequest);
@@ -100,7 +103,5 @@ public interface MapperUtils {
     OrganizerCreationRequest mapToOrganizerCreationRequest(@Valid OrganizerRequest organizerRequest);
 
     OrganizerCreationResponse mapToOrganizerCreationResponse(OrganizerCreationRequest request);
-
-
 }
 
