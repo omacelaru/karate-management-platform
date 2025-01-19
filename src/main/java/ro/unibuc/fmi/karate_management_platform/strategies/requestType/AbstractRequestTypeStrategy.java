@@ -14,7 +14,7 @@ import ro.unibuc.fmi.karate_management_platform.models.request.RequestInfo;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestType;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
-import ro.unibuc.fmi.karate_management_platform.repositories.RequestInfoRepository;
+import ro.unibuc.fmi.karate_management_platform.repositories.request.RequestInfoRepository;
 import ro.unibuc.fmi.karate_management_platform.strategies.requestScope.RequestScopeStrategy;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 

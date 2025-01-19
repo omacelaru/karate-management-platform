@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestInfo;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestType;
-import ro.unibuc.fmi.karate_management_platform.repositories.*;
+import ro.unibuc.fmi.karate_management_platform.repositories.request.*;
 
 import java.util.Map;
 
