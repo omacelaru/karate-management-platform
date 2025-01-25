@@ -1,6 +1,7 @@
 package ro.unibuc.fmi.karate_management_platform.models.competition.match;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,24 +13,16 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @SuperBuilder
 @Entity
-@DiscriminatorValue("TEAM")
-public class TeamMatch extends Match {
-
+@Table(name = "individual_kata_matches")
+public class IndividualKataMatch extends Match {
     @ManyToMany
     @JoinTable(
-            name = "team_left_athletes",
-            joinColumns = @JoinColumn(name = "match_id"),
+            name = "individual_kata_athletes",
+            joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "athlete_id")
     )
-    private Set<Athlete> teamLeft;
-
-    @ManyToMany
-    @JoinTable(
-            name = "team_right_athletes",
-            joinColumns = @JoinColumn(name = "match_id"),
-            inverseJoinColumns = @JoinColumn(name = "athlete_id")
-    )
-    private Set<Athlete> teamRight;
+    private Set<Athlete> athletes;
 }
