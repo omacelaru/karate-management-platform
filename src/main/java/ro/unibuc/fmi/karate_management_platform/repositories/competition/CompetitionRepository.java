@@ -1,4 +1,4 @@
-package ro.unibuc.fmi.karate_management_platform.repositories;
+package ro.unibuc.fmi.karate_management_platform.repositories.competition;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

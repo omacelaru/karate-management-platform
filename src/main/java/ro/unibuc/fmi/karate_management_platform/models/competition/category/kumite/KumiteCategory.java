@@ -1,7 +1,6 @@
 package ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,12 +13,10 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.category.Cate
 @NoArgsConstructor
 @SuperBuilder
 @Entity
-@DiscriminatorValue("KUMITE")
 public class KumiteCategory extends Category {
-
     @Column(name = "weight_min", nullable = false)
-    private Integer weightMin;
+    private Short weightMin;
 
     @Column(name = "weight_max", nullable = false)
-    private Integer weightMax;
+    private Short weightMax;
 }

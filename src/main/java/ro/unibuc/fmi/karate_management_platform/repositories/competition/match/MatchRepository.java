@@ -1,8 +1,8 @@
-package ro.unibuc.fmi.karate_management_platform.repositories.match;
+package ro.unibuc.fmi.karate_management_platform.repositories.competition.match;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import ro.unibuc.fmi.karate_management_platform.models.competition.match.Match;
 
-public interface MatchRepository extends JpaRepository<Match, Long>, JpaSpecificationExecutor<Match> {
+public interface MatchRepository<T extends Match> extends JpaRepository<T, Long>, JpaSpecificationExecutor<T> {
 }
