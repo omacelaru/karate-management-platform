@@ -1,6 +1,9 @@
 package ro.unibuc.fmi.karate_management_platform.models.competition.category.kata;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +15,6 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.category.Cate
 @NoArgsConstructor
 @SuperBuilder
 @Entity
-@DiscriminatorValue("KATA")
 public class KataCategory extends Category {
     @Enumerated(EnumType.STRING)
     @Column(name = "kata_category_type", nullable = false)
