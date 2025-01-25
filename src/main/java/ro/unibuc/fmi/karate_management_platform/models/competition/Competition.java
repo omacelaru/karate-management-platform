@@ -8,7 +8,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_management_platform.models.BaseEntity;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
-import ro.unibuc.fmi.karate_management_platform.models.competition.match.Match;
 import ro.unibuc.fmi.karate_management_platform.models.organizer.Organizer;
 
 import java.time.LocalDate;
@@ -36,6 +35,11 @@ public class Competition extends BaseEntity {
     @JoinColumn(name = "organizer_id", nullable = false)
     private Organizer organizer;
 
-    @OneToMany(mappedBy = "competition", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany
+    @JoinTable(
+            name = "competition_categories",
+            joinColumns = @JoinColumn(name = "competition_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
     private List<Category> categories;
 }
