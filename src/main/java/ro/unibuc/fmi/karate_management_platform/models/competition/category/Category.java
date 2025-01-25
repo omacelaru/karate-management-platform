@@ -8,7 +8,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_management_platform.models.BaseEntity;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Gender;
-import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.match.Match;
 
 import java.util.List;
@@ -19,16 +18,14 @@ import java.util.List;
 @AllArgsConstructor
 @SuperBuilder
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "discipline_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "categories")
-public class Category extends BaseEntity {
+public abstract class Category extends BaseEntity {
+
     @Column(name = "age_group", nullable = false)
-    private String ageGroup;
-
-    @Column(name = "weight_min", nullable = false)
-    private Integer weightMin;
-
-    @Column(name = "weight_max", nullable = false)
-    private Integer weightMax;
+    @Enumerated(EnumType.STRING)
+    private AgeGroup ageGroup;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender", nullable = false)
@@ -37,10 +34,6 @@ public class Category extends BaseEntity {
     @Column(name = "is_default", nullable = false)
     private Boolean isDefault;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "competition_id")
-    private Competition competition;
-
-    @OneToMany(mappedBy = "competitionCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, targetEntity = Match.class, orphanRemoval = true)
     private List<Match> matches;
 }
