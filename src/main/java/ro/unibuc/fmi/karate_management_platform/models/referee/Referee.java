@@ -26,6 +26,6 @@ public class Referee extends BaseEntity {
     private LicenseInfo licenseInfo;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "refereeLevel", nullable = false)
+    @Column(name = "level", nullable = false)
     private RefereeLevel level;
 }

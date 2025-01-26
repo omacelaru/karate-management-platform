@@ -1,6 +1,7 @@
 package ro.unibuc.fmi.karate_management_platform.dtos.athlete;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import java.io.Serializable;
  * This includes personal details such as height and weight.
  * <p>Usage: This DTO is used for passing athlete data from the client to the backend when creating or updating an athlete's profile.</p>
  */
+@Embeddable
 @Schema(description = "Athlete request containing personal details such as height and weight.")
 //TODO all DTO have message for filed with validation rules
 public record AthleteRequest(

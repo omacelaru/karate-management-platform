@@ -15,12 +15,12 @@ import java.io.Serializable;
  *
  * @param user        User details of the referee.
  * @param licenseInfo Information about the referee's license (series and number).
- * @param refereeLevel    The refereeLevel of the referee (A, B, C, D).
+ * @param level       The refereeLevel of the referee (A, B, C, D).
  */
 @Schema(name = "RefereeResponse", description = "DTO representing the response for a referee. It includes necessary information about the referee's license, refereeLevel, and user details.")
 public record RefereeResponse(
         UserResponse user,
         LicenseInfo licenseInfo,
-        RefereeLevel refereeLevel
+        RefereeLevel level
 ) implements Serializable {
 }
