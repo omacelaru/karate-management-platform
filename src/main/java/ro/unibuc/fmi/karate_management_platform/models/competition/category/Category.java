@@ -19,7 +19,6 @@ import java.util.List;
 @SuperBuilder
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@Table(name = "categories")
 public abstract class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_seq")
