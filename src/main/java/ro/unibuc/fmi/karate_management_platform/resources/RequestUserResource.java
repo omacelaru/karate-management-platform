@@ -22,7 +22,7 @@ import ro.unibuc.fmi.karate_management_platform.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_management_platform.services.RequestService;
 
 @RestController
-@RequestMapping("/api/v1/requests/competitions")
+@RequestMapping("/api/v1/requests/users")
 @RequiredArgsConstructor
 public class RequestUserResource {
     private final RequestService requestService;

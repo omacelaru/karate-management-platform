@@ -118,10 +118,10 @@ CREATE TABLE teams
 );
 
 ALTER TABLE referees
-    ADD referee_level VARCHAR(255);
+    ADD level VARCHAR(255);
 
 ALTER TABLE referees
-    ALTER COLUMN referee_level SET NOT NULL;
+    ALTER COLUMN level SET NOT NULL;
 
 ALTER TABLE competitions
     ADD CONSTRAINT FK_COMPETITIONS_ON_ORGANIZER FOREIGN KEY (organizer_id) REFERENCES organizers (user_id);

@@ -17,7 +17,11 @@ import java.util.Set;
 @MappedSuperclass
 public abstract class RequestWithRolesApproval extends RequestInfo {
     @ElementCollection(fetch = FetchType.LAZY)
-    @Column(name = "approver_roles", nullable = false)
+    @CollectionTable(
+            name = "request_approver_roles",
+            joinColumns = @JoinColumn(name = "request_id", referencedColumnName = "id", table = "request_info")
+    )
+    @Column(name = "approver_role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Set<Role> approverRoles = new LinkedHashSet<>();
 }
