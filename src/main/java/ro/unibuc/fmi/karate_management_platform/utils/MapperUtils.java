@@ -108,7 +108,7 @@ public interface MapperUtils {
     // === Competition Mapping ===
     CompetitionCreationResponse mapToCompetitionCreationResponse(CompetitionCreationRequest request);
 
-    @Mapping(target = "categories", source = "competitionRequest.categories")
+    @Mapping(target = "categoriesIds", source = "competitionRequest.categoriesIds")
     @Mapping(target = "date", source = "competitionRequest.date")
     @Mapping(target = "location", source = "competitionRequest.location")
     @Mapping(target = "name", source = "competitionRequest.name")

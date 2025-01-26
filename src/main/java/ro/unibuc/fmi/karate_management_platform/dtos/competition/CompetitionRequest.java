@@ -1,12 +1,10 @@
 package ro.unibuc.fmi.karate_management_platform.dtos.competition;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -27,7 +25,7 @@ public record CompetitionRequest(@NotBlank
                                  @Future
                                  LocalDate date,
 
-                                 @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-                                 Set<Category> categories
+                                 @NotNull
+                                 Set<Long> categoriesIds
 ) implements Serializable {
 }

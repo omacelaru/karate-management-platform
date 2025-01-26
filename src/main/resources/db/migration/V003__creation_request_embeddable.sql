@@ -1,17 +1,11 @@
 CREATE TABLE competition_creation_requests
 (
-    id       BIGINT NOT NULL,
-    name     OID,
-    location OID,
-    date     date,
+    id             BIGINT NOT NULL,
+    name           VARCHAR(150),
+    location       VARCHAR(100),
+    date           date,
+    categories_ids BIGINT[],
     CONSTRAINT pk_competition_creation_requests PRIMARY KEY (id)
-);
-
-CREATE TABLE competition_creation_requests_categories
-(
-    competition_creation_request_id BIGINT NOT NULL,
-    categories_id                   BIGINT NOT NULL,
-    CONSTRAINT pk_null_categories PRIMARY KEY (competition_creation_request_id, categories_id)
 );
 
 ALTER TABLE athlete_creation_requests
@@ -58,6 +52,3 @@ ALTER TABLE organizer_creation_requests
 
 ALTER TABLE competition_creation_requests
     ADD CONSTRAINT FK_COMPETITION_CREATION_REQUESTS_ON_ID FOREIGN KEY (id) REFERENCES request_info (id);
-
-ALTER TABLE competition_creation_requests_categories
-    ADD CONSTRAINT fk_comcrereqcat_on_competition_creation_request FOREIGN KEY (competition_creation_request_id) REFERENCES competition_creation_requests (id);

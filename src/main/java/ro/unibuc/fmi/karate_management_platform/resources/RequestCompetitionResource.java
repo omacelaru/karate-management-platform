@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.request.RequestInfoResponseInterface;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestType;
+import ro.unibuc.fmi.karate_management_platform.models.user.Role;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_management_platform.services.RequestService;
@@ -21,7 +22,7 @@ import ro.unibuc.fmi.karate_management_platform.services.RequestService;
 public class RequestCompetitionResource {
     private final RequestService requestService;
 
-    @SecuredEndpoint
+    @SecuredEndpoint(roles = {Role.ORGANIZER})
     @PostMapping
     public ResponseEntity<RequestInfoResponseInterface> competitionCreation(
             @AuthenticationPrincipal User user,
