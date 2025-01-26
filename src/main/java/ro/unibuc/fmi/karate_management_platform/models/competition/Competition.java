@@ -11,7 +11,7 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.category.Cate
 import ro.unibuc.fmi.karate_management_platform.models.organizer.Organizer;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -41,5 +41,5 @@ public class Competition extends BaseEntity {
             joinColumns = @JoinColumn(name = "competition_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    private List<Category> categories;
+    private Set<Category> categories;
 }

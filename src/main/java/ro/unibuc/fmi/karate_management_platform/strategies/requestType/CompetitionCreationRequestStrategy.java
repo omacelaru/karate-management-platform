@@ -46,8 +46,7 @@ public class CompetitionCreationRequestStrategy extends AbstractRequestTypeStrat
     protected void handleAcceptedRequest(User user, RequestInfo request) {
         CompetitionRequest competitionRequest = mapperUtils.mapToCompetitionRequest((CompetitionCreationRequest) request);
         log.info("Creating competition {}, by user with email: {}", ((CompetitionCreationRequest) request).getCompetitionRequest().name(), user.getEmail());
-        competitionService.createCompetition(competitionRequest);
-
+        competitionService.createCompetition(request.getCreatedBy(), competitionRequest);
     }
 
     @Override
