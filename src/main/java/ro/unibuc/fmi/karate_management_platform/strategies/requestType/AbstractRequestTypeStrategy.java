@@ -81,10 +81,9 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
     @Transactional
     public RequestInfoResponseInterface createRequest(User user, Object request) {
         log.info("Creating request for user with email: {}", user.getEmail());
-        if (isUserAlreadyHasRequestedRole(user)) {
-            log.error("User {} already has the requested role", user.getId());
-            throw new IllegalStateException("User already has the requested role.");
-        }
+
+        validateRequest(user, request);
+
         if (isDuplicateRequest(user)) {
             log.error("Duplicate request {}", request);
             //todo set location where to edit the request
@@ -164,7 +163,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
         return getRepository().existsByCreatedByIdAndStatusIn(user.getId(), Set.of(RequestStatus.PENDING));
     }
 
-    protected abstract boolean isUserAlreadyHasRequestedRole(User user);
+    protected abstract void validateRequest(User user, Object request);
 
     protected abstract void updateSpecificFields(RequestInfo existingRequest, RequestInfo updatedRequest);
 

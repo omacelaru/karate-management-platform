@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class AthleteCreationRequestStrategy extends AbstractRequestTypeStrategy {
+public class AthleteCreationRequestStrategy extends AbstractUserCreationRequestTypeStrategy {
     @Getter
     private final RequestType requestType = RequestType.ATHLETE_CREATION;
     private final AthleteService athleteService;

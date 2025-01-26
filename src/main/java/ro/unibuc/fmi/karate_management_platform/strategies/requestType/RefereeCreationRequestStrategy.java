@@ -20,7 +20,7 @@ import java.util.Set;
 
 @Slf4j
 @Component
-public class RefereeCreationRequestStrategy extends AbstractRequestTypeStrategy {
+public class RefereeCreationRequestStrategy extends AbstractUserCreationRequestTypeStrategy {
     @Getter
     private final RequestType requestType = RequestType.REFEREE_CREATION;
     private final RefereeService refereeService;
