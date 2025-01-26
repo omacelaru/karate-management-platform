@@ -1,0 +1,6 @@
+package ro.unibuc.fmi.karate_management_platform.models.request.competition;
+
+import ro.unibuc.fmi.karate_management_platform.repositories.request.RequestWithRolesApprovalRepository;
+
+public interface CompetitionCreationRequestRepository extends RequestWithRolesApprovalRepository<CompetitionCreationRequest> {
+}

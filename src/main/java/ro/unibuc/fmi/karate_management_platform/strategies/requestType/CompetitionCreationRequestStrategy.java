@@ -3,11 +3,14 @@ package ro.unibuc.fmi.karate_management_platform.strategies.requestType;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.request.RequestInfoResponseInterface;
 import ro.unibuc.fmi.karate_management_platform.factories.RequestInfoRepositoryFactory;
 import ro.unibuc.fmi.karate_management_platform.factories.RequestScopeStrategyFactory;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestInfo;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestType;
+import ro.unibuc.fmi.karate_management_platform.models.request.competition.CompetitionCreationRequest;
+import ro.unibuc.fmi.karate_management_platform.models.user.Role;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.services.CompetitionService;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
@@ -28,31 +31,39 @@ public class CompetitionCreationRequestStrategy extends AbstractRequestTypeStrat
 
     @Override
     protected void validateRequest(User user, Object request) {
-
     }
 
     @Override
     protected void updateSpecificFields(RequestInfo existingRequest, RequestInfo updatedRequest) {
-
+        if (existingRequest instanceof CompetitionCreationRequest existingCompetitionRequest && updatedRequest instanceof CompetitionCreationRequest updatedCompetitionRequest) {
+            existingCompetitionRequest.setCompetitionRequest(updatedCompetitionRequest.getCompetitionRequest());
+        } else {
+            throw new IllegalArgumentException("Invalid request type");
+        }
     }
 
     @Override
     protected void handleAcceptedRequest(User user, RequestInfo request) {
+        CompetitionRequest competitionRequest = mapperUtils.mapToCompetitionRequest((CompetitionCreationRequest) request);
+        log.info("Creating competition {}, by user with email: {}", ((CompetitionCreationRequest) request).getCompetitionRequest().name(), user.getEmail());
+        competitionService.createCompetition(competitionRequest);
 
     }
 
     @Override
     protected Set<?> handleApprovers(User user, Object request) {
-        return Set.of();
+        return Set.of(Role.ADMIN);
     }
 
     @Override
     protected RequestInfo mapToEntity(User user, Object request) {
-        return null;
+        CompetitionCreationRequest competitionRequest = CompetitionCreationRequest.builder().competitionRequest((CompetitionRequest) request).build();
+        competitionRequest.prePersist();
+        return competitionRequest;
     }
 
     @Override
     protected RequestInfoResponseInterface mapToResponse(RequestInfo request) {
-        return null;
+        return mapperUtils.mapToCompetitionCreationResponse((CompetitionCreationRequest) request);
     }
 }
