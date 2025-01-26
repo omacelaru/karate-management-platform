@@ -11,22 +11,22 @@ import ro.unibuc.fmi.karate_management_platform.dtos.club.ClubResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.club.ClubWithCoachesResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.coach.CoachResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.referee.RefereeRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.referee.RefereeResponse;
-import ro.unibuc.fmi.karate_management_platform.dtos.request.AthleteCreationResponse;
-import ro.unibuc.fmi.karate_management_platform.dtos.request.CoachCreationResponse;
-import ro.unibuc.fmi.karate_management_platform.dtos.request.OrganizerCreationResponse;
-import ro.unibuc.fmi.karate_management_platform.dtos.request.RefereeCreationResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.request.*;
 import ro.unibuc.fmi.karate_management_platform.dtos.user.UserResponse;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.club.Club;
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
+import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.organizer.Organizer;
 import ro.unibuc.fmi.karate_management_platform.models.referee.Referee;
 import ro.unibuc.fmi.karate_management_platform.models.request.athlete.AthleteCreationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.request.coach.CoachCreationRequest;
+import ro.unibuc.fmi.karate_management_platform.models.request.competition.CompetitionCreationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.request.organizer.OrganizerCreationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.request.referee.RefereeCreationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
@@ -88,7 +88,7 @@ public interface MapperUtils {
     RefereeCreationResponse mapToRefereeCreationResponse(RefereeCreationRequest refereeCreationRequest);
 
     @Mapping(target = "licenseInfo", source = "refereeRequest.licenseInfo")
-    @Mapping(target = "category", source = "refereeRequest.category")
+    @Mapping(target = "level", source = "refereeRequest.level")
     RefereeRequest mapToRefereeRequest(RefereeCreationRequest request);
 
 
@@ -103,5 +103,19 @@ public interface MapperUtils {
     OrganizerCreationRequest mapToOrganizerCreationRequest(@Valid OrganizerRequest organizerRequest);
 
     OrganizerCreationResponse mapToOrganizerCreationResponse(OrganizerCreationRequest request);
+
+
+    // === Competition Mapping ===
+    CompetitionCreationResponse mapToCompetitionCreationResponse(CompetitionCreationRequest request);
+
+    @Mapping(target = "categoriesIds", source = "competitionRequest.categoriesIds")
+    @Mapping(target = "date", source = "competitionRequest.date")
+    @Mapping(target = "location", source = "competitionRequest.location")
+    @Mapping(target = "name", source = "competitionRequest.name")
+    CompetitionRequest mapToCompetitionRequest(CompetitionCreationRequest request);
+
+    CompetitionCreationRequest mapToCompetitionCreationRequest(@Valid CompetitionRequest competitionRequest);
+
+    Competition mapToCompetition(CompetitionRequest competitionRequest);
 }
 

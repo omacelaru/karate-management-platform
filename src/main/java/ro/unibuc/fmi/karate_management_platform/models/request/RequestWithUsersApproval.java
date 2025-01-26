@@ -17,7 +17,9 @@ import java.util.Set;
 @MappedSuperclass
 public class RequestWithUsersApproval extends RequestInfo {
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(joinColumns = @JoinColumn(name = "request_id"),
+    @JoinTable(
+            name = "request_approver_users",
+            joinColumns = @JoinColumn(name = "request_id", referencedColumnName = "id", table = "request_info"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @ToString.Exclude
     @Column(name = "approver_users", nullable = false)

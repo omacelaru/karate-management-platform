@@ -20,7 +20,7 @@ import java.util.Set;
 
 @Slf4j
 @Component
-public class CoachCreationRequestStrategy extends AbstractRequestTypeStrategy {
+public class CoachCreationRequestStrategy extends AbstractUserCreationRequestTypeStrategy {
     @Getter
     private final RequestType requestType = RequestType.COACH_CREATION;
     private final CoachService coachService;

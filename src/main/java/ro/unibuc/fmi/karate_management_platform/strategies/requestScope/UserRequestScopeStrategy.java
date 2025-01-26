@@ -10,8 +10,8 @@ import ro.unibuc.fmi.karate_management_platform.models.request.RequestScope;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestWithUsersApproval;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
-import ro.unibuc.fmi.karate_management_platform.repositories.RequestInfoRepository;
-import ro.unibuc.fmi.karate_management_platform.repositories.RequestWithUsersApprovalRepository;
+import ro.unibuc.fmi.karate_management_platform.repositories.request.RequestInfoRepository;
+import ro.unibuc.fmi.karate_management_platform.repositories.request.RequestWithUsersApprovalRepository;
 
 import java.util.Optional;
 import java.util.Set;

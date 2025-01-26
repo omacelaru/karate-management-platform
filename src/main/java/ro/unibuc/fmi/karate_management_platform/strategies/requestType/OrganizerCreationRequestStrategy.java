@@ -20,7 +20,7 @@ import java.util.Set;
 
 @Slf4j
 @Component
-public class OrganizerCreationRequestStrategy extends AbstractRequestTypeStrategy {
+public class OrganizerCreationRequestStrategy extends AbstractUserCreationRequestTypeStrategy {
     @Getter
     private final RequestType requestType = RequestType.ORGANIZER_CREATION;
     private final OrganizerService organizerService;

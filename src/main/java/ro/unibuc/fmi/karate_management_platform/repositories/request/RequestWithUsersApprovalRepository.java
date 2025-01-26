@@ -1,4 +1,4 @@
-package ro.unibuc.fmi.karate_management_platform.repositories;
+package ro.unibuc.fmi.karate_management_platform.repositories.request;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

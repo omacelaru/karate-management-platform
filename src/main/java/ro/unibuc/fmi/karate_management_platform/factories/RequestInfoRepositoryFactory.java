@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestInfo;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestType;
-import ro.unibuc.fmi.karate_management_platform.repositories.*;
+import ro.unibuc.fmi.karate_management_platform.repositories.request.*;
 
 import java.util.Map;
 
@@ -18,6 +18,7 @@ public class RequestInfoRepositoryFactory {
     private final RefereeCreationRequestRepository refereeCreationRequestRepository;
     private final AthleteCreationRequestRepository athleteCreationRequestRepository;
     private final OrganizerCreationRequestRepository organizerCreationRequestRepository;
+    private final CompetitionCreationRequestRepository competitionCreationRequestRepository;
 
     private Map<RequestType, RequestInfoRepository<? extends RequestInfo>> repositoryMap;
 
@@ -27,7 +28,8 @@ public class RequestInfoRepositoryFactory {
                 RequestType.COACH_CREATION, coachCreationRequestRepository,
                 RequestType.REFEREE_CREATION, refereeCreationRequestRepository,
                 RequestType.ATHLETE_CREATION, athleteCreationRequestRepository,
-                RequestType.ORGANIZER_CREATION, organizerCreationRequestRepository
+                RequestType.ORGANIZER_CREATION, organizerCreationRequestRepository,
+                RequestType.COMPETITION_CREATION, competitionCreationRequestRepository
         );
     }
 
