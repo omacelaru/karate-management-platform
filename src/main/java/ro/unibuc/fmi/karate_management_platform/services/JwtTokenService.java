@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,11 +18,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Slf4j
+@Setter
 @Service
 public class JwtTokenService {
 
     @Value("${jwt.secret-signing-key}")
-    private String SECRET_SIGNING_KEY;
+    private String secretSigningKey;
     @Value("${jwt.access-token-expiration}")
     private long accessTokenExpiration;
     @Value("${jwt.refresh-token-expiration}")
@@ -105,7 +107,7 @@ public class JwtTokenService {
     private SecretKey getSecretSigningKey() {
         log.debug("Generating secret signing key from configured secret.");
         try {
-            byte[] publicSigningKeyBytes = Base64.getDecoder().decode(SECRET_SIGNING_KEY);
+            byte[] publicSigningKeyBytes = Base64.getDecoder().decode(secretSigningKey);
             return Keys.hmacShaKeyFor(publicSigningKeyBytes);
         } catch (Exception e) {
             log.error("Failed to generate secret signing key: {}", e.getMessage(), e);
