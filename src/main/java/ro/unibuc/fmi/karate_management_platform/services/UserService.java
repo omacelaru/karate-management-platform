@@ -3,6 +3,7 @@ package ro.unibuc.fmi.karate_management_platform.services;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ro.unibuc.fmi.karate_management_platform.dtos.auth.AuthRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.user.UserDetailsRequest;
@@ -13,6 +14,9 @@ import ro.unibuc.fmi.karate_management_platform.repositories.UserRepository;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
 import java.security.SecureRandom;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -20,8 +24,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final AuthService authService;
+    private final PasswordEncoder passwordEncoder;
     private final MapperUtils mapperUtils;
+
+    public Optional<User> findByEmail(String email) {
+        log.info("Finding user with email: {}", email);
+        return userRepository.findByEmail(email);
+    }
+
+    public List<User> getAllUsers() {
+        log.info("Getting all users");
+        return userRepository.findAll();
+    }
 
     public static void applyRolesToUser(User user, Role role) {
         if (user.getRoles().contains(role)) {
@@ -41,10 +55,22 @@ public class UserService {
                 .collect(Collectors.joining());
     }
 
+    public User createUser(AuthRequest authRequest) {
+        return createUser(authRequest.email(), authRequest.password());
+    }
+
     public User createUser(String email, String password) {
         log.info("Creating user with email: {}", email);
-        AuthRequest authRequest = new AuthRequest(email, password);
-        return authService.createUser(authRequest);
+        if (userRepository.existsByEmail(email)) {
+            log.error("Email already exists");
+            throw new IllegalArgumentException("Email already exists");
+        }
+        User user = User.builder()
+                .email(email)
+                .password(passwordEncoder.encode(password))
+                .roles(Set.of(Role.USER))
+                .build();
+        return userRepository.save(user);
     }
 
     public UserResponse getMe(User user) {
@@ -66,5 +92,11 @@ public class UserService {
         User userSaved = userRepository.save(user);
         return mapperUtils.mapToUserResponse(userSaved);
 
+    }
+
+    public void updatePassword(User user, String password) {
+        log.info("Updating password for user with email: {}", user.getEmail());
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
     }
 }

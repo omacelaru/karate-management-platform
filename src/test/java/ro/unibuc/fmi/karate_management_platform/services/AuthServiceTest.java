@@ -5,17 +5,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import ro.unibuc.fmi.karate_management_platform.dtos.auth.AuthRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.auth.AuthResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.auth.ResetPasswordRequest;
-import ro.unibuc.fmi.karate_management_platform.models.user.Role;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
-import ro.unibuc.fmi.karate_management_platform.repositories.UserRepository;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -24,28 +20,27 @@ import static org.mockito.Mockito.*;
 class AuthServiceTest {
 
     private AuthService authService;
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
+    private UserService userService;
     private JwtTokenService jwtTokenService;
     private AuthenticationManager authenticationManager;
     private MapperUtils mapperUtils;
 
     @BeforeEach
     void setUp() {
-        userRepository = mock(UserRepository.class);
-        passwordEncoder = mock(PasswordEncoder.class);
+        userService = mock(UserService.class);
         jwtTokenService = mock(JwtTokenService.class);
         authenticationManager = mock(AuthenticationManager.class);
         mapperUtils = mock(MapperUtils.class);
-        authService = new AuthService(userRepository, passwordEncoder, jwtTokenService, authenticationManager, mapperUtils);
+        authService = new AuthService(userService, jwtTokenService, authenticationManager, mapperUtils);
     }
 
     @Test
-    void login_shouldReturnAuthResponse() {
-        AuthRequest authRequest = new AuthRequest("test@example.com", "password123");
-        User user = User.builder().email(authRequest.email()).build();
+    void login_shouldAuthenticateAndReturnTokens() {
+        AuthRequest authRequest = new AuthRequest("user@example.com", "password123");
+        User user = new User();
+        user.setEmail(authRequest.email());
 
-        when(userRepository.findByEmail(authRequest.email())).thenReturn(Optional.of(user));
+        when(userService.findByEmail(authRequest.email())).thenReturn(Optional.of(user));
         when(jwtTokenService.generateAccessToken(user)).thenReturn("access-token");
         when(jwtTokenService.generateRefreshToken(user)).thenReturn("refresh-token");
         when(mapperUtils.mapToAuthResponse("access-token", "refresh-token"))
@@ -56,17 +51,29 @@ class AuthServiceTest {
         assertThat(response.accessToken()).isEqualTo("access-token");
         assertThat(response.refreshToken()).isEqualTo("refresh-token");
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(userRepository).findByEmail(authRequest.email());
+        verify(userService).findByEmail(authRequest.email());
     }
 
     @Test
-    void register_shouldReturnAuthResponse() {
-        AuthRequest authRequest = new AuthRequest("new@example.com", "password123");
-        User user = User.builder().email(authRequest.email()).roles(Set.of(Role.USER)).build();
+    void login_shouldThrowExceptionIfUserNotFound() {
+        AuthRequest authRequest = new AuthRequest("nonexistent@example.com", "password123");
 
-        when(userRepository.existsByEmail(authRequest.email())).thenReturn(false);
-        when(passwordEncoder.encode(authRequest.password())).thenReturn("encoded-password");
-        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userService.findByEmail(authRequest.email())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> authService.login(authRequest))
+                .isInstanceOf(RuntimeException.class);
+
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(userService).findByEmail(authRequest.email());
+    }
+
+    @Test
+    void register_shouldCreateUserAndReturnTokens() {
+        AuthRequest authRequest = new AuthRequest("newuser@example.com", "password123");
+        User user = new User();
+        user.setEmail(authRequest.email());
+
+        when(userService.createUser(authRequest)).thenReturn(user);
         when(jwtTokenService.generateAccessToken(user)).thenReturn("access-token");
         when(jwtTokenService.generateRefreshToken(user)).thenReturn("refresh-token");
         when(mapperUtils.mapToAuthResponse("access-token", "refresh-token"))
@@ -76,25 +83,13 @@ class AuthServiceTest {
 
         assertThat(response.accessToken()).isEqualTo("access-token");
         assertThat(response.refreshToken()).isEqualTo("refresh-token");
-        verify(userRepository).save(any(User.class));
+        verify(userService).createUser(authRequest);
     }
 
     @Test
-    void createUser_shouldThrowExceptionIfEmailExists() {
-        AuthRequest authRequest = new AuthRequest("duplicate@example.com", "password123");
-
-        when(userRepository.existsByEmail(authRequest.email())).thenReturn(true);
-
-        assertThatThrownBy(() -> authService.register(authRequest))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Email already exists");
-
-        verify(userRepository, never()).save(any(User.class));
-    }
-
-    @Test
-    void refreshToken_shouldReturnAuthResponse() {
-        User user = User.builder().email("test@example.com").build();
+    void refreshToken_shouldReturnNewAccessToken() {
+        User user = new User();
+        user.setEmail("user@example.com");
         HttpServletRequest request = mock(HttpServletRequest.class);
 
         when(jwtTokenService.extractRefreshToken(request)).thenReturn("refresh-token");
@@ -106,19 +101,18 @@ class AuthServiceTest {
 
         assertThat(response.accessToken()).isEqualTo("new-access-token");
         assertThat(response.refreshToken()).isEqualTo("refresh-token");
+        verify(jwtTokenService).extractRefreshToken(request);
     }
 
     @Test
-    void resetPassword_shouldResetPasswordSuccessfully() {
-        User user = User.builder().email("test@example.com").password("old-password").build();
-        ResetPasswordRequest resetPasswordRequest = new ResetPasswordRequest("old-password", "new-password");
+    void resetPassword_shouldUpdateUserPassword() {
+        User user = new User();
+        user.setEmail("user@example.com");
+        ResetPasswordRequest request = new ResetPasswordRequest("old-password", "new-password");
 
-        when(passwordEncoder.encode(resetPasswordRequest.newPassword())).thenReturn("encoded-new-password");
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
+        authService.resetPassword(user, request);
 
-        authService.resetPassword(user, resetPasswordRequest);
-
-        assertThat(user.getPassword()).isEqualTo("encoded-new-password");
-        verify(userRepository).save(user);
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(userService).updatePassword(user, request.newPassword());
     }
 }
