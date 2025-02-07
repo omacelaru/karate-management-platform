@@ -27,7 +27,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity implements UserDetails {
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @Column(name = "role")
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
@@ -71,6 +71,13 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    public void addRole(Role role) {
+        if (roles.contains(role)) {
+            throw new IllegalArgumentException("User already has role: " + role);
+        }
+        roles.add(role);
     }
 }
 
