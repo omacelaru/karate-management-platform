@@ -41,9 +41,9 @@ public class AthleteService {
     }
 
     @Transactional
-    public void createAthlete(User user, AthleteRequest athleteRequest) {
+    public Athlete createAthlete(User user, AthleteRequest athleteRequest) {
         log.info("Creating athlete for user with email: {}", user.getEmail());
-        UserService.applyRolesToUser(user, Role.ATHLETE);
+        user.addRole(Role.ATHLETE);
 
         Athlete athlete = mapperUtils.mapToAthlete(athleteRequest);
         athlete.setUser(user);
@@ -51,8 +51,12 @@ public class AthleteService {
         Set<Coach> coaches = clubService.getCoachesForClub(athleteRequest.clubId());
         athlete.setCoaches(coaches);
 
-        athleteRepository.save(athlete);
+        return athleteRepository.save(athlete);
     }
 
 
+    public void updateAthlete(Athlete athlete) {
+        log.info("Updating athlete with id: {}", athlete.getId());
+        athleteRepository.save(athlete);
+    }
 }

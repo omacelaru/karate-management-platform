@@ -6,16 +6,13 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ro.unibuc.fmi.karate_management_platform.dtos.user.UserDetailsRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.user.UserResponse;
-import ro.unibuc.fmi.karate_management_platform.fixtures.user.UserFixture;
 import ro.unibuc.fmi.karate_management_platform.fixtures.user.UserResponseFixture;
-import ro.unibuc.fmi.karate_management_platform.models.user.Role;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.repositories.UserRepository;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -68,25 +65,6 @@ class UserServiceTest {
 
         assertThat(result).containsExactly(user1, user2);
         verify(userRepository).findAll();
-    }
-
-    @Test
-    void applyRolesToUser_shouldAddRoleToUser() {
-        User user = UserFixture.createDefaultUser();
-
-        UserService.applyRolesToUser(user, Role.ADMIN);
-
-        assertThat(user.getRoles()).contains(Role.ADMIN);
-    }
-
-    @Test
-    void applyRolesToUser_shouldThrowExceptionIfRoleAlreadyExists() {
-        User user = new User();
-        user.setRoles(Set.of(Role.ADMIN));
-
-        assertThatThrownBy(() -> UserService.applyRolesToUser(user, Role.ADMIN))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("User already has role: ADMIN");
     }
 
     @Test

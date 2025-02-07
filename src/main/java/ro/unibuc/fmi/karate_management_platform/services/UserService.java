@@ -14,6 +14,7 @@ import ro.unibuc.fmi.karate_management_platform.repositories.UserRepository;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
 import java.security.SecureRandom;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -37,14 +38,6 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public static void applyRolesToUser(User user, Role role) {
-        if (user.getRoles().contains(role)) {
-            log.warn("User already has role: {}", role);
-            throw new IllegalArgumentException("User already has role: " + role);
-        }
-        user.getRoles().add(role);
-    }
-
     public static String generatePassword() {
         int length = 12;
         String symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
@@ -55,10 +48,12 @@ public class UserService {
                 .collect(Collectors.joining());
     }
 
+    @Transactional
     public User createUser(AuthRequest authRequest) {
         return createUser(authRequest.email(), authRequest.password());
     }
 
+    @Transactional
     public User createUser(String email, String password) {
         log.info("Creating user with email: {}", email);
         if (userRepository.existsByEmail(email)) {
@@ -68,7 +63,7 @@ public class UserService {
         User user = User.builder()
                 .email(email)
                 .password(passwordEncoder.encode(password))
-                .roles(Set.of(Role.USER))
+                .roles(new HashSet<>(Set.of(Role.USER)))
                 .build();
         return userRepository.save(user);
     }

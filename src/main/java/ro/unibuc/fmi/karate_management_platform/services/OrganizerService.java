@@ -40,7 +40,7 @@ public class OrganizerService {
     @Transactional
     public void createOrganizer(User user, OrganizerRequest organizerRequest) {
         log.info("Creating organizer for user with email: {}", user.getEmail());
-        UserService.applyRolesToUser(user, Role.ORGANIZER);
+        user.addRole(Role.ORGANIZER);
 
         Organizer organizer = mapperUtils.mapToOrganizer(organizerRequest);
         organizer.setUser(user);
