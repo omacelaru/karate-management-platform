@@ -16,6 +16,7 @@ import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResp
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.CategoryResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.KataCategoryResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.KumiteCategoryResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.match.*;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.referee.RefereeRequest;
@@ -29,6 +30,7 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.match.*;
 import ro.unibuc.fmi.karate_management_platform.models.organizer.Organizer;
 import ro.unibuc.fmi.karate_management_platform.models.referee.Referee;
 import ro.unibuc.fmi.karate_management_platform.models.request.athlete.AthleteCreationRequest;
@@ -140,5 +142,29 @@ public interface MapperUtils {
             throw new IllegalArgumentException("Unknown category type: " + category.getClass());
         }
     }
+
+    IndividualKataMatchResponse mapToIndividualKataMatchResponse(IndividualKataMatch individualKataMatch);
+
+    IndividualKumiteMatchResponse mapToIndividualKumiteMatchResponse(IndividualKumiteMatch individualKumiteMatch);
+
+    TeamKataMatchResponse mapToTeamKataMatchResponse(TeamKataMatch teamKataMatch);
+
+    TeamKumiteMatchResponse mapToTeamKumiteMatchResponse(TeamKumiteMatch teamKumiteMatch);
+
+    default MatchResponse mapMatch(Match match) {
+        return switch (match) {
+            case IndividualKataMatch individualKataMatch -> mapToIndividualKataMatchResponse(individualKataMatch);
+            case IndividualKumiteMatch individualKumiteMatch ->
+                    mapToIndividualKumiteMatchResponse(individualKumiteMatch);
+            case TeamKataMatch teamKataMatch -> mapToTeamKataMatchResponse(teamKataMatch);
+            case TeamKumiteMatch teamKumiteMatch -> mapToTeamKumiteMatchResponse(teamKumiteMatch);
+            case null, default -> {
+                assert match != null;
+                throw new IllegalArgumentException("Unknown match type: " + match.getClass());
+            }
+        };
+    }
+
+
 }
 
