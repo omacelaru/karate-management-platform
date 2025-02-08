@@ -2,9 +2,12 @@ package ro.unibuc.fmi.karate_management_platform.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionRequest;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResponse;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
 import ro.unibuc.fmi.karate_management_platform.models.organizer.Organizer;
@@ -37,5 +40,12 @@ public class CompetitionService {
         competition.setOrganizer(organizer);
 
         competitionRepository.save(competition);
+    }
+
+    public Page<CompetitionResponse> getAllCompetitions(Pageable pageable) {
+        log.info("Getting all competitions paginated");
+
+        return competitionRepository.findAll(pageable)
+                .map(mapperUtils::mapToCompetitionResponse);
     }
 }

@@ -12,6 +12,10 @@ import ro.unibuc.fmi.karate_management_platform.dtos.club.ClubWithCoachesRespons
 import ro.unibuc.fmi.karate_management_platform.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.coach.CoachResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionRequest;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.CategoryResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.KataCategoryResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.KumiteCategoryResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.referee.RefereeRequest;
@@ -22,6 +26,9 @@ import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.club.Club;
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteCategory;
 import ro.unibuc.fmi.karate_management_platform.models.organizer.Organizer;
 import ro.unibuc.fmi.karate_management_platform.models.referee.Referee;
 import ro.unibuc.fmi.karate_management_platform.models.request.athlete.AthleteCreationRequest;
@@ -117,5 +124,21 @@ public interface MapperUtils {
     CompetitionCreationRequest mapToCompetitionCreationRequest(@Valid CompetitionRequest competitionRequest);
 
     Competition mapToCompetition(CompetitionRequest competitionRequest);
+
+    CompetitionResponse mapToCompetitionResponse(Competition competition);
+
+    KataCategoryResponse mapToKataCategoryResponse(KataCategory kataCategory);
+
+    KumiteCategoryResponse mapToKumiteCategoryResponse(KumiteCategory kumiteCategory);
+
+    default CategoryResponse mapCategory(Category category) {
+        if (category instanceof KataCategory) {
+            return mapToKataCategoryResponse((KataCategory) category);
+        } else if (category instanceof KumiteCategory) {
+            return mapToKumiteCategoryResponse((KumiteCategory) category);
+        } else {
+            throw new IllegalArgumentException("Unknown category type: " + category.getClass());
+        }
+    }
 }
 

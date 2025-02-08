@@ -27,7 +27,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class User extends BaseEntity implements UserDetails {
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "role")
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
