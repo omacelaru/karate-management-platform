@@ -48,4 +48,15 @@ public class CompetitionService {
         return competitionRepository.findAll(pageable)
                 .map(mapperUtils::mapToCompetitionResponse);
     }
+
+    public CompetitionResponse getCompetitionById(Long competitionId) {
+        log.info("Getting competition by ID {}", competitionId);
+
+        Competition competition = competitionRepository.findById(competitionId).orElseThrow(() -> {
+            log.error("Competition with ID {} not found", competitionId);
+            return new IllegalArgumentException("Competition not found");
+        });
+
+        return mapperUtils.mapToCompetitionResponse(competition);
+    }
 }

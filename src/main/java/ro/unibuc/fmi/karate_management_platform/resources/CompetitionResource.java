@@ -10,9 +10,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResponse;
+import ro.unibuc.fmi.karate_management_platform.exceptions.ApiError;
 import ro.unibuc.fmi.karate_management_platform.services.CompetitionService;
 
 @RestController
@@ -26,5 +28,17 @@ public class CompetitionResource {
     @GetMapping
     public ResponseEntity<Page<CompetitionResponse>> getAllCompetitions(Pageable pageable) {
         return ResponseEntity.ok(competitionService.getAllCompetitions(pageable));
+    }
+
+    @Operation(
+            summary = "Get competition by ID",
+            description = "Returns a competition by ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Competition returned successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CompetitionResponse.class))),
+                    @ApiResponse(responseCode = "404", description = "Competition not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
+            })
+    @GetMapping("/{competitionId}")
+    public ResponseEntity<CompetitionResponse> getCompetitionById(@PathVariable Long competitionId) {
+        return ResponseEntity.ok(competitionService.getCompetitionById(competitionId));
     }
 }
