@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataBeltRange;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteDivisionRange;
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.category.CategoryRepository;
@@ -29,7 +29,7 @@ class CategoryServiceTest {
     @Test
     void getCategoriesByIds_shouldReturnAllCategoriesWhenFound() {
         // Mock data
-        KataCategory kataCategory = KataCategory.builder()
+        KataIndividualCategory kataIndividualCategory = KataIndividualCategory.builder()
                 .id(1L)
                 .kataBeltRange(KataBeltRange.OPEN)
                 .build();
@@ -43,14 +43,14 @@ class CategoryServiceTest {
         Set<Long> ids = Set.of(1L, 2L);
 
         // Mock repository behavior
-        when(categoryRepository.findById(1L)).thenReturn(Optional.of(kataCategory));
+        when(categoryRepository.findById(1L)).thenReturn(Optional.of(kataIndividualCategory));
         when(categoryRepository.findById(2L)).thenReturn(Optional.of(kumiteCategory));
 
         // Execute
         Set<Category> result = categoryService.getCategoriesByIds(ids);
 
         // Verify
-        assertThat(result).containsExactlyInAnyOrder(kataCategory, kumiteCategory);
+        assertThat(result).containsExactlyInAnyOrder(kataIndividualCategory, kumiteCategory);
         verify(categoryRepository).findById(1L);
         verify(categoryRepository).findById(2L);
     }
@@ -58,7 +58,7 @@ class CategoryServiceTest {
     @Test
     void getCategoriesByIds_shouldReturnOnlyExistingCategories() {
         // Mock data
-        KataCategory kataCategory = KataCategory.builder()
+        KataIndividualCategory kataIndividualCategory = KataIndividualCategory.builder()
                 .id(1L)
                 .kataBeltRange(KataBeltRange.WHITE_TO_ORANGE)
                 .build();
@@ -67,14 +67,14 @@ class CategoryServiceTest {
         Set<Long> ids = Set.of(1L, 2L);
 
         // Mock repository behavior
-        when(categoryRepository.findById(1L)).thenReturn(Optional.of(kataCategory));
+        when(categoryRepository.findById(1L)).thenReturn(Optional.of(kataIndividualCategory));
         when(categoryRepository.findById(2L)).thenReturn(Optional.empty());
 
         // Execute
         Set<Category> result = categoryService.getCategoriesByIds(ids);
 
         // Verify
-        assertThat(result).containsExactly(kataCategory);
+        assertThat(result).containsExactly(kataIndividualCategory);
         verify(categoryRepository).findById(1L);
         verify(categoryRepository).findById(2L);
     }

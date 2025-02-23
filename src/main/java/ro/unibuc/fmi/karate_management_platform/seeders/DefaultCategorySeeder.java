@@ -8,7 +8,7 @@ import ro.unibuc.fmi.karate_management_platform.models.athelte.Gender;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.CategoryType;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataBeltRange;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteDivisionRange;
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.category.KataCategoryRepository;
@@ -37,7 +37,7 @@ public class DefaultCategorySeeder implements CommandLineRunner {
             for (Gender gender : Gender.values()) {
                 for (KataBeltRange beltRange : kataBeltRanges) {
                     if (!kataCategoryRepository.existsByAgeGroupAndGenderAndKataBeltRange(ageGroup, gender, beltRange)) {
-                        KataCategory kataCategory = KataCategory.builder().ageGroup(ageGroup).gender(gender).kataBeltRange(beltRange).categoryType(CategoryType.KATA_INDIVIDUAL).isDefault(true).build();
+                        KataIndividualCategory kataCategory = KataIndividualCategory.builder().ageGroup(ageGroup).gender(gender).kataBeltRange(beltRange).categoryType(CategoryType.KATA_INDIVIDUAL).isDefault(true).build();
                         kataCategoryRepository.save(kataCategory);
                     }
                 }

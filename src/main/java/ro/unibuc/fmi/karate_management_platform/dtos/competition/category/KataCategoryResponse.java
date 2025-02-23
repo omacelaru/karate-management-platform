@@ -6,9 +6,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataBeltRange;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataIndividualCategory;
 
 /**
- * DTO for {@link ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataCategory}
+ * DTO for {@link KataIndividualCategory}
  */
 @EqualsAndHashCode(callSuper = true)
 @Data

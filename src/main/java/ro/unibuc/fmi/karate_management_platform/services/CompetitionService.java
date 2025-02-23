@@ -16,7 +16,7 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.CategoryType;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteCategory;
 import ro.unibuc.fmi.karate_management_platform.models.organizer.Organizer;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
@@ -73,7 +73,7 @@ public class CompetitionService {
         Coach coach = coachService.findCoachByEmail(user.getEmail());
         Competition competition = findCompetitionById(competitionId);
 
-        Set<KataCategory> kataCategories = categoryService.getKataCategoriesFromCompetition(competition);
+        Set<KataIndividualCategory> kataCategories = categoryService.getKataCategoriesFromCompetition(competition);
         Set<KumiteCategory> kumiteCategories = categoryService.getKumiteCategoriesFromCompetition(competition);
 
         registrationRequest.athletes().stream()
@@ -90,7 +90,7 @@ public class CompetitionService {
     }
 
     private void registerAthlete(AthleteCompetitionRegistration athleteReg, Coach coach,
-                                 Set<KataCategory> kataCategories, Set<KumiteCategory> kumiteCategories) {
+                                 Set<KataIndividualCategory> kataCategories, Set<KumiteCategory> kumiteCategories) {
         Athlete athlete = findAthleteById(athleteReg.getAthleteId(), coach);
         AgeGroup ageGroup = categoryService.getAgeGroupByDateOfBirth(athlete.getUser().getBirthDate());
         Set<CategoryType> categoryTypes = categoryService.getCategoryTypeByMatchTypes(athleteReg.getMatchTypes());
