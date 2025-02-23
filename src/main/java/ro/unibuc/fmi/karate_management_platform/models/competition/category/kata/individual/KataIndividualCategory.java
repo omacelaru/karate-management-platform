@@ -1,4 +1,4 @@
-package ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite;
+package ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.individual;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,14 +9,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataBeltRange;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @SuperBuilder
 @Entity
-public class KumiteCategory extends Category {
+public class KataIndividualCategory extends Category {
     @Enumerated(EnumType.STRING)
-    @Column(name = "kumite_division_range", nullable = false)
-    private KumiteDivisionRange kumiteDivisionRange;
+    @Column(name = "kata_belt_range", nullable = false)
+    private KataBeltRange kataBeltRange;
 }

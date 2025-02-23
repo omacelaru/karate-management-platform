@@ -8,8 +8,8 @@ import ro.unibuc.fmi.karate_management_platform.models.athelte.Gender;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.CategoryType;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataBeltRange;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataIndividualCategory;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.individual.KataIndividualCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.individual.KumiteIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteDivisionRange;
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.category.KataCategoryRepository;
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.category.KumiteCategoryRepository;
@@ -50,8 +50,8 @@ public class DefaultCategorySeeder implements CommandLineRunner {
             for (Gender gender : Gender.values()) {
                 Set<KumiteDivisionRange> kumiteDivisionRanges = KumiteDivisionRange.getAvailableDivisions(ageGroup, gender);
                 for (KumiteDivisionRange kumiteDivisionRange : kumiteDivisionRanges) {
-                    KumiteCategory kumiteCategory = KumiteCategory.builder().ageGroup(ageGroup).gender(gender).categoryType(CategoryType.KUMITE_INDIVIDUAL).isDefault(true).kumiteDivisionRange(kumiteDivisionRange).build();
-                    kumiteCategoryRepository.save(kumiteCategory);
+                    KumiteIndividualCategory kumiteIndividualCategory = KumiteIndividualCategory.builder().ageGroup(ageGroup).gender(gender).categoryType(CategoryType.KUMITE_INDIVIDUAL).isDefault(true).kumiteDivisionRange(kumiteDivisionRange).build();
+                    kumiteCategoryRepository.save(kumiteIndividualCategory);
                 }
             }
         }

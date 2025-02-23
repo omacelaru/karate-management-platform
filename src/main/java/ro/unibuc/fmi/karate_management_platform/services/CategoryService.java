@@ -7,8 +7,8 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.CategoryType;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataIndividualCategory;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.individual.KataIndividualCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.individual.KumiteIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.match.MatchType;
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.category.CategoryRepository;
 
@@ -82,10 +82,10 @@ public class CategoryService {
                 .collect(Collectors.toSet());
     }
 
-    public Set<KumiteCategory> getKumiteCategoriesFromCompetition(Competition competition) {
+    public Set<KumiteIndividualCategory> getKumiteCategoriesFromCompetition(Competition competition) {
         return competition.getCategories().stream()
-                .filter(category -> category instanceof KumiteCategory)
-                .map(category -> (KumiteCategory) category)
+                .filter(category -> category instanceof KumiteIndividualCategory)
+                .map(category -> (KumiteIndividualCategory) category)
                 .collect(Collectors.toSet());
     }
 }

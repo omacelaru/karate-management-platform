@@ -4,8 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataBeltRange;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataIndividualCategory;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.individual.KataIndividualCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.individual.KumiteIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteDivisionRange;
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.category.CategoryRepository;
 
@@ -34,7 +34,7 @@ class CategoryServiceTest {
                 .kataBeltRange(KataBeltRange.OPEN)
                 .build();
 
-        KumiteCategory kumiteCategory = KumiteCategory.builder()
+        KumiteIndividualCategory kumiteIndividualCategory = KumiteIndividualCategory.builder()
                 .id(2L)
                 .kumiteDivisionRange(KumiteDivisionRange.BETWEEN_65_70KG)
                 .build();
@@ -44,13 +44,13 @@ class CategoryServiceTest {
 
         // Mock repository behavior
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(kataIndividualCategory));
-        when(categoryRepository.findById(2L)).thenReturn(Optional.of(kumiteCategory));
+        when(categoryRepository.findById(2L)).thenReturn(Optional.of(kumiteIndividualCategory));
 
         // Execute
         Set<Category> result = categoryService.getCategoriesByIds(ids);
 
         // Verify
-        assertThat(result).containsExactlyInAnyOrder(kataIndividualCategory, kumiteCategory);
+        assertThat(result).containsExactlyInAnyOrder(kataIndividualCategory, kumiteIndividualCategory);
         verify(categoryRepository).findById(1L);
         verify(categoryRepository).findById(2L);
     }

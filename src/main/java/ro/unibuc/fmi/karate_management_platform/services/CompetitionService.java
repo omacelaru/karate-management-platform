@@ -16,8 +16,8 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.CategoryType;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataIndividualCategory;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.individual.KataIndividualCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.individual.KumiteIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.organizer.Organizer;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.repositories.OrganizerRepository;
@@ -74,7 +74,7 @@ public class CompetitionService {
         Competition competition = findCompetitionById(competitionId);
 
         Set<KataIndividualCategory> kataCategories = categoryService.getKataCategoriesFromCompetition(competition);
-        Set<KumiteCategory> kumiteCategories = categoryService.getKumiteCategoriesFromCompetition(competition);
+        Set<KumiteIndividualCategory> kumiteCategories = categoryService.getKumiteCategoriesFromCompetition(competition);
 
         registrationRequest.athletes().stream()
                 .filter(athleteReg -> isAthleteCoachedBy(athleteReg.getAthleteId(), coach))
@@ -90,7 +90,7 @@ public class CompetitionService {
     }
 
     private void registerAthlete(AthleteCompetitionRegistration athleteReg, Coach coach,
-                                 Set<KataIndividualCategory> kataCategories, Set<KumiteCategory> kumiteCategories) {
+                                 Set<KataIndividualCategory> kataCategories, Set<KumiteIndividualCategory> kumiteCategories) {
         Athlete athlete = findAthleteById(athleteReg.getAthleteId(), coach);
         AgeGroup ageGroup = categoryService.getAgeGroupByDateOfBirth(athlete.getUser().getBirthDate());
         Set<CategoryType> categoryTypes = categoryService.getCategoryTypeByMatchTypes(athleteReg.getMatchTypes());
