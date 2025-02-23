@@ -3,9 +3,10 @@ package ro.unibuc.fmi.karate_management_platform.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataBeltRange;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataCategory;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataCategoryType;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteDivisionRange;
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.category.CategoryRepository;
 
 import java.util.Optional;
@@ -30,13 +31,12 @@ class CategoryServiceTest {
         // Mock data
         KataCategory kataCategory = KataCategory.builder()
                 .id(1L)
-                .kataCategoryType(KataCategoryType.OPEN)
+                .kataBeltRange(KataBeltRange.OPEN)
                 .build();
 
         KumiteCategory kumiteCategory = KumiteCategory.builder()
                 .id(2L)
-                .weightMin((short) 60)
-                .weightMax((short) 80)
+                .kumiteDivisionRange(KumiteDivisionRange.BETWEEN_65_70KG)
                 .build();
 
         // Input IDs
@@ -60,7 +60,7 @@ class CategoryServiceTest {
         // Mock data
         KataCategory kataCategory = KataCategory.builder()
                 .id(1L)
-                .kataCategoryType(KataCategoryType.WHITE_TO_ORANGE)
+                .kataBeltRange(KataBeltRange.WHITE_TO_ORANGE)
                 .build();
 
         // Input IDs

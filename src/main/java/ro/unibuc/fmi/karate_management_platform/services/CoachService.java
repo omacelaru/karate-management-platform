@@ -48,4 +48,12 @@ public class CoachService {
 
         return coachRepository.save(coach);
     }
+
+    public Coach findCoachByEmail(String email) {
+        log.info("Finding coach by email: {}", email);
+        return coachRepository.findByUserEmail(email).orElseThrow(() -> {
+            log.error("Coach with email {} not found", email);
+            return new IllegalArgumentException("Coach with email " + email + " not found");
+        });
+    }
 }
