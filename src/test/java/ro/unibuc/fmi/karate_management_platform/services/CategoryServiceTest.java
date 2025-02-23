@@ -3,10 +3,10 @@ package ro.unibuc.fmi.karate_management_platform.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataBeltRange;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.individual.KataBeltRange;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.individual.KataIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.individual.KumiteIndividualCategory;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteDivisionRange;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.individual.KumiteDivisionRange;
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.category.CategoryRepository;
 
 import java.util.Optional;

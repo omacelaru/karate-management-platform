@@ -2,13 +2,14 @@ package ro.unibuc.fmi.karate_management_platform.models.competition.category.kum
 
 import org.junit.jupiter.api.Test;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.individual.KumiteDivisionRange;
 
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static ro.unibuc.fmi.karate_management_platform.models.athelte.Gender.FEMALE;
 import static ro.unibuc.fmi.karate_management_platform.models.athelte.Gender.MALE;
-import static ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteDivisionRange.*;
+import static ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.individual.KumiteDivisionRange.*;
 
 class KumiteDivisionRangeTest {
     @Test

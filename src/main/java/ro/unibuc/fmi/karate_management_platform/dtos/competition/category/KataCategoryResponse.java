@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataBeltRange;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.individual.KataBeltRange;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.individual.KataIndividualCategory;
 
 /**

@@ -2,7 +2,7 @@ package ro.unibuc.fmi.karate_management_platform.models.competition.category;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteDivisionType;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.individual.KumiteDivisionType;
 
 import java.util.Set;
 
