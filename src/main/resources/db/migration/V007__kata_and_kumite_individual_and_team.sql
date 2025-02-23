@@ -13,13 +13,14 @@ CREATE TABLE kata_individual_category
 
 CREATE TABLE kata_team_category
 (
-    id            BIGINT                      NOT NULL,
-    created_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    age_group     VARCHAR(255)                NOT NULL,
-    gender        VARCHAR(255)                NOT NULL,
-    category_type VARCHAR(30)                 NOT NULL,
-    is_default    BOOLEAN                     NOT NULL,
+    id             BIGINT                      NOT NULL,
+    created_at     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at     TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    age_group      VARCHAR(255)                NOT NULL,
+    gender         VARCHAR(255)                NOT NULL,
+    category_type  VARCHAR(30)                 NOT NULL,
+    is_default     BOOLEAN                     NOT NULL,
+    kata_team_type VARCHAR(255)                NOT NULL,
     CONSTRAINT pk_katateamcategory PRIMARY KEY (id)
 );
 
@@ -45,7 +46,7 @@ CREATE TABLE kumite_team_category
     gender           VARCHAR(255)                NOT NULL,
     category_type    VARCHAR(30)                 NOT NULL,
     is_default       BOOLEAN                     NOT NULL,
-    kumite_team_type SMALLINT,
+    kumite_team_type VARCHAR(255)                NOT NULL,
     CONSTRAINT pk_kumiteteamcategory PRIMARY KEY (id)
 );
 
