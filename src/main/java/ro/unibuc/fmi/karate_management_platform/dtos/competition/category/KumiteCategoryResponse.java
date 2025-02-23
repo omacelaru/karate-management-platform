@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteDivisionRange;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -12,6 +13,5 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 public final class KumiteCategoryResponse extends CategoryResponse {
-    private Short weightMin;
-    private Short weightMax;
+    private KumiteDivisionRange kumiteDivisionRange;
 }

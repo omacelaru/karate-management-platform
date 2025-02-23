@@ -17,6 +17,6 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.category.Cate
 @Entity
 public class KataCategory extends Category {
     @Enumerated(EnumType.STRING)
-    @Column(name = "kata_category_type", nullable = false)
-    private KataCategoryType kataCategoryType;
+    @Column(name = "kata_belt_range", nullable = false)
+    private KataBeltRange kataBeltRange;
 }

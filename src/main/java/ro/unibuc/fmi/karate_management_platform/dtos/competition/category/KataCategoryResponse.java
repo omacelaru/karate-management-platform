@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataCategoryType;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataBeltRange;
 
 /**
  * DTO for {@link ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataCategory}
@@ -16,5 +16,5 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata
 @AllArgsConstructor
 @SuperBuilder
 public final class KataCategoryResponse extends CategoryResponse {
-    private KataCategoryType kataCategoryType;
+    private KataBeltRange kataBeltRange;
 }

@@ -2,6 +2,8 @@ package ro.unibuc.fmi.karate_management_platform.models.competition.category.kum
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,9 +16,7 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.category.Cate
 @SuperBuilder
 @Entity
 public class KumiteCategory extends Category {
-    @Column(name = "weight_min", nullable = false)
-    private Short weightMin;
-
-    @Column(name = "weight_max", nullable = false)
-    private Short weightMax;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "kumite_division_range", nullable = false)
+    private KumiteDivisionRange kumiteDivisionRange;
 }
