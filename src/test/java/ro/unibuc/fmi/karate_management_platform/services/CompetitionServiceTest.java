@@ -37,6 +37,7 @@ class CompetitionServiceTest {
     private CategoryService categoryService;
     private MapperUtils mapperUtils;
     private OrganizerRepository organizerRepository;
+    private CoachService coachService;
 
     @BeforeEach
     void setUp() {
@@ -44,7 +45,8 @@ class CompetitionServiceTest {
         categoryService = mock(CategoryService.class);
         mapperUtils = mock(MapperUtils.class);
         organizerRepository = mock(OrganizerRepository.class);
-        competitionService = new CompetitionService(competitionRepository, categoryService, mapperUtils, organizerRepository);
+        coachService = mock(CoachService.class);
+        competitionService = new CompetitionService(competitionRepository, categoryService, mapperUtils, organizerRepository, coachService);
     }
 
     @Test
