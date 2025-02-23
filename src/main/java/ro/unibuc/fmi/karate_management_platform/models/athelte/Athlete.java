@@ -28,17 +28,21 @@ public class Athlete extends BaseEntity {
     @MapsId
     private User user;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "belt", nullable = false, length = 30)
+    private Belt belt;
+
     @Column(name = "height")
     @NotNull
     @Min(value = 50, message = "Height must be at least 50 cm")
     @Max(value = 250, message = "Height must be no greater than 250 cm")
-    private Integer height;
+    private Short height;
 
     @Column(name = "weight")
     @NotNull
     @Min(value = 20, message = "Weight must be at least 20 kg")
     @Max(value = 200, message = "Weight must be no greater than 200 kg")
-    private Integer weight;
+    private Short weight;
 
     @NotNull(message = "At least one coach is required")
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
