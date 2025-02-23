@@ -1,4 +1,4 @@
-package ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.individual;
+package ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -7,8 +7,8 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.CategoryType;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.individual.KataIndividualCategory;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.individual.KumiteIndividualCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.match.MatchType;
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.category.CategoryRepository;
 

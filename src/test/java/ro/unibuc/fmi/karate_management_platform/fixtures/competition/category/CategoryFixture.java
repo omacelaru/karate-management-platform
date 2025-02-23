@@ -1,8 +1,8 @@
 package ro.unibuc.fmi.karate_management_platform.fixtures.competition.category;
 
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.individual.KataBeltRange;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.individual.KataIndividualCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataBeltRange;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
 
 public class CategoryFixture {
 
