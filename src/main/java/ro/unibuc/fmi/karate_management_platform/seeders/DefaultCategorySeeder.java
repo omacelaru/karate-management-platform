@@ -6,13 +6,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Gender;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.CategoryType;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.IndividualCategoryType;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataBeltRange;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.kata.KataTeamCategory;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.kata.KataTeamType;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteDivisionRange;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteIndividualCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.TeamCategoryType;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.kata.KataTeamCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.kata.KataTeamType;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.kumite.KumiteTeamCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.kumite.KumiteTeamType;
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.category.KataIndividualCategoryRepository;
@@ -47,7 +48,7 @@ public class DefaultCategorySeeder implements CommandLineRunner {
             for (Gender gender : Gender.values()) {
                 for (KataBeltRange beltRange : kataBeltRanges) {
                     if (!kataIndividualCategoryRepository.existsByAgeGroupAndGenderAndKataBeltRange(ageGroup, gender, beltRange)) {
-                        KataIndividualCategory kataCategory = KataIndividualCategory.builder().ageGroup(ageGroup).gender(gender).kataBeltRange(beltRange).categoryType(CategoryType.KATA_INDIVIDUAL).isDefault(true).build();
+                        KataIndividualCategory kataCategory = KataIndividualCategory.builder().ageGroup(ageGroup).gender(gender).kataBeltRange(beltRange).categoryType(IndividualCategoryType.KATA_INDIVIDUAL).isDefault(true).build();
                         kataIndividualCategoryRepository.save(kataCategory);
                     }
                 }
@@ -60,7 +61,7 @@ public class DefaultCategorySeeder implements CommandLineRunner {
             for (Gender gender : Gender.values()) {
                 Set<KumiteDivisionRange> kumiteDivisionRanges = KumiteDivisionRange.getAvailableDivisions(ageGroup, gender);
                 for (KumiteDivisionRange kumiteDivisionRange : kumiteDivisionRanges) {
-                    KumiteIndividualCategory kumiteIndividualCategory = KumiteIndividualCategory.builder().ageGroup(ageGroup).gender(gender).categoryType(CategoryType.KUMITE_INDIVIDUAL).isDefault(true).kumiteDivisionRange(kumiteDivisionRange).build();
+                    KumiteIndividualCategory kumiteIndividualCategory = KumiteIndividualCategory.builder().ageGroup(ageGroup).gender(gender).categoryType(IndividualCategoryType.KUMITE_INDIVIDUAL).isDefault(true).kumiteDivisionRange(kumiteDivisionRange).build();
                     kumiteIndividualCategoryRepository.save(kumiteIndividualCategory);
                 }
             }
@@ -71,7 +72,7 @@ public class DefaultCategorySeeder implements CommandLineRunner {
         for (AgeGroup ageGroup : AgeGroup.values()) {
             for (Gender gender : Gender.values()) {
                 for (KataTeamType kataTeamType : KataTeamType.values()) {
-                    KataTeamCategory kataTeamCategory = KataTeamCategory.builder().ageGroup(ageGroup).gender(gender).categoryType(CategoryType.KATA_TEAM).isDefault(true).kataTeamType(kataTeamType).build();
+                    KataTeamCategory kataTeamCategory = KataTeamCategory.builder().ageGroup(ageGroup).gender(gender).categoryType(TeamCategoryType.KATA_TEAM).isDefault(true).kataTeamType(kataTeamType).build();
                     kataTeamCategoryRepository.save(kataTeamCategory);
                 }
             }
@@ -82,7 +83,7 @@ public class DefaultCategorySeeder implements CommandLineRunner {
         for (AgeGroup ageGroup : AgeGroup.values()) {
             for (Gender gender : Gender.values()) {
                 for (KumiteTeamType kumite : KumiteTeamType.values()) {
-                    KumiteTeamCategory kumiteTeamCategory = KumiteTeamCategory.builder().ageGroup(ageGroup).gender(gender).categoryType(CategoryType.KUMITE_TEAM).isDefault(true).kumiteTeamType(kumite).build();
+                    KumiteTeamCategory kumiteTeamCategory = KumiteTeamCategory.builder().ageGroup(ageGroup).gender(gender).categoryType(TeamCategoryType.KUMITE_TEAM).isDefault(true).kumiteTeamType(kumite).build();
                     kumiteTeamCategoryRepository.save(kumiteTeamCategory);
                 }
             }

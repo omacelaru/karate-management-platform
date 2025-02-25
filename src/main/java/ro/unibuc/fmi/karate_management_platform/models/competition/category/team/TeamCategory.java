@@ -24,4 +24,8 @@ public class TeamCategory extends Category {
             joinColumns = @JoinColumn(name = "team_category_id", referencedColumnName = "id", table = "category"),
             inverseJoinColumns = @JoinColumn(name = "team_id"))
     private Set<Team> teams = new LinkedHashSet<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category_type", nullable = false)
+    private TeamCategoryType categoryType;
 }

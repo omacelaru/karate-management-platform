@@ -6,10 +6,8 @@ import org.springframework.stereotype.Service;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.CategoryType;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteIndividualCategory;
-import ro.unibuc.fmi.karate_management_platform.models.competition.match.MatchType;
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.category.CategoryRepository;
 
 import java.time.LocalDate;
@@ -67,13 +65,13 @@ public class CategoryService {
         }
     }
 
-    public Set<CategoryType> getCategoryTypeByMatchTypes(Set<MatchType> matchTypes) {
-        log.info("Getting category type by match types {}", matchTypes);
-
-        return matchTypes.stream()
-                .map(MatchType::getCategoryType)
-                .collect(Collectors.toSet());
-    }
+//    public Set<CategoryType> getCategoryTypeByMatchTypes(Set<MatchType> matchTypes) {
+//        log.info("Getting category type by match types {}", matchTypes);
+//
+//        return matchTypes.stream()
+//                .map(MatchType::getCategoryType)
+//                .collect(Collectors.toSet());
+//    }
 
     public Set<KataIndividualCategory> getKataCategoriesFromCompetition(Competition competition) {
         return competition.getCategories().stream()

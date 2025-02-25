@@ -39,10 +39,6 @@ public abstract class Category {
     @Column(name = "gender", nullable = false)
     private Gender gender;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "category_type", nullable = false, length = 30)
-    private CategoryType categoryType;
-
     @Column(name = "is_default", nullable = false)
     private Boolean isDefault;
 

@@ -26,4 +26,8 @@ public abstract class IndividualCategory extends Category {
     @ToString.Exclude
     @Column(name = "athletes", nullable = false)
     private Set<Athlete> athletes = new LinkedHashSet<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category_type", nullable = false)
+    private IndividualCategoryType categoryType;
 }

@@ -15,7 +15,6 @@ import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.CategoryType;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.organizer.Organizer;
@@ -93,7 +92,7 @@ public class CompetitionService {
                                  Set<KataIndividualCategory> kataCategories, Set<KumiteIndividualCategory> kumiteCategories) {
         Athlete athlete = findAthleteById(athleteReg.getAthleteId(), coach);
         AgeGroup ageGroup = categoryService.getAgeGroupByDateOfBirth(athlete.getUser().getBirthDate());
-        Set<CategoryType> categoryTypes = categoryService.getCategoryTypeByMatchTypes(athleteReg.getMatchTypes());
+//        Set<CategoryType> categoryTypes = categoryService.getCategoryTypeByMatchTypes(athleteReg.getMatchTypes());
 
 //        if (categoryTypes.contains(CategoryType.KUMITE_INDIVIDUAL)) {
 //            registerAthleteToKumite(athlete, ageGroup, kumiteCategories);
