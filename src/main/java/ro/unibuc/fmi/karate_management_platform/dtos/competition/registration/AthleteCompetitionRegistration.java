@@ -2,8 +2,8 @@ package ro.unibuc.fmi.karate_management_platform.dtos.competition.registration;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,12 +28,13 @@ public class AthleteCompetitionRegistration {
     private Long athleteId;
 
     @Builder.Default
-    @NotEmpty
+    //TODO validate for more than 2 categories
+    @Size(max = 2, message = "Maximum two individual categories are allowed")
     @Schema(description = "Set of individual categories the athlete is registered for", example = "[\"KATA_INDIVIDUAL\", \"KUMITE_INDIVIDUAL\"]")
     private Set<IndividualCategoryType> individualCategories = Collections.emptySet();
 
     @Builder.Default
-    @NotEmpty
+    @Size(max = 2, message = "Maximum two team categories are allowed")
     @Schema(description = "Map of team categories and associated team member IDs", example = "{\"KATA_TEAM\": [1001, 1002], \"KUMITE_TEAM\": [2001, 2002]}")
     private Map<TeamCategoryType, Set<Long>> teamCategories = Collections.emptyMap();
 }
