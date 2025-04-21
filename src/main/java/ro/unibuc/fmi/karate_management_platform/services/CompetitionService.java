@@ -8,15 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResponse;
-import ro.unibuc.fmi.karate_management_platform.dtos.competition.registration.AthleteCompetitionRegistration;
-import ro.unibuc.fmi.karate_management_platform.dtos.competition.registration.RegistrationRequest;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.registration.CompetitionRegistrationRequest;
+import ro.unibuc.fmi.karate_management_platform.manager.AthleteCategoryRegistrationManager;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.organizer.Organizer;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.repositories.OrganizerRepository;
@@ -33,6 +30,7 @@ public class CompetitionService {
     private final CategoryService categoryService;
     private final MapperUtils mapperUtils;
     private final OrganizerRepository organizerRepository;
+    private final AthleteCategoryRegistrationManager athleteCategoryRegistrationManager;
     private final CoachService coachService;
 
     @Transactional
@@ -66,40 +64,27 @@ public class CompetitionService {
     }
 
     @Transactional
-    public CompetitionResponse registerAthletesToCompetition(User user, Long competitionId, RegistrationRequest registrationRequest) {
-        log.info("Registering athletes to competition with ID {}", competitionId);
+    public CompetitionResponse registerAthletesToCompetition(User user, Long competitionId, CompetitionRegistrationRequest competitionRegistrationRequest) {
+        log.info("Registering athletes from coach {} to competition with ID {}", user.getEmail(), competitionId);
 
         Coach coach = coachService.findCoachByEmail(user.getEmail());
         Competition competition = findCompetitionById(competitionId);
 
-        Set<KataIndividualCategory> kataCategories = categoryService.getKataCategoriesFromCompetition(competition);
-        Set<KumiteIndividualCategory> kumiteCategories = categoryService.getKumiteCategoriesFromCompetition(competition);
+        // Remove athletes that are not coached by the coach (checked also for team members)
+        competitionRegistrationRequest.individualCategories().keySet()
+                .forEach(athleteId -> {
+                    if (coach.getAthletes().stream().noneMatch(athlete -> athlete.getId().equals(athleteId))) {
 
-        registrationRequest.athletes().stream()
-                .filter(athleteReg -> isAthleteCoachedBy(athleteReg.getAthleteId(), coach))
-                .forEach(athleteReg -> registerAthlete(athleteReg, coach, kataCategories, kumiteCategories));
+                        log.warn("Athlete with ID {} is not coached by the coach", athleteId);
+                    }
+                });
+        Competition competitionUpdated = athleteCategoryRegistrationManager.registerAthletesToCompetition(competitionRegistrationRequest, coach, competition);
 
-        competitionRepository.save(competition);
+        competitionRepository.save(competitionUpdated);
 
-        return mapperUtils.mapToCompetitionResponse(competition);
+        return mapperUtils.mapToCompetitionResponse(competitionUpdated);
     }
 
-    private boolean isAthleteCoachedBy(Long athleteId, Coach coach) {
-        return coach.getAthletes().stream().anyMatch(athlete -> athlete.getId().equals(athleteId));
-    }
-
-    private void registerAthlete(AthleteCompetitionRegistration athleteReg, Coach coach,
-                                 Set<KataIndividualCategory> kataCategories, Set<KumiteIndividualCategory> kumiteCategories) {
-        Athlete athlete = findAthleteById(athleteReg.getAthleteId(), coach);
-        AgeGroup ageGroup = categoryService.getAgeGroupByDateOfBirth(athlete.getUser().getBirthDate());
-//        Set<CategoryType> categoryTypes = categoryService.getCategoryTypeByMatchTypes(athleteReg.getMatchTypes());
-
-//        if (categoryTypes.contains(CategoryType.KUMITE_INDIVIDUAL)) {
-//            registerAthleteToKumite(athlete, ageGroup, kumiteCategories);
-//        } else {
-//            registerAthleteToKata(athlete, ageGroup, kataCategories);
-//        }
-    }
 
     private Athlete findAthleteById(Long athleteId, Coach coach) {
         return coach.getAthletes().stream()

@@ -2,6 +2,7 @@ package ro.unibuc.fmi.karate_management_platform.models.competition.category.ind
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Gender;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
 
@@ -80,5 +81,13 @@ public enum KumiteDivisionRange {
                 .filter(division -> division.rangeCheck.apply(value))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No matching division found for the given criteria."));
+    }
+
+    public static KumiteDivisionRange getKumiteDivisionRange(Athlete athlete, AgeGroup ageGroup) {
+        if (KumiteDivisionType.HEIGHT.equals(ageGroup.getKumiteDivisionType())) {
+            return getAvailableDivisions(ageGroup, athlete.getUser().getGender(), athlete.getHeight());
+        } else {
+            return getAvailableDivisions(ageGroup, athlete.getUser().getGender(), athlete.getWeight());
+        }
     }
 }

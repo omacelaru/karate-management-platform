@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResponse;
-import ro.unibuc.fmi.karate_management_platform.dtos.competition.registration.RegistrationRequest;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.registration.CompetitionRegistrationRequest;
 import ro.unibuc.fmi.karate_management_platform.exceptions.ApiError;
 import ro.unibuc.fmi.karate_management_platform.models.user.Role;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
@@ -72,7 +72,7 @@ public class CompetitionResource {
     public ResponseEntity<CompetitionResponse> registerAthletesToCompetition(
             @AuthenticationPrincipal User user,
             @PathVariable Long competitionId,
-            @RequestBody @Valid RegistrationRequest registrationRequest) {
-        return ResponseEntity.ok(competitionService.registerAthletesToCompetition(user, competitionId, registrationRequest));
+            @RequestBody @Valid CompetitionRegistrationRequest competitionRegistrationRequest) {
+        return ResponseEntity.ok(competitionService.registerAthletesToCompetition(user, competitionId, competitionRegistrationRequest));
     }
 }

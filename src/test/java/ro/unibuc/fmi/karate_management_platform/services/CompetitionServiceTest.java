@@ -12,6 +12,7 @@ import ro.unibuc.fmi.karate_management_platform.fixtures.competition.Competition
 import ro.unibuc.fmi.karate_management_platform.fixtures.competition.CompetitionRequestFixture;
 import ro.unibuc.fmi.karate_management_platform.fixtures.competition.category.CategoryFixture;
 import ro.unibuc.fmi.karate_management_platform.fixtures.organizer.OrganizerFixture;
+import ro.unibuc.fmi.karate_management_platform.manager.AthleteCategoryRegistrationManager;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
 import ro.unibuc.fmi.karate_management_platform.models.organizer.Organizer;
@@ -37,6 +38,7 @@ class CompetitionServiceTest {
     private CategoryService categoryService;
     private MapperUtils mapperUtils;
     private OrganizerRepository organizerRepository;
+    private AthleteCategoryRegistrationManager athleteCategoryRegistrationManager;
     private CoachService coachService;
 
     @BeforeEach
@@ -45,8 +47,9 @@ class CompetitionServiceTest {
         categoryService = mock(CategoryService.class);
         mapperUtils = mock(MapperUtils.class);
         organizerRepository = mock(OrganizerRepository.class);
+        athleteCategoryRegistrationManager = mock(AthleteCategoryRegistrationManager.class);
         coachService = mock(CoachService.class);
-        competitionService = new CompetitionService(competitionRepository, categoryService, mapperUtils, organizerRepository, coachService);
+        competitionService = new CompetitionService(competitionRepository, categoryService, mapperUtils, organizerRepository, athleteCategoryRegistrationManager, coachService);
     }
 
     @Test

@@ -36,7 +36,7 @@ public enum KataBeltRange {
         }
     }
 
-    public static KataBeltRange getKataBeltRange(String belt) {
+    public static KataBeltRange getKataBeltRangeByBelt(String belt) {
         if (belt.equals("WHITE") || belt.equals("YELLOW") || belt.equals("ORANGE")) {
             return WHITE_TO_ORANGE;
         } else if (belt.equals("GREEN") || belt.equals("BLUE")) {
