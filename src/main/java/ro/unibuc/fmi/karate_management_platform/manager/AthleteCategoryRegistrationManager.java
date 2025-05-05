@@ -17,18 +17,23 @@ public class AthleteCategoryRegistrationManager {
     private final CompetitionRepository competitionRepository;
 
     public Competition registerAthletesToCompetition(CompetitionRegistrationRequest competitionRegistrationRequest, Coach coach, Competition competition) {
-        competitionRegistrationRequest.individualCategories().forEach(
-                (athleteId, individualCategoryType) -> {
-                    var strategy = strategyFactory.getStrategy(individualCategoryType);
-                    strategy.register(athleteId, competition);
-                }
-        );
-        competitionRegistrationRequest.teamCategories().forEach(
-                (teamId, teamCategoryType) -> {
-                    var strategy = strategyFactory.getStrategy(teamCategoryType);
-                    strategy.register(teamId, competition);
-                }
-        );
+        competitionRegistrationRequest.individualCategories()
+                .forEach(
+                        (athleteId, individualCategoryType) ->
+                                individualCategoryType.forEach(categoryType -> {
+                                    var strategy = strategyFactory.getStrategy(categoryType);
+                                    strategy.register(athleteId, competition);
+                                })
+                );
+        competitionRegistrationRequest.teamCategories()
+                .forEach(
+                        (teamId, teamCategoryType) -> {
+                            teamCategoryType.forEach(categoryType -> {
+                                var strategy = strategyFactory.getStrategy(categoryType);
+                                strategy.register(teamId, competition);
+                            });
+                        }
+                );
         return competitionRepository.save(competition);
     }
 }

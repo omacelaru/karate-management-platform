@@ -30,6 +30,8 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteIndividualCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.kata.KataTeamCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.kumite.KumiteTeamCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.match.*;
 import ro.unibuc.fmi.karate_management_platform.models.organizer.Organizer;
 import ro.unibuc.fmi.karate_management_platform.models.referee.Referee;
@@ -129,18 +131,24 @@ public interface MapperUtils {
 
     CompetitionResponse mapToCompetitionResponse(Competition competition);
 
-    KataCategoryResponse mapToKataCategoryResponse(KataIndividualCategory kataIndividualCategory);
+    KataCategoryResponse mapToKataIndividualCategoryResponse(KataIndividualCategory kataIndividualCategory);
 
-    KumiteCategoryResponse mapToKumiteCategoryResponse(KumiteIndividualCategory kumiteIndividualCategory);
+    KumiteCategoryResponse mapToKumiteIndividualCategoryResponse(KumiteIndividualCategory kumiteIndividualCategory);
+
+    KataCategoryResponse mapToKataTeamCategoryResponse(KataTeamCategory kataTeamCategory);
+
+    KumiteCategoryResponse mapToKumiteTeamCategoryResponse(KumiteTeamCategory kumiteTeamCategory);
 
     default CategoryResponse mapCategory(Category category) {
-        if (category instanceof KataIndividualCategory) {
-            return mapToKataCategoryResponse((KataIndividualCategory) category);
-        } else if (category instanceof KumiteIndividualCategory) {
-            return mapToKumiteCategoryResponse((KumiteIndividualCategory) category);
-        } else {
-            throw new IllegalArgumentException("Unknown category type: " + category.getClass());
-        }
+        return switch (category) {
+            case KataIndividualCategory kataIndividualCategory ->
+                    mapToKataIndividualCategoryResponse(kataIndividualCategory);
+            case KumiteIndividualCategory kumiteIndividualCategory ->
+                    mapToKumiteIndividualCategoryResponse(kumiteIndividualCategory);
+            case KataTeamCategory kataTeamCategory -> mapToKataTeamCategoryResponse(kataTeamCategory);
+            case KumiteTeamCategory kumiteTeamCategory -> mapToKumiteTeamCategoryResponse(kumiteTeamCategory);
+            default -> throw new IllegalArgumentException("Unknown category type: " + category.getClass());
+        };
     }
 
     IndividualKataMatchResponse mapToIndividualKataMatchResponse(IndividualKataMatch individualKataMatch);

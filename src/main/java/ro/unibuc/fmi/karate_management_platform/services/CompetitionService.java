@@ -120,4 +120,5 @@ public class CompetitionService {
             return new IllegalArgumentException("Competition not found");
         });
     }
+
 }

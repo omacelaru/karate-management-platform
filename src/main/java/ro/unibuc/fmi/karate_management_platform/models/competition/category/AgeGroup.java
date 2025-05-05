@@ -28,4 +28,26 @@ public enum AgeGroup {
             VETERANS_35_44, VETERANS_45_64, VETERANS_65_PLUS);
 
     public static final Set<AgeGroup> ADULT_AGE_GROUPS = Set.of(CADETS_13_14, JUNIORS_15_17, SENIORS_18_34, VETERANS_35_44, VETERANS_45_64, VETERANS_65_PLUS);
+
+    public static AgeGroup getAgeGroupByAge(int age) {
+        if (age < 7) {
+            return AgeGroup.CHILDREN_U7;
+        } else if (age <= 9) {
+            return AgeGroup.CHILDREN_7_9;
+        } else if (age <= 12) {
+            return AgeGroup.CHILDREN_10_12;
+        } else if (age <= 14) {
+            return AgeGroup.CADETS_13_14;
+        } else if (age <= 17) {
+            return AgeGroup.JUNIORS_15_17;
+        } else if (age <= 34) {
+            return AgeGroup.SENIORS_18_34;
+        } else if (age <= 44) {
+            return AgeGroup.VETERANS_35_44;
+        } else if (age <= 64) {
+            return AgeGroup.VETERANS_45_64;
+        } else {
+            return AgeGroup.VETERANS_65_PLUS;
+        }
+    }
 }

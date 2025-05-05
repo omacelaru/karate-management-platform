@@ -1,8 +1,53 @@
 package ro.unibuc.fmi.karate_management_platform.strategies.competitionRegistration;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
+import ro.unibuc.fmi.karate_management_platform.models.athelte.Gender;
+import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteDivisionRange;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteIndividualCategory;
+import ro.unibuc.fmi.karate_management_platform.services.AthleteService;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
 public class KumiteIndividualCategoryRegistrationStrategy implements CompetitionRegistrationStrategy {
+    private final AthleteService athleteService;
+
     @Override
-    public void register(Long id, ro.unibuc.fmi.karate_management_platform.models.competition.Competition competition) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    public void register(Long id, Competition competition) {
+        Athlete athlete = athleteService.getAthleteById(id);
+
+        AgeGroup ageGroup = athleteService.getAgeGroup(athlete, competition.getDate());
+        Gender gender = athlete.getUser().getGender();
+
+        KumiteDivisionRange kumiteDivisionRange = KumiteDivisionRange.getKumiteDivisionRange(athlete, ageGroup);
+
+        KumiteIndividualCategory kumiteIndividualCategory = competition.getCategories().stream()
+                .filter(category -> category instanceof KumiteIndividualCategory)
+                .map(category -> (KumiteIndividualCategory) category)
+                .filter(category -> category.getAgeGroup().equals(ageGroup))
+                .filter(category -> category.getKumiteDivisionRange().equals(kumiteDivisionRange))
+                .filter(category -> category.getGender().equals(gender))
+                .findFirst()
+                .orElse(competition.getCategories().stream()
+                        .filter(category -> category instanceof KumiteIndividualCategory)
+                        .map(category -> (KumiteIndividualCategory) category)
+                        .filter(category -> category.getAgeGroup().equals(ageGroup))
+                        .filter(category -> category.getKumiteDivisionRange().equals(KumiteDivisionRange.OPEN))
+                        .filter(category -> category.getGender().equals(gender))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("No category found for athlete")));
+
+        if (kumiteIndividualCategory.getAthletes().contains(athlete)) {
+            log.info("Athlete {} is already registered in category {}", athlete.getId(), kumiteIndividualCategory.getId());
+            throw new IllegalArgumentException("Athlete is already registered in this category");
+        } else {
+            kumiteIndividualCategory.getAthletes().add(athlete);
+            log.info("Athlete {} registered in category {}", athlete.getId(), kumiteIndividualCategory.getId());
+        }
     }
 }

@@ -58,9 +58,10 @@ public enum KumiteDivisionRange {
     OVER_60KG(Map.of(AgeGroup.CADETS_13_14, ALL_GENDERS(), AgeGroup.JUNIORS_15_17, FEMALE()), "Over 60kg", KumiteDivisionType.WEIGHT, weight -> weight >= 60),
 
     OVER_65KG(Map.of(AgeGroup.JUNIORS_15_17, MALE(), AgeGroup.SENIORS_18_34, FEMALE()), "Over 65kg", KumiteDivisionType.WEIGHT, weight -> weight >= 65),
-
     OVER_75KG(Map.of(AgeGroup.SENIORS_18_34, MALE(), AgeGroup.VETERANS_35_44, ALL_GENDERS(), AgeGroup.VETERANS_45_64, ALL_GENDERS(), AgeGroup.VETERANS_65_PLUS, ALL_GENDERS()),
-            "Over 75kg", KumiteDivisionType.WEIGHT, weight -> weight >= 75);
+            "Over 75kg", KumiteDivisionType.WEIGHT, weight -> weight >= 75),
+
+    OPEN(Map.of(AgeGroup.CHILDREN_U7, ALL_GENDERS(), AgeGroup.CHILDREN_7_9, ALL_GENDERS(), AgeGroup.CHILDREN_10_12, ALL_GENDERS(), AgeGroup.CADETS_13_14, ALL_GENDERS(), AgeGroup.JUNIORS_15_17, ALL_GENDERS(), AgeGroup.SENIORS_18_34, ALL_GENDERS(), AgeGroup.VETERANS_35_44, ALL_GENDERS(), AgeGroup.VETERANS_45_64, ALL_GENDERS(), AgeGroup.VETERANS_65_PLUS, ALL_GENDERS()), "Open", KumiteDivisionType.HEIGHT, height -> true);
 
     private final Map<AgeGroup, Set<Gender>> genderAgeGroupMap;
     private final String value;
@@ -90,4 +91,4 @@ public enum KumiteDivisionRange {
             return getAvailableDivisions(ageGroup, athlete.getUser().getGender(), athlete.getWeight());
         }
     }
-}
+    }

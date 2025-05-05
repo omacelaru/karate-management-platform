@@ -11,11 +11,14 @@ import ro.unibuc.fmi.karate_management_platform.dtos.athlete.AthleteResponse;
 import ro.unibuc.fmi.karate_management_platform.exceptions.IncompleteProfileException;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
 import ro.unibuc.fmi.karate_management_platform.models.user.Role;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.repositories.AthleteRepository;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Set;
 
 @Slf4j
@@ -59,4 +62,31 @@ public class AthleteService {
         log.info("Updating athlete with id: {}", athlete.getId());
         athleteRepository.save(athlete);
     }
+
+    public Athlete getAthleteById(Long athleteId) throws IllegalArgumentException {
+        log.info("Getting athlete by ID {}", athleteId);
+        return athleteRepository.findById(athleteId).orElseThrow(() -> {
+            log.error("Athlete with ID {} not found", athleteId);
+            return new IllegalArgumentException("Athlete with ID " + athleteId + " not found");
+        });
+    }
+
+    public AgeGroup getAgeGroup(Athlete athlete, LocalDate competitionStartDate) {
+        if (athlete == null || competitionStartDate == null) {
+            throw new IllegalArgumentException("Athlete and competition start date must not be null");
+        }
+
+        LocalDate birthDate = athlete.getUser().getBirthDate();
+        if (birthDate == null) {
+            throw new IllegalArgumentException("Athlete's birth date must not be null");
+        }
+
+        int age = Period.between(birthDate, competitionStartDate).getYears();
+
+        log.info("Calculating age group for athlete with ID={} (birthDate={}) and competitionStartDate={}. Calculated age: {}",
+                athlete.getId(), birthDate, competitionStartDate, age);
+
+        return AgeGroup.getAgeGroupByAge(age);
+    }
+
 }
