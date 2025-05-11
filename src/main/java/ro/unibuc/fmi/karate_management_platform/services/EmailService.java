@@ -125,7 +125,7 @@ public class EmailService {
     public void sendConfirmationEmail(String email, String token) {
         log.info("Sending confirmation email to: {}", email);
         String subject = "Confirm Your Email - Karate Club";
-        String confirmationLink = domainUrl + "/auth/complete-registration?token=" + token;
+        String confirmationLink = domainUrl + "/auth/confirm-email?token=" + token;
         String htmlContent = """
             <!DOCTYPE html>
             <html>
@@ -146,9 +146,9 @@ public class EmailService {
                     </div>
                     <div class="content">
                         <p>Dear User,</p>
-                        <p>Thank you for registering. Please complete your registration by clicking the button below:</p>
+                        <p>Thank you for registering. Please confirm your email by clicking the button below:</p>
                         <p style="text-align: center;">
-                            <a href="%s" class="button">Complete Registration</a>
+                            <a href="%s" class="button">Confirm Email</a>
                         </p>
                         <p>If you did not create an account, please ignore this email.</p>
                     </div>
