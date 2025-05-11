@@ -20,6 +20,10 @@ public class WebConfig implements WebMvcConfigurer {
         configuration.addAllowedOrigin(frontendUrl);
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
+        configuration.setAllowCredentials(true);
+        configuration.addExposedHeader("Authorization");
+        configuration.addExposedHeader("Content-Type");
+        configuration.addExposedHeader("Accept");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

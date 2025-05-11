@@ -59,7 +59,7 @@ domain:
 
 # Frontend Configuration
 frontend:
-  url: http://localhost:5173
+  url: http://localhost:3000
 
 # Actuator Configuration
 management:
