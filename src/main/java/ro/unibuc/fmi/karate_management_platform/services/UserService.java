@@ -98,4 +98,10 @@ public class UserService {
     public void updateUser(User user) {
         userRepository.save(user);
     }
+
+    @Transactional
+    public void confirmEmail(User user) {
+        user.setEmailConfirmed(true);
+        userRepository.save(user);
+    }
 }

@@ -58,6 +58,9 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "profile_picture_url")
     private String profilePictureUrl;
 
+    @Column(name = "email_confirmed", nullable = false)
+    private boolean emailConfirmed = false;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.copyOf(roles.stream().map(role -> new SimpleGrantedAuthority(role.name())).toList());

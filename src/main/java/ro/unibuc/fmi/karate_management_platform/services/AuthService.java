@@ -21,12 +21,19 @@ public class AuthService {
     private final JwtTokenService jwtTokenService;
     private final AuthenticationManager authenticationManager;
     private final MapperUtils mapperUtils;
+    private final EmailService emailService;
 
     @Transactional
     public AuthResponse login(AuthRequest authRequest) {
         log.info("Logging in user with email: {}", authRequest.email());
+        User user = userService.findByEmail(authRequest.email())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        if (!user.isEmailConfirmed()) {
+            throw new RuntimeException("Please confirm your email before logging in");
+        }
+        
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.email(), authRequest.password()));
-        User user = userService.findByEmail(authRequest.email()).orElseThrow();
         String accessToken = jwtTokenService.generateAccessToken(user);
         String refreshToken = jwtTokenService.generateRefreshToken(user);
         return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
@@ -36,9 +43,24 @@ public class AuthService {
     public AuthResponse register(AuthRequest authRequest) {
         log.info("Registering user with email: {}", authRequest.email());
         User user = userService.createUser(authRequest);
+        
+        // Generate confirmation token
+        String confirmationToken = jwtTokenService.generateEmailConfirmationToken(user);
+        
+        // Send confirmation email
+        emailService.sendConfirmationEmail(user.getEmail(), confirmationToken);
+        
         String accessToken = jwtTokenService.generateAccessToken(user);
         String refreshToken = jwtTokenService.generateRefreshToken(user);
         return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
+    }
+
+    @Transactional
+    public void confirmEmail(String token) {
+        String email = jwtTokenService.validateEmailConfirmationToken(token);
+        User user = userService.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        userService.confirmEmail(user);
     }
 
     public AuthResponse refreshToken(User user, HttpServletRequest request) {

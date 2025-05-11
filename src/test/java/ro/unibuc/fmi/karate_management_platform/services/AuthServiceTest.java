@@ -24,6 +24,7 @@ class AuthServiceTest {
     private JwtTokenService jwtTokenService;
     private AuthenticationManager authenticationManager;
     private MapperUtils mapperUtils;
+    private EmailService emailService;
 
     @BeforeEach
     void setUp() {
@@ -31,7 +32,7 @@ class AuthServiceTest {
         jwtTokenService = mock(JwtTokenService.class);
         authenticationManager = mock(AuthenticationManager.class);
         mapperUtils = mock(MapperUtils.class);
-        authService = new AuthService(userService, jwtTokenService, authenticationManager, mapperUtils);
+        authService = new AuthService(userService, jwtTokenService, authenticationManager, mapperUtils,emailService);
     }
 
     @Test

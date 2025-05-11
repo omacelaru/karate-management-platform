@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ro.unibuc.fmi.karate_management_platform.dtos.auth.AuthRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.auth.AuthResponse;
@@ -80,6 +81,18 @@ public class AuthResource {
             @RequestBody ResetPasswordRequest request
     ) {
         return ResponseEntity.ok(authService.resetPassword(user, request));
+    }
+
+    @Operation(summary = "Confirm email",
+            description = "Confirms user's email address",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Email confirmed successfully"),
+                    @ApiResponse(responseCode = "400", description = "Invalid or expired token", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
+            })
+    @PostMapping("/confirm-email")
+    public ResponseEntity<Void> confirmEmail(@RequestParam String token) {
+        authService.confirmEmail(token);
+        return ResponseEntity.ok().build();
     }
 
 }
