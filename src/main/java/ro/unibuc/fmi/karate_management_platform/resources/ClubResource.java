@@ -34,11 +34,13 @@ public class ClubResource {
     private final ClubCreationStrategyFactory clubCreationStrategyFactory;
 
     @Operation(summary = "Get all clubs paginated",
-            description = "Get all clubs paginated with the given page and size")
+            description = "Get all clubs paginated with the given page and size. Optionally filter by name using a case-insensitive search.")
     @ApiResponse(responseCode = "200", description = "Return all clubs paginated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PagedModel.class)))
     @GetMapping
-    public ResponseEntity<Page<ClubWithCoachesResponse>> getAllClubs(Pageable pageable) {
-        return ResponseEntity.ok(clubService.getAllClubs(pageable));
+    public ResponseEntity<Page<ClubWithCoachesResponse>> getAllClubs(
+            @RequestParam(required = false) String name,
+            Pageable pageable) {
+        return ResponseEntity.ok(clubService.getAllClubs(name, pageable));
     }
 
     @Operation(
