@@ -34,6 +34,15 @@ public class ClubService {
         return clubRepository.findAll(pageable).map(mapperUtils::mapToClubWithCoachesResponse);
     }
 
+    public Page<ClubWithCoachesResponse> getAllClubs(String name, Pageable pageable) {
+        log.info("Getting all clubs with name filter: {}", name);
+        if (name != null && !name.trim().isEmpty()) {
+            return clubRepository.findByNameContainingIgnoreCase(name.trim(), pageable)
+                    .map(mapperUtils::mapToClubWithCoachesResponse);
+        }
+        return getAllClubs(pageable);
+    }
+
     @Transactional
     public ClubResponse createClubByAdmin(User user, @Valid ClubRequest clubRequest) {
         log.info("Creating club {} by user-admin {}", clubRequest, user);
