@@ -3,9 +3,10 @@ package ro.unibuc.fmi.karate_management_platform.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataCategory;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataCategoryType;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kumite.KumiteCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataBeltRange;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteIndividualCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteDivisionRange;
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.category.CategoryRepository;
 
 import java.util.Optional;
@@ -28,29 +29,28 @@ class CategoryServiceTest {
     @Test
     void getCategoriesByIds_shouldReturnAllCategoriesWhenFound() {
         // Mock data
-        KataCategory kataCategory = KataCategory.builder()
+        KataIndividualCategory kataIndividualCategory = KataIndividualCategory.builder()
                 .id(1L)
-                .kataCategoryType(KataCategoryType.OPEN)
+                .kataBeltRange(KataBeltRange.OPEN)
                 .build();
 
-        KumiteCategory kumiteCategory = KumiteCategory.builder()
+        KumiteIndividualCategory kumiteIndividualCategory = KumiteIndividualCategory.builder()
                 .id(2L)
-                .weightMin((short) 60)
-                .weightMax((short) 80)
+                .kumiteDivisionRange(KumiteDivisionRange.BETWEEN_65_70KG)
                 .build();
 
         // Input IDs
         Set<Long> ids = Set.of(1L, 2L);
 
         // Mock repository behavior
-        when(categoryRepository.findById(1L)).thenReturn(Optional.of(kataCategory));
-        when(categoryRepository.findById(2L)).thenReturn(Optional.of(kumiteCategory));
+        when(categoryRepository.findById(1L)).thenReturn(Optional.of(kataIndividualCategory));
+        when(categoryRepository.findById(2L)).thenReturn(Optional.of(kumiteIndividualCategory));
 
         // Execute
         Set<Category> result = categoryService.getCategoriesByIds(ids);
 
         // Verify
-        assertThat(result).containsExactlyInAnyOrder(kataCategory, kumiteCategory);
+        assertThat(result).containsExactlyInAnyOrder(kataIndividualCategory, kumiteIndividualCategory);
         verify(categoryRepository).findById(1L);
         verify(categoryRepository).findById(2L);
     }
@@ -58,23 +58,23 @@ class CategoryServiceTest {
     @Test
     void getCategoriesByIds_shouldReturnOnlyExistingCategories() {
         // Mock data
-        KataCategory kataCategory = KataCategory.builder()
+        KataIndividualCategory kataIndividualCategory = KataIndividualCategory.builder()
                 .id(1L)
-                .kataCategoryType(KataCategoryType.WHITE_TO_ORANGE)
+                .kataBeltRange(KataBeltRange.WHITE_TO_ORANGE)
                 .build();
 
         // Input IDs
         Set<Long> ids = Set.of(1L, 2L);
 
         // Mock repository behavior
-        when(categoryRepository.findById(1L)).thenReturn(Optional.of(kataCategory));
+        when(categoryRepository.findById(1L)).thenReturn(Optional.of(kataIndividualCategory));
         when(categoryRepository.findById(2L)).thenReturn(Optional.empty());
 
         // Execute
         Set<Category> result = categoryService.getCategoriesByIds(ids);
 
         // Verify
-        assertThat(result).containsExactly(kataCategory);
+        assertThat(result).containsExactly(kataIndividualCategory);
         verify(categoryRepository).findById(1L);
         verify(categoryRepository).findById(2L);
     }

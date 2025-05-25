@@ -10,6 +10,7 @@ import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.referee.RefereeRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.user.UserDetailsRequest;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
+import ro.unibuc.fmi.karate_management_platform.models.athelte.Belt;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Gender;
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.embedded.TRN.TaxRegistrationNumber;
@@ -74,11 +75,20 @@ public class UserSeeder implements CommandLineRunner {
         createGenericUser("chris.organizer1@karate.com", "Chris", "Miller", Role.ORGANIZER, createOrganizerRequest());
         createGenericUser("natalie.organizer2@karate.com", "Natalie", "Harris", Role.ORGANIZER, createOrganizerRequest());
 
+        createAdminUser();
+
         for (Athlete athlete : seededAthletes) {
             Coach assignedCoach = seededCoaches.get(random.nextInt(seededCoaches.size()));
             athlete.setCoaches(new HashSet<>(List.of(assignedCoach)));
             athleteService.updateAthlete(athlete);
         }
+    }
+
+    private void createAdminUser() {
+        User user = userService.createUser("admin", PASSWORD);
+        updateUser("admin", "admin", "admin");
+        user.addRole(Role.ADMIN);
+        userService.updateUser(user);
     }
 
     private Athlete createAthlete(String email, String firstName, String lastName) {
@@ -121,7 +131,8 @@ public class UserSeeder implements CommandLineRunner {
         return new AthleteRequest(
                 (long) (random.nextInt(10) + 1),
                 random.nextInt(200 - 50) + 50,
-                random.nextInt(150 - 20) + 20
+                random.nextInt(150 - 20) + 20,
+                Belt.GREEN
         );
     }
 

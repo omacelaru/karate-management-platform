@@ -1,10 +1,14 @@
 package ro.unibuc.fmi.karate_management_platform.dtos.athlete;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import ro.unibuc.fmi.karate_management_platform.models.athelte.Belt;
 
 import java.io.Serializable;
 
@@ -28,6 +32,11 @@ public record AthleteRequest(
         @NotNull
         @Min(message = "Weight must be at least 20 kg", value = 20)
         @Max(message = "Weight must be no greater than 200 kg", value = 200)
-        Integer weight
+        Integer weight,
+
+        @Enumerated(EnumType.STRING)
+        @Column(name = "belt", nullable = false)
+        Belt belt
 ) implements Serializable {
+
 }

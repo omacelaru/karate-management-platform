@@ -1,4 +1,4 @@
-package ro.unibuc.fmi.karate_management_platform.models.competition.category.kata;
+package ro.unibuc.fmi.karate_management_platform.models.competition.category.team.kata;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,15 +8,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.TeamCategory;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @SuperBuilder
 @Entity
-public class KataCategory extends Category {
+public class KataTeamCategory extends TeamCategory {
     @Enumerated(EnumType.STRING)
-    @Column(name = "kata_category_type", nullable = false)
-    private KataCategoryType kataCategoryType;
+    @Column(name = "kata_team_type", nullable = false)
+    private KataTeamType kataTeamType;
 }

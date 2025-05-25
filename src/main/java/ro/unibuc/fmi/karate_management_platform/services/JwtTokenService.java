@@ -1,6 +1,5 @@
 package ro.unibuc.fmi.karate_management_platform.services;
 
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -10,8 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import ro.unibuc.fmi.karate_management_platform.models.user.User;
 
 import javax.crypto.SecretKey;
+import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
@@ -28,6 +29,8 @@ public class JwtTokenService {
     private long accessTokenExpiration;
     @Value("${jwt.refresh-token-expiration}")
     private long refreshTokenExpiration;
+    @Value("${jwt.email-confirmation-token-expiration}")
+    private long EMAIL_CONFIRMATION_TOKEN_EXPIRATION;
 
     public String generateAccessToken(UserDetails userDetails) {
         log.debug("Generating access token for user: {}", userDetails.getUsername());
@@ -129,6 +132,25 @@ public class JwtTokenService {
     public String extractUserEmailFromRefreshToken(String refreshToken) {
         log.debug("Extracting user email from refresh token.");
         return extractUserEmail(refreshToken);
+    }
+
+    public String generateEmailConfirmationToken(UserDetails userDetails) {
+        log.debug("Generating email confirmation token for user: {}", userDetails.getUsername());
+        User user = (User) userDetails;
+        return generateToken(
+                Map.of("email", user.getEmail()),
+                userDetails,
+                EMAIL_CONFIRMATION_TOKEN_EXPIRATION
+        );
+    }
+
+    public String validateEmailConfirmationToken(String token) {
+        try {
+            Claims claims = extractAllClaims(token);
+            return claims.get("email", String.class);
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid or expired confirmation token");
+        }
     }
 }
 

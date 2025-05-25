@@ -28,6 +28,10 @@ public abstract class Match extends BaseEntity {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "match_type", nullable = false)
+    private MatchType matchType;
+
     @Column(name = "result")
     private String result;
 }

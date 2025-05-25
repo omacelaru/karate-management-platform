@@ -15,7 +15,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
-public class RequestWithUsersApproval extends RequestInfo {
+public abstract class RequestWithUsersApproval extends RequestInfo {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "request_approver_users",

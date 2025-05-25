@@ -1,22 +1,22 @@
 package ro.unibuc.fmi.karate_management_platform.fixtures.competition.category;
 
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataCategory;
-import ro.unibuc.fmi.karate_management_platform.models.competition.category.kata.KataCategoryType;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataBeltRange;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
 
 public class CategoryFixture {
 
     public static Category createDefaultCategory() {
-        return KataCategory.builder()
+        return KataIndividualCategory.builder()
                 .id(1L)
-                .kataCategoryType(KataCategoryType.OPEN)
+                .kataBeltRange(KataBeltRange.OPEN)
                 .build();
     }
 
-    public static Category createCustomCategory(Long id, KataCategoryType kataCategoryType) {
-        return KataCategory.builder()
+    public static Category createCustomCategory(Long id, KataBeltRange kataBeltRange) {
+        return KataIndividualCategory.builder()
                 .id(id)
-                .kataCategoryType(kataCategoryType)
+                .kataBeltRange(kataBeltRange)
                 .build();
     }
 }
