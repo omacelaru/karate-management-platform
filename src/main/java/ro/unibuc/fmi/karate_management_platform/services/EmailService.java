@@ -67,7 +67,7 @@ public class EmailService {
         setLocaleForEmail(language);
         
         String subject = getMessage("emails.welcome.subject");
-        String resetPasswordUrl = String.format("%s%s/%s/auth/reset-password", domainUrl, basePath, language);
+        String resetPasswordUrl = String.format("%s/%s/auth/reset-password", domainUrl, language);
         String htmlContent = """
             <!DOCTYPE html>
             <html>
@@ -126,7 +126,7 @@ public class EmailService {
         setLocaleForEmail(language);
         
         String subject = getMessage("emails.invitation.subject");
-        String link = String.format("%s%s/%s/auth/invitations/accept?token=%s", domainUrl, basePath, language, token);
+        String link = String.format("%s/%s/auth/invitations/accept?token=%s", domainUrl, language, token);
         String htmlContent = """
             <!DOCTYPE html>
             <html>
@@ -175,7 +175,7 @@ public class EmailService {
         setLocaleForEmail(language);
         
         String subject = getMessage("emails.confirmation.subject");
-        String confirmationLink = String.format("%s%s/%s/auth/verify-email?token=%s", domainUrl, basePath, language, token);
+        String confirmationLink = String.format("%s/%s/auth/verify-email?token=%s", domainUrl, language, token);
         String htmlContent = """
             <!DOCTYPE html>
             <html>

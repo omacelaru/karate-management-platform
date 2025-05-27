@@ -62,7 +62,7 @@ public class UserService {
         User user = new User();
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
-        user.setLanguage("en");
+        user.setLanguage(language);
         user.setEmailConfirmed(false);
         user.addRole(Role.USER);
 
