@@ -25,6 +25,10 @@ public record AuthRequest(
         @Pattern(regexp = ".*[a-z].*", message = "Password must contain at least one lowercase letter")
         @Pattern(regexp = ".*[0-9].*", message = "Password must contain at least one digit")
         @Schema(description = "User password", example = "Password123!")
-        String password
+        String password,
+
+        @NotEmpty(message = "Language is required")
+        @Schema(description = "User language", example = "en")
+        String language
 ) implements Serializable {
 }

@@ -14,10 +14,8 @@ import ro.unibuc.fmi.karate_management_platform.repositories.UserRepository;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
 import java.security.SecureRandom;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -50,21 +48,24 @@ public class UserService {
 
     @Transactional
     public User createUser(AuthRequest authRequest) {
-        return createUser(authRequest.email(), authRequest.password());
+        return createUser(authRequest.email(), authRequest.password(), authRequest.language());
     }
 
     @Transactional
-    public User createUser(String email, String password) {
+    public User createUser(String email, String password, String language) {
         log.info("Creating user with email: {}", email);
         if (userRepository.existsByEmail(email)) {
             log.error("Email already exists");
             throw new IllegalArgumentException("Email already exists");
         }
-        User user = User.builder()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .roles(new HashSet<>(Set.of(Role.USER)))
-                .build();
+
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setLanguage("en");
+        user.setEmailConfirmed(false);
+        user.addRole(Role.USER);
+
         return userRepository.save(user);
     }
 

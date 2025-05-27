@@ -48,7 +48,7 @@ public class AuthService {
         String confirmationToken = jwtTokenService.generateEmailConfirmationToken(user);
         
         // Send confirmation email
-        emailService.sendConfirmationEmail(user.getEmail(), confirmationToken);
+        emailService.sendConfirmationEmail(user.getEmail(), confirmationToken, user.getLanguage());
         
         String accessToken = jwtTokenService.generateAccessToken(user);
         String refreshToken = jwtTokenService.generateRefreshToken(user);

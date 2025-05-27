@@ -25,8 +25,8 @@ public class UserInvitationTypeStrategy implements InvitationTypeStrategy {
         String email = invitation.getEmail();
         String password = UserService.generatePassword();
 
-        emailService.sendCredentialsEmail(email, password);
+        emailService.sendCredentialsEmail(email, password,"en");
 
-        userService.createUser(email, password);
+        userService.createUser(email, password,"en");
     }
 }

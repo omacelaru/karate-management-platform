@@ -3,6 +3,7 @@ package ro.unibuc.fmi.karate_management_platform.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -18,7 +19,8 @@ class EmailServiceTest {
     @BeforeEach
     void setUp() {
         javaMailSender = mock(JavaMailSender.class);
-        emailService = new EmailService(javaMailSender);
+        MessageSource messageSource = mock(MessageSource.class);
+        emailService = new EmailService(javaMailSender, messageSource);
     }
 
     @Test
@@ -43,7 +45,7 @@ class EmailServiceTest {
                 </html>
                 """;
 
-        emailService.sendCredentialsEmail(email, password);
+        emailService.sendCredentialsEmail(email, password, "en");
 
         ArgumentCaptor<SimpleMailMessage> messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
         verify(javaMailSender).send(messageCaptor.capture());
@@ -73,7 +75,7 @@ class EmailServiceTest {
                 </html>
                 """;
 
-        emailService.sendInvitationEmail(email, token);
+        emailService.sendInvitationEmail(email, token, "en");
 
         ArgumentCaptor<SimpleMailMessage> messageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
         verify(javaMailSender).send(messageCaptor.capture());

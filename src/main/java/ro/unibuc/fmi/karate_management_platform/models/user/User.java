@@ -61,6 +61,9 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "email_confirmed", nullable = false)
     private boolean emailConfirmed = false;
 
+    @Column(name = "language", length = 2)
+    private String language = "en"; // Default to English
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.copyOf(roles.stream().map(role -> new SimpleGrantedAuthority(role.name())).toList());
@@ -81,6 +84,14 @@ public class User extends BaseEntity implements UserDetails {
             throw new IllegalArgumentException("User already has role: " + role);
         }
         roles.add(role);
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }
 

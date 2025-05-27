@@ -80,7 +80,7 @@ class UserServiceTest {
         String email = "user@example.com";
         when(userRepository.existsByEmail(email)).thenReturn(true);
 
-        assertThatThrownBy(() -> userService.createUser(email, "password123"))
+        assertThatThrownBy(() -> userService.createUser(email, "password123","en"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Email already exists");
 
@@ -97,7 +97,7 @@ class UserServiceTest {
         when(passwordEncoder.encode(password)).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        User result = userService.createUser(email, password);
+        User result = userService.createUser(email, password, "en");
 
         ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(userCaptor.capture());

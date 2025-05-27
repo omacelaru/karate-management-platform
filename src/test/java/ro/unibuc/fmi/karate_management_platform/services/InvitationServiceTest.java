@@ -48,7 +48,7 @@ class InvitationServiceTest {
         assertThat(savedInvitation.getCreatedBy()).isEqualTo(createdBy);
         assertThat(savedInvitation.getStatus()).isEqualTo(InvitationStatus.PENDING);
         assertThat(savedInvitation.getType()).isEqualTo(InvitationType.USER_INVITATION);
-        verify(emailService).sendInvitationEmail(eq(email), eq(savedInvitation.getToken()));
+        verify(emailService).sendInvitationEmail(eq(email), eq(savedInvitation.getToken()), eq("en"));
     }
 
     @Test

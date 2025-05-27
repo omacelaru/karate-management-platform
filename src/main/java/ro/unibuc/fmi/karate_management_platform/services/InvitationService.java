@@ -41,7 +41,8 @@ public class InvitationService {
 
         invitationRepository.save(invitation);
 
-        emailService.sendInvitationEmail(email, token);
+        // Default to English for invitations since we don't have user preferences yet
+        emailService.sendInvitationEmail(email, token, "en");
     }
 
 

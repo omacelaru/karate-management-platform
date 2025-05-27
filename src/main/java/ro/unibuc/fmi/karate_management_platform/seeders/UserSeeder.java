@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ro.unibuc.fmi.karate_management_platform.dtos.athlete.AthleteRequest;
+import ro.unibuc.fmi.karate_management_platform.dtos.auth.AuthRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.referee.RefereeRequest;
@@ -85,28 +86,28 @@ public class UserSeeder implements CommandLineRunner {
     }
 
     private void createAdminUser() {
-        User user = userService.createUser("admin", PASSWORD);
+        User user = userService.createUser(new AuthRequest("admin", PASSWORD, "en"));
         updateUser("admin", "admin", "admin");
         user.addRole(Role.ADMIN);
         userService.updateUser(user);
     }
 
     private Athlete createAthlete(String email, String firstName, String lastName) {
-        User user = userService.createUser(email, PASSWORD);
+        User user = userService.createUser(new AuthRequest(email, PASSWORD, "en"));
         updateUser(email, firstName, lastName);
         AthleteRequest athleteRequest = createAthleteRequest();
         return athleteService.createAthlete(user, athleteRequest);
     }
 
     private Coach createCoach(String email, String firstName, String lastName) {
-        User user = userService.createUser(email, PASSWORD);
+        User user = userService.createUser(new AuthRequest(email, PASSWORD, "en"));
         updateUser(email, firstName, lastName);
         CoachRequest coachRequest = createCoachRequest();
         return coachService.createCoach(user, coachRequest);
     }
 
     private void createGenericUser(String email, String firstName, String lastName, Role role, Object request) {
-        User user = userService.createUser(email, PASSWORD);
+        User user = userService.createUser(new AuthRequest(email, PASSWORD, "en"));
         updateUser(email, firstName, lastName);
         if (role == Role.REFEREE) {
             refereeService.createReferee(user, (RefereeRequest) request);
