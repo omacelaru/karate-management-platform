@@ -60,6 +60,11 @@ public class AuthService {
         String email = jwtTokenService.validateEmailConfirmationToken(token);
         User user = userService.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        if (user.isEmailConfirmed()) {
+            throw new RuntimeException("Email is already confirmed");
+        }
+        
         userService.confirmEmail(user);
     }
 
