@@ -37,7 +37,7 @@ class AuthServiceTest {
 
     @Test
     void login_shouldAuthenticateAndReturnTokens() {
-        AuthRequest authRequest = new AuthRequest("user@example.com", "password123");
+        AuthRequest authRequest = new AuthRequest("user@example.com", "password123", "en");
         User user = new User();
         user.setEmail(authRequest.email());
 
@@ -57,7 +57,7 @@ class AuthServiceTest {
 
     @Test
     void login_shouldThrowExceptionIfUserNotFound() {
-        AuthRequest authRequest = new AuthRequest("nonexistent@example.com", "password123");
+        AuthRequest authRequest = new AuthRequest("nonexistent@example.com", "password123", "en");
 
         when(userService.findByEmail(authRequest.email())).thenReturn(Optional.empty());
 
@@ -70,7 +70,7 @@ class AuthServiceTest {
 
     @Test
     void register_shouldCreateUserAndReturnTokens() {
-        AuthRequest authRequest = new AuthRequest("newuser@example.com", "password123");
+        AuthRequest authRequest = new AuthRequest("newuser@example.com", "password123", "en");
         User user = new User();
         user.setEmail(authRequest.email());
 

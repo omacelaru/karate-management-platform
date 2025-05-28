@@ -48,7 +48,7 @@ public class AuthService {
         String confirmationToken = jwtTokenService.generateEmailConfirmationToken(user);
         
         // Send confirmation email
-        emailService.sendConfirmationEmail(user.getEmail(), confirmationToken);
+        emailService.sendConfirmationEmail(user.getEmail(), confirmationToken, user.getLanguage());
         
         String accessToken = jwtTokenService.generateAccessToken(user);
         String refreshToken = jwtTokenService.generateRefreshToken(user);
@@ -60,6 +60,11 @@ public class AuthService {
         String email = jwtTokenService.validateEmailConfirmationToken(token);
         User user = userService.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        if (user.isEmailConfirmed()) {
+            throw new RuntimeException("Email is already confirmed");
+        }
+        
         userService.confirmEmail(user);
     }
 
