@@ -61,6 +61,7 @@ public interface MapperUtils {
     @Mapping(target = "clubId", source = "athleteRequest.clubId")
     @Mapping(target = "height", source = "athleteRequest.height")
     @Mapping(target = "weight", source = "athleteRequest.weight")
+    @Mapping(target = "belt", source = "athleteRequest.belt")
     AthleteRequest mapToAthleteRequest(AthleteCreationRequest request);
 
     AthleteCreationResponse mapToAthleteCreationResponse(AthleteCreationRequest request);
