@@ -86,8 +86,8 @@ public class UserSeeder implements CommandLineRunner {
     }
 
     private void createAdminUser() {
-        User user = userService.createUser(new AuthRequest("admin", PASSWORD, "en"));
-        updateUser("admin", "admin", "admin");
+        User user = userService.createUser(new AuthRequest("admin@admin.com", PASSWORD, "en"));
+        updateUser("admin@admin.com", "Admin", "Admin");
         user.addRole(Role.ADMIN);
         userService.updateUser(user);
     }
