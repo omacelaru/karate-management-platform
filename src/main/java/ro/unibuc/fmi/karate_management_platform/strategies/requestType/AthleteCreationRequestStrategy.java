@@ -53,7 +53,6 @@ public class AthleteCreationRequestStrategy extends AbstractUserCreationRequestT
     protected void handleAcceptedRequest(User user, RequestInfo request) {
         User userToBePromoteToAthlete = request.getCreatedBy();
         AthleteRequest athleteRequest = mapperUtils.mapToAthleteRequest((AthleteCreationRequest) request);
-        log.info("Creating athlete for user with email: {}", user.getEmail());
         athleteService.createAthlete(userToBePromoteToAthlete, athleteRequest);
     }
 
