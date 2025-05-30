@@ -42,6 +42,9 @@ import ro.unibuc.fmi.karate_management_platform.models.request.organizer.Organiz
 import ro.unibuc.fmi.karate_management_platform.models.request.referee.RefereeCreationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 
+import java.util.Objects;
+import java.util.Optional;
+
 @Mapper(componentModel = "spring")
 public interface MapperUtils {
 
@@ -54,7 +57,17 @@ public interface MapperUtils {
 
 
     // === Athlete Mapping ===
+    @Mapping(target = "clubResponse", expression = "java(getFirstClubResponse(athlete))")
     AthleteResponse mapToAthleteResponse(Athlete athlete);
+
+    default Optional<ClubResponse> getFirstClubResponse(Athlete athlete) {
+        return athlete.getCoaches().stream()
+                .map(Coach::getClub)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .map(this::mapToClubResponse);
+    }
+
 
     Athlete mapToAthlete(AthleteRequest athleteRequest);
 
@@ -120,7 +133,6 @@ public interface MapperUtils {
     // === Competition Mapping ===
     CompetitionCreationResponse mapToCompetitionCreationResponse(CompetitionCreationRequest request);
 
-    @Mapping(target = "categoriesIds", source = "competitionRequest.categoriesIds")
     @Mapping(target = "date", source = "competitionRequest.date")
     @Mapping(target = "location", source = "competitionRequest.location")
     @Mapping(target = "name", source = "competitionRequest.name")

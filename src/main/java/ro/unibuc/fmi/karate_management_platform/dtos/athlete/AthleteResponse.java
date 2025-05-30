@@ -1,9 +1,12 @@
 package ro.unibuc.fmi.karate_management_platform.dtos.athlete;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import ro.unibuc.fmi.karate_management_platform.dtos.club.ClubResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.user.UserResponse;
+import ro.unibuc.fmi.karate_management_platform.models.athelte.Belt;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * DTO for the athlete response data, used for representing the athlete's information
@@ -15,6 +18,7 @@ import java.io.Serializable;
  */
 @Schema(description = "Athlete response containing athletes information including roles, personal details, and measurements.")
 public record AthleteResponse(UserResponse user,
-                              Integer height, Integer weight
+                              Integer height, Integer weight, Belt belt,
+                              Optional<ClubResponse> clubResponse
 ) implements Serializable {
 }
