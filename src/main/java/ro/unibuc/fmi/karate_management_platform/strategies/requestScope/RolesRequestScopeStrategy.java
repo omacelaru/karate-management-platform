@@ -17,8 +17,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static ro.unibuc.fmi.karate_management_platform.models.request.RequestStatus.ACTIVE_STATUSES;
-
 @Slf4j
 @Getter
 @Component
@@ -54,12 +52,12 @@ public class RolesRequestScopeStrategy implements RequestScopeStrategy {
     @Override
     public <T extends RequestInfo> Page<? extends RequestInfo> getRequestsAssignedToMe(User user, Pageable pageable, RequestInfoRepository<T> repository) {
         RequestWithRolesApprovalRepository<RequestWithRolesApproval> validRepository = validateRepository(repository);
-        return validRepository.findAllByApproverRolesInAndStatusIn(user.getRoles(), ACTIVE_STATUSES, pageable);
+        return validRepository.findAllByApproverRolesIn(user.getRoles(), pageable);
     }
 
     @Override
     public Optional<? extends RequestInfo> getRequestAssignedToMeById(Long requestId, User user, Pageable unpaged, RequestInfoRepository<? extends RequestInfo> repository) {
         RequestWithRolesApprovalRepository<RequestWithRolesApproval> validRepository = validateRepository(repository);
-        return validRepository.findByIdAndApproverRolesInAndStatusIn(requestId, user.getRoles(), ACTIVE_STATUSES);
+        return validRepository.findByIdAndApproverRolesIn(requestId, user.getRoles());
     }
 }

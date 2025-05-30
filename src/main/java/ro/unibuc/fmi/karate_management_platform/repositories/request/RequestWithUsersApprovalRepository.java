@@ -13,7 +13,7 @@ import java.util.Set;
 
 @NoRepositoryBean
 public interface RequestWithUsersApprovalRepository<T extends RequestWithUsersApproval> extends RequestInfoRepository<T> {
-    Page<? extends RequestInfo> findAllByApproverUsersContainingAndStatusIn(User user, Set<RequestStatus> activeStatuses, Pageable pageable);
+    Page<? extends RequestInfo> findAllByApproverUsersContaining(User user, Pageable pageable);
 
-    Optional<? extends RequestInfo> findByIdAndApproverUsersContainingAndStatusIn(Long requestId, Set<User> user, Set<RequestStatus> activeStatuses);
+    Optional<? extends RequestInfo> findByIdAndApproverUsersContaining(Long requestId, Set<User> user);
 }

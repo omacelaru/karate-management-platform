@@ -6,6 +6,7 @@ import ro.unibuc.fmi.karate_management_platform.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestType;
 import ro.unibuc.fmi.karate_management_platform.models.user.Role;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -16,4 +17,6 @@ public sealed class RequestWithRolesApprovalResponse implements RequestInfoRespo
     UserResponse createdBy;
     Long lastUpdatedById;
     Set<Role> approverRoles;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
 }

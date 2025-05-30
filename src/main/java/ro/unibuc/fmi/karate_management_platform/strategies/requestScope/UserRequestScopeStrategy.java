@@ -52,12 +52,12 @@ public class UserRequestScopeStrategy implements RequestScopeStrategy {
     @Override
     public <T extends RequestInfo> Page<? extends RequestInfo> getRequestsAssignedToMe(User user, Pageable pageable, RequestInfoRepository<T> repository) {
         RequestWithUsersApprovalRepository<RequestWithUsersApproval> validRepository = validateRepository(repository);
-        return validRepository.findAllByApproverUsersContainingAndStatusIn(user, RequestStatus.ACTIVE_STATUSES, pageable);
+        return validRepository.findAllByApproverUsersContaining(user, pageable);
     }
 
     @Override
     public Optional<? extends RequestInfo> getRequestAssignedToMeById(Long requestId, User user, Pageable pageable, RequestInfoRepository<? extends RequestInfo> repository) {
         RequestWithUsersApprovalRepository<RequestWithUsersApproval> validRepository = validateRepository(repository);
-        return validRepository.findByIdAndApproverUsersContainingAndStatusIn(requestId, Set.of(user), RequestStatus.ACTIVE_STATUSES);
+        return validRepository.findByIdAndApproverUsersContaining(requestId, Set.of(user));
     }
 }
