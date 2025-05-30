@@ -39,7 +39,7 @@ public class CompetitionService {
 
         Organizer organizer = organizerRepository.findByUserEmail(createdBy.getEmail()).orElseThrow();
 
-        Set<Category> categories = categoryService.getCategoriesByIds(competitionRequest.categoriesIds());
+        Set<Category> categories = categoryService.getDefaultCategoryEntities();
 
         Competition competition = mapperUtils.mapToCompetition(competitionRequest);
         competition.setCategories(categories);

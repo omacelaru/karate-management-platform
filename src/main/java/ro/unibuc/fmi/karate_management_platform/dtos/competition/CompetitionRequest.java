@@ -32,12 +32,7 @@ public record CompetitionRequest(@NotBlank(message = "Name is mandatory")
 
                                  @Future(message = "Date must be in the future")
                                  @Column(nullable = false)
-                                 LocalDate date,
-
-                                 @NotNull(message = "Categories are mandatory")
-                                 @NotEmpty(message = "Categories are mandatory")
-                                 @Column(nullable = false)
-                                 Set<Long> categoriesIds
+                                 LocalDate date
 ) implements Serializable {
 
 }

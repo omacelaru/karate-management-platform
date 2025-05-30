@@ -62,7 +62,6 @@ class CompetitionServiceTest {
         Competition competition = CompetitionFixture.createDefaultCompetition();
 
         when(organizerRepository.findByUserEmail(user.getEmail())).thenReturn(Optional.of(organizer));
-        when(categoryService.getCategoriesByIds(request.categoriesIds())).thenReturn(categories);
         when(mapperUtils.mapToCompetition(request)).thenReturn(competition);
 
         competitionService.createCompetition(user, request);

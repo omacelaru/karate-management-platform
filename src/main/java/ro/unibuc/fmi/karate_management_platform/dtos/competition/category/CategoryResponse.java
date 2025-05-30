@@ -19,5 +19,4 @@ public abstract sealed class CategoryResponse permits KataCategoryResponse, Kumi
     private AgeGroup ageGroup;
     private Gender gender;
     private Boolean isDefault;
-    private List<MatchResponse> matches;
 }

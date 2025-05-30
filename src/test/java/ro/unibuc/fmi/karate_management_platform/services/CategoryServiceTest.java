@@ -8,6 +8,7 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.category.indi
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteDivisionRange;
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.category.CategoryRepository;
+import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
 import java.util.Optional;
 import java.util.Set;
@@ -18,12 +19,13 @@ import static org.mockito.Mockito.*;
 class CategoryServiceTest {
 
     private CategoryService categoryService;
-    private CategoryRepository<Category> categoryRepository;
+    private CategoryRepository categoryRepository;
 
     @BeforeEach
     void setUp() {
         categoryRepository = mock(CategoryRepository.class);
-        categoryService = new CategoryService(categoryRepository);
+        MapperUtils mapperUtils = mock(MapperUtils.class);
+        categoryService = new CategoryService(categoryRepository,mapperUtils);
     }
 
     @Test

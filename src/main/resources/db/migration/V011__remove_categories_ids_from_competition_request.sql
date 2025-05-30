@@ -1,0 +1,1 @@
+ALTER TABLE competition_creation_requests DROP COLUMN categories_ids;
