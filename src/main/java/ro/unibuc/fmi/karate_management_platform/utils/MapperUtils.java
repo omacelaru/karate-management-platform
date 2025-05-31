@@ -17,6 +17,7 @@ import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.Catego
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.KataCategoryResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.KumiteCategoryResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.match.*;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.team.TeamResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.referee.RefereeRequest;
@@ -27,6 +28,7 @@ import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.club.Club;
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
+import ro.unibuc.fmi.karate_management_platform.models.competition.Team;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteIndividualCategory;
@@ -186,6 +188,6 @@ public interface MapperUtils {
         };
     }
 
-
+    TeamResponse mapToTeamResponse(Team savedTeam);
 }
 

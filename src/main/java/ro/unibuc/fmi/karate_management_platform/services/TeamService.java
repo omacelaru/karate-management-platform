@@ -3,20 +3,23 @@ package ro.unibuc.fmi.karate_management_platform.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.team.TeamRequest;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.team.TeamResponse;
+import ro.unibuc.fmi.karate_management_platform.exceptions.ApiError;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Gender;
+import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Team;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
+import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.repositories.AthleteRepository;
+import ro.unibuc.fmi.karate_management_platform.repositories.CoachRepository;
 import ro.unibuc.fmi.karate_management_platform.repositories.TeamRepository;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,20 +30,41 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final AthleteRepository athleteRepository;
     private final MapperUtils mapperUtils;
+    private final CoachRepository coachRepository;
 
     public boolean existsByMembersIds(Set<Long> athletesIds) {
         log.info("Checking if team exists by members ids: {}", athletesIds);
         return teamRepository.existsByAthletes_IdIn(athletesIds);
     }
 
-    public Team createTeam(Set<Long> athletesIds) {
-        log.info("Creating team with athletes ids: {}", athletesIds);
-        List<Athlete> athletes = athleteRepository.findAllById(athletesIds);
-        Set<Athlete> athletesSet = new HashSet<>(athletes);
+    public TeamResponse createTeam(User user, TeamRequest teamRequest) {
+        log.info("Creating team with name: {} for coach: {}", teamRequest.getTeamName(), user.getUsername());
+
+        List<Athlete> athletes = athleteRepository.findAllById(teamRequest.getAthleteIds());
+        if (athletes.size() != teamRequest.getAthleteIds().size()) {
+            log.error("One or more athletes not found for IDs: {}", teamRequest.getAthleteIds());
+            throw new IllegalArgumentException("One or more athletes not found");
+        }
+
+        Coach coach = coachRepository.findByUserEmail(user.getEmail())
+                .orElseThrow(() -> new NoSuchElementException("Coach not found for user: " + user.getEmail()));
+
+        boolean allAthletesBelongToCoach =  coach.getAthletes().stream()
+                .map(Athlete::getId)
+                .collect(Collectors.toSet())
+                .containsAll(teamRequest.getAthleteIds());
+        if (!allAthletesBelongToCoach) {
+            log.warn("Not all athletes belong to the coach: {}", user.getUsername());
+            throw new IllegalArgumentException("Not all athletes belong to the coach: " + user.getUsername());
+        }
+
         Team team = Team.builder()
-                .athletes(athletesSet)
+                .teamName(teamRequest.getTeamName())
+                .athletes(new HashSet<>(athletes))
                 .build();
-        return teamRepository.save(team);
+
+        Team savedTeam = teamRepository.save(team);
+        return mapperUtils.mapToTeamResponse(savedTeam);
     }
 
     public Team findTeamByMembersIds(Set<Long> athletesIds) {

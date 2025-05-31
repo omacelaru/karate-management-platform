@@ -74,11 +74,10 @@ public class CompetitionService {
         competitionRegistrationRequest.individualCategories().keySet()
                 .forEach(athleteId -> {
                     if (coach.getAthletes().stream().noneMatch(athlete -> athlete.getId().equals(athleteId))) {
-
                         log.warn("Athlete with ID {} is not coached by the coach", athleteId);
                     }
                 });
-        Competition competitionUpdated = athleteCategoryRegistrationManager.registerAthletesToCompetition(competitionRegistrationRequest, coach, competition);
+        Competition competitionUpdated = athleteCategoryRegistrationManager.registerAthletesToCompetition(competitionRegistrationRequest, competition);
 
         competitionRepository.save(competitionUpdated);
 
