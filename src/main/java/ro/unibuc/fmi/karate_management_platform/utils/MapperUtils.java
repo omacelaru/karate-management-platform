@@ -46,6 +46,7 @@ import ro.unibuc.fmi.karate_management_platform.models.user.User;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface MapperUtils {
@@ -85,7 +86,11 @@ public interface MapperUtils {
 
 
     // === Coach Mapping ===
+    @Mapping(target = "teams", expression = "java(new java.util.HashSet<>())")
     CoachResponse mapToCoachResponse(Coach coach);
+
+    @Mapping(target = "teams", source = "teams")
+    CoachResponse mapToCoachResponse(Coach coach, Set<Team> teams);
 
     Coach mapToCoach(@Valid CoachRequest coachRequest);
 

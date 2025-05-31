@@ -11,4 +11,6 @@ public interface TeamRepository extends JpaRepository<Team, Long>, JpaSpecificat
     boolean existsByAthletes_IdIn(Set<Long> athletesIds);
 
     Optional<Team> findByAthletes_IdIn(Set<Long> athletesIds);
+
+    Set<Team> findByAthletes_Coaches_User_Email(String email);
 }

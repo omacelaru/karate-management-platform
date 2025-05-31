@@ -1,6 +1,5 @@
 package ro.unibuc.fmi.karate_management_platform.services;
 
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +14,7 @@ import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.user.Role;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.repositories.CoachRepository;
+import ro.unibuc.fmi.karate_management_platform.repositories.TeamRepository;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
 @Slf4j
@@ -22,6 +22,7 @@ import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 @RequiredArgsConstructor
 public class CoachService {
     private final CoachRepository coachRepository;
+    private final TeamRepository teamRepository;
     private final MapperUtils mapperUtils;
 
     public Page<CoachResponse> getAllCoaches(Pageable pageable) {
@@ -34,8 +35,11 @@ public class CoachService {
 
         log.info("Getting coach with email: {}", email);
         Coach coach = coachRepository.findByUserEmail(email).orElseThrow(IncompleteProfileException::new);
-
-        return mapperUtils.mapToCoachResponse(coach);
+        
+        // Get teams for the coach
+        var teams = teamRepository.findByAthletes_Coaches_User_Email(email);
+        
+        return mapperUtils.mapToCoachResponse(coach, teams);
     }
 
     @Transactional
