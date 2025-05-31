@@ -43,6 +43,7 @@ import ro.unibuc.fmi.karate_management_platform.models.request.competition.Compe
 import ro.unibuc.fmi.karate_management_platform.models.request.organizer.OrganizerCreationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.request.referee.RefereeCreationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
+import ro.unibuc.fmi.karate_management_platform.models.user.Role;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -52,7 +53,7 @@ import java.util.Set;
 public interface MapperUtils {
 
     // === Auth Mapping ===
-    AuthResponse mapToAuthResponse(String accessToken, String refreshToken);
+    AuthResponse mapToAuthResponse(String accessToken, String refreshToken, Set<Role> roles, Long id);
 
 
     // === User Mapping ===

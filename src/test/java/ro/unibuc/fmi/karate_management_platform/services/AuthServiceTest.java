@@ -9,6 +9,7 @@ import ro.unibuc.fmi.karate_management_platform.dtos.auth.AuthRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.auth.AuthResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.auth.ResetPasswordRequest;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
+import ro.unibuc.fmi.karate_management_platform.models.user.Role;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
 import java.util.Optional;
@@ -40,17 +41,21 @@ class AuthServiceTest {
         AuthRequest authRequest = new AuthRequest("user@example.com", "password123", "en");
         User user = new User();
         user.setEmail(authRequest.email());
+        user.setId(1L);
+        user.addRole(Role.USER);
 
         when(userService.findByEmail(authRequest.email())).thenReturn(Optional.of(user));
         when(jwtTokenService.generateAccessToken(user)).thenReturn("access-token");
         when(jwtTokenService.generateRefreshToken(user)).thenReturn("refresh-token");
-        when(mapperUtils.mapToAuthResponse("access-token", "refresh-token"))
-                .thenReturn(new AuthResponse("access-token", "refresh-token"));
+        when(mapperUtils.mapToAuthResponse("access-token", "refresh-token", user.getRoles(), user.getId()))
+                .thenReturn(new AuthResponse("access-token", "refresh-token", user.getRoles(), user.getId()));
 
         AuthResponse response = authService.login(authRequest);
 
         assertThat(response.accessToken()).isEqualTo("access-token");
         assertThat(response.refreshToken()).isEqualTo("refresh-token");
+        assertThat(response.roles()).isEqualTo(user.getRoles());
+        assertThat(response.id()).isEqualTo(user.getId());
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(userService).findByEmail(authRequest.email());
     }
@@ -77,8 +82,8 @@ class AuthServiceTest {
         when(userService.createUser(authRequest)).thenReturn(user);
         when(jwtTokenService.generateAccessToken(user)).thenReturn("access-token");
         when(jwtTokenService.generateRefreshToken(user)).thenReturn("refresh-token");
-        when(mapperUtils.mapToAuthResponse("access-token", "refresh-token"))
-                .thenReturn(new AuthResponse("access-token", "refresh-token"));
+        when(mapperUtils.mapToAuthResponse("access-token", "refresh-token", user.getRoles(), user.getId()))
+                .thenReturn(new AuthResponse("access-token", "refresh-token", user.getRoles(), user.getId()));
 
         AuthResponse response = authService.register(authRequest);
 
@@ -91,17 +96,21 @@ class AuthServiceTest {
     void refreshToken_shouldReturnNewAccessToken() {
         User user = new User();
         user.setEmail("user@example.com");
+        user.setId(1L);
+        user.addRole(Role.USER);
         HttpServletRequest request = mock(HttpServletRequest.class);
 
         when(jwtTokenService.extractRefreshToken(request)).thenReturn("refresh-token");
         when(jwtTokenService.generateAccessToken(user)).thenReturn("new-access-token");
-        when(mapperUtils.mapToAuthResponse("new-access-token", "refresh-token"))
-                .thenReturn(new AuthResponse("new-access-token", "refresh-token"));
+        when(mapperUtils.mapToAuthResponse("new-access-token", "refresh-token", user.getRoles(), user.getId()))
+                .thenReturn(new AuthResponse("new-access-token", "refresh-token", user.getRoles(), user.getId()));
 
         AuthResponse response = authService.refreshToken(user, request);
 
         assertThat(response.accessToken()).isEqualTo("new-access-token");
         assertThat(response.refreshToken()).isEqualTo("refresh-token");
+        assertThat(response.roles()).isEqualTo(user.getRoles());
+        assertThat(response.id()).isEqualTo(user.getId());
         verify(jwtTokenService).extractRefreshToken(request);
     }
 

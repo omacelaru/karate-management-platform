@@ -34,12 +34,28 @@ public class JwtTokenService {
 
     public String generateAccessToken(UserDetails userDetails) {
         log.debug("Generating access token for user: {}", userDetails.getUsername());
-        return generateToken(Map.of(), userDetails, accessTokenExpiration);
+        User user = (User) userDetails;
+        return generateToken(
+            Map.of(
+                "roles", user.getRoles(),
+                "id", user.getId()
+            ),
+            userDetails,
+            accessTokenExpiration
+        );
     }
 
     public String generateRefreshToken(UserDetails userDetails) {
         log.debug("Generating refresh token for user: {}", userDetails.getUsername());
-        return generateToken(Map.of(), userDetails, refreshTokenExpiration);
+        User user = (User) userDetails;
+        return generateToken(
+            Map.of(
+                "roles", user.getRoles(),
+                "id", user.getId()
+            ),
+            userDetails,
+            refreshTokenExpiration
+        );
     }
 
     private String generateToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
@@ -127,7 +143,6 @@ public class JwtTokenService {
         log.debug("Extracted refresh token: {}", token);
         return token;
     }
-
 
     public String extractUserEmailFromRefreshToken(String refreshToken) {
         log.debug("Extracting user email from refresh token.");

@@ -1,6 +1,9 @@
 package ro.unibuc.fmi.karate_management_platform.dtos.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import ro.unibuc.fmi.karate_management_platform.models.user.Role;
+
+import java.util.Set;
 
 /**
  * DTO for authentication response containing JWT tokens.
@@ -15,6 +18,12 @@ public record AuthResponse(
         String accessToken,
 
         @Schema(description = "JWT refresh token")
-        String refreshToken
+        String refreshToken,
+
+        @Schema(description = "User roles")
+        Set<Role> roles,
+
+        @Schema(description = "User ID")
+        Long id
 ) {
 }
