@@ -1,5 +1,7 @@
 package ro.unibuc.fmi.karate_management_platform.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -87,17 +89,33 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> handleException(Exception error, WebRequest request) {
+    @ExceptionHandler({ExpiredJwtException.class, JwtException.class})
+    public ResponseEntity<ApiError> handleJwtException(Exception error, WebRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                "Token has expired or is invalid. Please login again.",
+                request.getDescription(false),
+                LocalDateTime.now().toString()
+        );
+        log.warn("JWT token error: {}", error.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ApiError> handleRuntimeException(RuntimeException error, WebRequest request) {
+        if (error.getCause() instanceof ExpiredJwtException || error.getCause() instanceof JwtException) {
+            return handleJwtException(error, request);
+        }
+        
         ApiError apiError = new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                //TODO - set a generic message to improve security after testing
                 error.getMessage(),
                 request.getDescription(false),
                 LocalDateTime.now().toString()
         );
-        log.error("An error occurred: {}", error.getMessage());
+        log.error("Runtime error occurred: {}", error.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
     }
 
