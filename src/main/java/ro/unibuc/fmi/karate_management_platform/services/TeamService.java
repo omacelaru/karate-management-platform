@@ -179,6 +179,21 @@ public class TeamService {
             case 1 -> genders.iterator().next();
             default -> Gender.OTHER;
         };
+    }
 
+    public List<TeamResponse> getAllTeams(User user) {
+        log.info("Getting all teams for coach: {}", user.getUsername());
+        Coach coach = validateAndGetCoach(user.getEmail());
+
+        // Get all teams that have at least one athlete from this coach
+        Set<Team> teams = teamRepository.findByAthletes_Coaches_User_Email(coach.getUser().getEmail());
+        if (teams.isEmpty()) {
+            log.warn("No teams found for coach: {}", coach.getUser().getUsername());
+            return Collections.emptyList();
+        }
+
+        return teams.stream()
+                .map(mapperUtils::mapToTeamResponse)
+                .collect(Collectors.toList());
     }
 }

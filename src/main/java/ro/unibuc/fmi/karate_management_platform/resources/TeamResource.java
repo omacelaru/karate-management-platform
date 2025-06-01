@@ -17,6 +17,8 @@ import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_management_platform.services.TeamService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/teams")
 @RequiredArgsConstructor
@@ -60,5 +62,33 @@ public class TeamResource {
             @RequestBody @Valid TeamRequest teamRequest
     ) {
         return ResponseEntity.ok(teamService.createTeam(user, teamRequest));
+    }
+
+    @Operation(
+            summary = "Get all teams",
+            description = "Retrieves all teams for the authenticated coach",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Teams retrieved successfully",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = TeamResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized: User is not authorized to view teams",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiError.class)
+                            )
+                    )
+            }
+    )
+    @SecuredEndpoint(roles = {Role.COACH})
+    @GetMapping
+    public ResponseEntity<List<TeamResponse>> getAllTeams(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(teamService.getAllTeams(user));
     }
 } 
