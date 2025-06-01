@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.team.TeamRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.team.TeamResponse;
-import ro.unibuc.fmi.karate_management_platform.exceptions.ApiError;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Gender;
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
@@ -40,47 +39,13 @@ public class TeamService {
     public TeamResponse createTeam(User user, TeamRequest teamRequest) {
         log.info("Creating team with name: {} for coach: {}", teamRequest.getTeamName(), user.getUsername());
 
-        if (teamRepository.existsByTeamName(teamRequest.getTeamName())) {
-            log.error("Team with name {} already exists", teamRequest.getTeamName());
-            throw new IllegalArgumentException("Team with name " + teamRequest.getTeamName() + " already exists");
-        }
-
-        List<Athlete> athletes = athleteRepository.findAllById(teamRequest.getAthleteIds());
-        if (athletes.size() != teamRequest.getAthleteIds().size()) {
-            log.error("One or more athletes not found for IDs: {}", teamRequest.getAthleteIds());
-            throw new IllegalArgumentException("One or more athletes not found");
-        }
-
-        Coach coach = coachRepository.findByUserEmail(user.getEmail())
-                .orElseThrow(() -> new NoSuchElementException("Coach not found for user: " + user.getEmail()));
-
-        boolean allAthletesBelongToCoach = coach.getAthletes().stream()
-                .map(Athlete::getId)
-                .collect(Collectors.toSet())
-                .containsAll(teamRequest.getAthleteIds());
-        if (!allAthletesBelongToCoach) {
-            log.warn("Not all athletes belong to the coach: {}", user.getUsername());
-            throw new IllegalArgumentException("Not all athletes belong to the coach: " + user.getUsername());
-        }
-
-        // Validate gender consistency
-        Set<Gender> genders = athletes.stream()
-                .map(athlete -> athlete.getUser().getGender())
-                .collect(Collectors.toSet());
-        if (genders.size() > 1) {
-            log.error("Athletes must be of the same gender. Found genders: {}", genders);
-            throw new IllegalArgumentException("All athletes must be of the same gender");
-        }
-
-        // Validate age group consistency
-        Set<AgeGroup> ageGroups = athletes.stream()
-                .map(athlete -> AgeGroup.getAgeGroupByAge(
-                        Period.between(athlete.getUser().getBirthDate(), LocalDate.now()).getYears()))
-                .collect(Collectors.toSet());
-        if (ageGroups.size() > 1) {
-            log.error("Athletes must be in the same age group. Found age groups: {}", ageGroups);
-            throw new IllegalArgumentException("All athletes must be in the same age group");
-        }
+        validateTeamNameUnique(teamRequest.getTeamName());
+        List<Athlete> athletes = validateAndGetAthletes(teamRequest.getAthleteIds());
+        Coach coach = validateAndGetCoach(user.getEmail());
+        validateAthletesBelongToCoach(coach, teamRequest.getAthleteIds());
+        validateNoDuplicateTeam(teamRequest.getAthleteIds());
+        validateGenderConsistency(athletes);
+        validateAgeGroupConsistency(athletes);
 
         Team team = Team.builder()
                 .teamName(teamRequest.getTeamName())
@@ -89,6 +54,73 @@ public class TeamService {
 
         Team savedTeam = teamRepository.save(team);
         return mapperUtils.mapToTeamResponse(savedTeam);
+    }
+
+
+    private void validateTeamNameUnique(String teamName) {
+        if (teamRepository.existsByTeamName(teamName)) {
+            log.error("Team with name {} already exists", teamName);
+            throw new IllegalArgumentException("Team with name " + teamName + " already exists");
+        }
+    }
+
+    private List<Athlete> validateAndGetAthletes(Set<Long> athleteIds) {
+        List<Athlete> athletes = athleteRepository.findAllById(athleteIds);
+        if (athletes.size() != athleteIds.size()) {
+            log.error("One or more athletes not found for IDs: {}", athleteIds);
+            throw new IllegalArgumentException("One or more athletes not found");
+        }
+        return athletes;
+    }
+
+    private Coach validateAndGetCoach(String email) {
+        return coachRepository.findByUserEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("Coach not found for user: " + email));
+    }
+
+    private void validateAthletesBelongToCoach(Coach coach, Set<Long> athleteIds) {
+        Set<Long> coachAthleteIds = coach.getAthletes().stream()
+                .map(Athlete::getId)
+                .collect(Collectors.toSet());
+        if (!coachAthleteIds.containsAll(athleteIds)) {
+            log.warn("Not all athletes belong to the coach: {}", coach.getUser().getUsername());
+            throw new IllegalArgumentException("Not all athletes belong to the coach: " + coach.getUser().getUsername());
+        }
+    }
+
+    private void validateNoDuplicateTeam(Set<Long> athleteIds) {
+        Set<Long> newIds = new HashSet<>(athleteIds);
+        List<Team> possibleTeams = teamRepository.findAll();
+        for (Team existingTeam : possibleTeams) {
+            Set<Long> existingIds = existingTeam.getAthletes().stream()
+                    .map(Athlete::getId)
+                    .collect(Collectors.toSet());
+            if (existingIds.equals(newIds)) {
+                log.error("A team with the same athletes already exists: {}", existingIds);
+                throw new IllegalArgumentException("A team with the same athletes already exists");
+            }
+        }
+    }
+
+    private void validateGenderConsistency(List<Athlete> athletes) {
+        Set<Gender> genders = athletes.stream()
+                .map(athlete -> athlete.getUser().getGender())
+                .collect(Collectors.toSet());
+        if (genders.size() > 1) {
+            log.error("Athletes must be of the same gender. Found genders: {}", genders);
+            throw new IllegalArgumentException("All athletes must be of the same gender");
+        }
+    }
+
+    private void validateAgeGroupConsistency(List<Athlete> athletes) {
+        Set<AgeGroup> ageGroups = athletes.stream()
+                .map(athlete -> AgeGroup.getAgeGroupByAge(
+                        Period.between(athlete.getUser().getBirthDate(), LocalDate.now()).getYears()))
+                .collect(Collectors.toSet());
+        if (ageGroups.size() > 1) {
+            log.error("Athletes must be in the same age group. Found age groups: {}", ageGroups);
+            throw new IllegalArgumentException("All athletes must be in the same age group");
+        }
     }
 
     public Team findTeamByMembersIds(Set<Long> athletesIds) {
