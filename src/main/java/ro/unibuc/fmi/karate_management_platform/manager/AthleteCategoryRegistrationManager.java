@@ -16,7 +16,7 @@ public class AthleteCategoryRegistrationManager {
     private final CompetitionRegistrationStrategyFactory strategyFactory;
     private final CompetitionRepository competitionRepository;
 
-    public Competition registerAthletesToCompetition(CompetitionRegistrationRequest competitionRegistrationRequest, Coach coach, Competition competition) {
+    public Competition registerAthletesToCompetition(CompetitionRegistrationRequest competitionRegistrationRequest, Competition competition) {
         competitionRegistrationRequest.individualCategories()
                 .forEach(
                         (athleteId, individualCategoryType) ->

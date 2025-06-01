@@ -17,6 +17,7 @@ import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.Catego
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.KataCategoryResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.KumiteCategoryResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.match.*;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.team.TeamResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.referee.RefereeRequest;
@@ -27,6 +28,7 @@ import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.club.Club;
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
+import ro.unibuc.fmi.karate_management_platform.models.competition.Team;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteIndividualCategory;
@@ -41,12 +43,17 @@ import ro.unibuc.fmi.karate_management_platform.models.request.competition.Compe
 import ro.unibuc.fmi.karate_management_platform.models.request.organizer.OrganizerCreationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.request.referee.RefereeCreationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
+import ro.unibuc.fmi.karate_management_platform.models.user.Role;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface MapperUtils {
 
     // === Auth Mapping ===
-    AuthResponse mapToAuthResponse(String accessToken, String refreshToken);
+    AuthResponse mapToAuthResponse(String accessToken, String refreshToken, Set<Role> roles, Long id);
 
 
     // === User Mapping ===
@@ -54,7 +61,17 @@ public interface MapperUtils {
 
 
     // === Athlete Mapping ===
+    @Mapping(target = "clubResponse", expression = "java(getFirstClubResponse(athlete))")
     AthleteResponse mapToAthleteResponse(Athlete athlete);
+
+    default Optional<ClubResponse> getFirstClubResponse(Athlete athlete) {
+        return athlete.getCoaches().stream()
+                .map(Coach::getClub)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .map(this::mapToClubResponse);
+    }
+
 
     Athlete mapToAthlete(AthleteRequest athleteRequest);
 
@@ -70,7 +87,11 @@ public interface MapperUtils {
 
 
     // === Coach Mapping ===
+    @Mapping(target = "teams", expression = "java(new java.util.HashSet<>())")
     CoachResponse mapToCoachResponse(Coach coach);
+
+    @Mapping(target = "teams", source = "teams")
+    CoachResponse mapToCoachResponse(Coach coach, Set<Team> teams);
 
     Coach mapToCoach(@Valid CoachRequest coachRequest);
 
@@ -120,7 +141,6 @@ public interface MapperUtils {
     // === Competition Mapping ===
     CompetitionCreationResponse mapToCompetitionCreationResponse(CompetitionCreationRequest request);
 
-    @Mapping(target = "categoriesIds", source = "competitionRequest.categoriesIds")
     @Mapping(target = "date", source = "competitionRequest.date")
     @Mapping(target = "location", source = "competitionRequest.location")
     @Mapping(target = "name", source = "competitionRequest.name")
@@ -174,6 +194,6 @@ public interface MapperUtils {
         };
     }
 
-
+    TeamResponse mapToTeamResponse(Team savedTeam);
 }
 

@@ -21,6 +21,7 @@ public class CoachResponseFixture {
                 user,
                 licenseInfo,
                 club,
+                Set.of(),
                 Set.of()
         );
     }
@@ -30,6 +31,7 @@ public class CoachResponseFixture {
                 userResponse,
                 licenseInfo,
                 club,
+                Set.of(),
                 Set.of()
         );
     }

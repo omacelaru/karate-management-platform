@@ -13,6 +13,7 @@ import ro.unibuc.fmi.karate_management_platform.fixtures.coach.CoachResponseFixt
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.repositories.CoachRepository;
+import ro.unibuc.fmi.karate_management_platform.repositories.TeamRepository;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
 import java.util.List;
@@ -32,7 +33,9 @@ class CoachServiceTest {
     void setUp() {
         coachRepository = mock(CoachRepository.class);
         mapperUtils = mock(MapperUtils.class);
-        coachService = new CoachService(coachRepository, mapperUtils);
+        TeamRepository teamRepository = mock(TeamRepository.class);
+        when(teamRepository.findAll()).thenReturn(List.of());
+        coachService = new CoachService(coachRepository, teamRepository, mapperUtils);
     }
 
     @Test

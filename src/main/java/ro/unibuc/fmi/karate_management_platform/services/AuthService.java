@@ -36,7 +36,7 @@ public class AuthService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.email(), authRequest.password()));
         String accessToken = jwtTokenService.generateAccessToken(user);
         String refreshToken = jwtTokenService.generateRefreshToken(user);
-        return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
+        return mapperUtils.mapToAuthResponse(accessToken, refreshToken, user.getRoles(), user.getId());
     }
 
     @Transactional
@@ -52,7 +52,7 @@ public class AuthService {
         
         String accessToken = jwtTokenService.generateAccessToken(user);
         String refreshToken = jwtTokenService.generateRefreshToken(user);
-        return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
+        return mapperUtils.mapToAuthResponse(accessToken, refreshToken, user.getRoles(), user.getId());
     }
 
     @Transactional
@@ -72,7 +72,7 @@ public class AuthService {
         log.info("Refreshing token for user with email: {}", user.getEmail());
         String refreshToken = jwtTokenService.extractRefreshToken(request);
         String accessToken = jwtTokenService.generateAccessToken(user);
-        return mapperUtils.mapToAuthResponse(accessToken, refreshToken);
+        return mapperUtils.mapToAuthResponse(accessToken, refreshToken, user.getRoles(), user.getId());
     }
 
     public Void resetPassword(User user, ResetPasswordRequest request) {

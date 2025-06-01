@@ -6,12 +6,17 @@ import java.io.Serializable;
 
 /**
  * DTO for club response data, used to return a club's information.
- * This class includes the club's name and acronym.
+ * This class includes the club's name, acronym, city, address, phone, and email.
  * <p>Usage: This DTO is used for returning club data from the backend to the client.</p>
  */
-@Schema(description = "Club response containing the club's name and acronym.")
-public record ClubResponse(Long id,
-                           String name,
-                           String acronym
+@Schema(description = "Club response containing the club's details.")
+public record ClubResponse(
+    Long id,
+    String name,
+    String acronym,
+    String city,
+    String address,
+    String phone,
+    String email
 ) implements Serializable, ClubResponseInterface {
 }

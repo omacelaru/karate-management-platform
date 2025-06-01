@@ -7,10 +7,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import ro.unibuc.fmi.karate_management_platform.dtos.athlete.AthleteRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.athlete.AthleteResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.club.ClubResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.user.UserResponse;
 import ro.unibuc.fmi.karate_management_platform.exceptions.IncompleteProfileException;
+import ro.unibuc.fmi.karate_management_platform.fixtures.club.ClubResponseFixture;
 import ro.unibuc.fmi.karate_management_platform.fixtures.user.UserResponseFixture;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
+import ro.unibuc.fmi.karate_management_platform.models.athelte.Belt;
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.repositories.AthleteRepository;
@@ -50,8 +53,9 @@ class AthleteServiceTest {
         Pageable pageable = mock(Pageable.class);
 
         UserResponse userResponse = UserResponseFixture.createDefaultUserResponse();
+        ClubResponse clubResponse = ClubResponseFixture.createDefaultClubResponse();
         Athlete athlete = new Athlete();
-        AthleteResponse athleteResponse = new AthleteResponse(userResponse, HEIGHT, WEIGHT);
+        AthleteResponse athleteResponse = new AthleteResponse(userResponse, HEIGHT, WEIGHT, Belt.BLACK, Optional.of(clubResponse));
 
         when(athleteRepository.findAll(pageable)).thenReturn(new PageImpl<>(List.of(athlete)));
         when(mapperUtils.mapToAthleteResponse(athlete)).thenReturn(athleteResponse);
@@ -65,10 +69,11 @@ class AthleteServiceTest {
     @Test
     void getMe_shouldReturnAthlete() throws IncompleteProfileException {
         UserResponse userResponse = UserResponseFixture.createDefaultUserResponse();
+        ClubResponse clubResponse = ClubResponseFixture.createDefaultClubResponse();
         User user = new User();
         user.setEmail(userResponse.email());
         Athlete athlete = new Athlete();
-        AthleteResponse athleteResponse = new AthleteResponse(userResponse, HEIGHT, WEIGHT);
+        AthleteResponse athleteResponse = new AthleteResponse(userResponse, HEIGHT, WEIGHT,Belt.BLACK, Optional.of(clubResponse));
 
         when(athleteRepository.findByUserEmail(user.getEmail())).thenReturn(Optional.of(athlete));
         when(mapperUtils.mapToAthleteResponse(athlete)).thenReturn(athleteResponse);

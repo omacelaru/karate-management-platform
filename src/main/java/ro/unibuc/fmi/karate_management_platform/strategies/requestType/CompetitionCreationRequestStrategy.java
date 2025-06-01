@@ -8,6 +8,7 @@ import ro.unibuc.fmi.karate_management_platform.dtos.request.RequestInfoResponse
 import ro.unibuc.fmi.karate_management_platform.factories.RequestInfoRepositoryFactory;
 import ro.unibuc.fmi.karate_management_platform.factories.RequestScopeStrategyFactory;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestInfo;
+import ro.unibuc.fmi.karate_management_platform.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestType;
 import ro.unibuc.fmi.karate_management_platform.models.request.competition.CompetitionCreationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.user.Role;
@@ -31,6 +32,29 @@ public class CompetitionCreationRequestStrategy extends AbstractRequestTypeStrat
 
     @Override
     protected void validateRequest(User user, Object request) {
+        if (!(request instanceof CompetitionRequest(String name, String location, java.time.LocalDate date))) {
+            throw new IllegalArgumentException("Invalid request type");
+        }
+        boolean duplicateExists = repositoryFactory.getRepository(requestType)
+            .findAll()
+            .stream()
+            .filter(req -> req instanceof CompetitionCreationRequest)
+            .map(req -> (CompetitionCreationRequest) req)
+            .anyMatch(existingRequest -> 
+                existingRequest.getCompetitionRequest().name().equals(name) &&
+                existingRequest.getCompetitionRequest().location().equals(location) &&
+                existingRequest.getCompetitionRequest().date().equals(date) &&
+                existingRequest.getStatus().equals(RequestStatus.PENDING)
+            );
+
+        if (duplicateExists) {
+            throw new IllegalArgumentException("Duplicate request found. You can edit the existing request");
+        }
+    }
+
+    @Override
+    protected boolean isDuplicateRequest(User user) {
+        return false; // No duplicate check needed for competition creation requests
     }
 
     @Override

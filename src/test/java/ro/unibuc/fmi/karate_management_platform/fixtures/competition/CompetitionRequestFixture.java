@@ -12,8 +12,7 @@ public class CompetitionRequestFixture {
         return new CompetitionRequest(
                 "Karate Championship",
                 "Bucharest",
-                LocalDate.now().plusDays(3),
-                Set.of(1L, 2L, 3L)
+                LocalDate.now().plusDays(3)
         );
     }
 
@@ -26,8 +25,7 @@ public class CompetitionRequestFixture {
         return new CompetitionRequest(
                 name,
                 location,
-                date,
-                categoriesIds
+                date
         );
     }
 }

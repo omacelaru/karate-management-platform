@@ -14,17 +14,25 @@ public class ClubWithCoachesResponseFixture {
                 1L,
                 Set.of(createDefaultCoachResponse()),
                 "Karate Club",
-                "KTC"
+                "KTC",
+                "Bucharest",
+                "Strada Exemplu 123",
+                "+40712345678",
+                "contact@karateclub.ro"
         );
     }
 
     public static ClubWithCoachesResponse createCustomClubWithCoachesResponse(
-            Long id, String name, String acronym, Set<CoachResponse> coaches) {
+            Long id, String name, String acronym, Set<CoachResponse> coaches, String city, String address, String phone, String email) {
         return new ClubWithCoachesResponse(
                 id,
                 coaches,
                 name,
-                acronym
+                acronym,
+                city,
+                address,
+                phone,
+                email
         );
     }
 

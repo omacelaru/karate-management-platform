@@ -12,11 +12,16 @@ import java.util.Set;
  *
  * <p>Usage: This DTO is used for returning club data from the backend to the client.</p>
  */
-@Schema(description = "Club response containing the club's name, acronym, and a list of coaches.")
-public record ClubWithCoachesResponse(Long id,
-                                      Set<CoachResponse> coaches,
-                                      String name,
-                                      String acronym
+@Schema(description = "Club response containing the club's details and a list of coaches.")
+public record ClubWithCoachesResponse(
+    Long id,
+    Set<CoachResponse> coaches,
+    String name,
+    String acronym,
+    String city,
+    String address,
+    String phone,
+    String email
 ) implements Serializable, ClubResponseInterface {
 }
 //todo either for coach in club
