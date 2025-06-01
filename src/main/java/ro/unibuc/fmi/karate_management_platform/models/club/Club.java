@@ -29,4 +29,16 @@ public class Club extends BaseEntity {
 
     @Column(name = "acronym", nullable = false, unique = true)
     private String acronym;
+
+    @Column(name = "city", nullable = false)
+    private String city;
+
+    @Column(name = "address", nullable = false)
+    private String address;
+
+    @Column(name = "phone", nullable = false)
+    private String phone;
+
+    @Column(name = "email", nullable = false)
+    private String email;
 }

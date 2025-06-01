@@ -6,4 +6,12 @@ public sealed interface ClubResponseInterface permits ClubResponse, ClubWithCoac
     String name();
 
     String acronym();
+
+    String city();
+
+    String address();
+
+    String phone();
+
+    String email();
 }

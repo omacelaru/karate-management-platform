@@ -94,12 +94,13 @@ public class UserSeeder implements CommandLineRunner {
         List<Club> clubs = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             String clubName = CLUB_NAMES.get(i);
+            String acronym = clubName.replaceAll(" ", "").substring(0, 3).toUpperCase();
             String city = CITIES.get(random.nextInt(CITIES.size()));
             String address = "Strada " + (i + 1) + ", Nr. " + (random.nextInt(100) + 1);
             String phone = "07" + String.format("%08d", random.nextInt(100000000));
             String email = "contact@" + clubName.toLowerCase().replace(" ", "") + ".com";
             
-            ClubRequest clubRequest = new ClubRequest(clubName, city, address, phone, email);
+            ClubRequest clubRequest = new ClubRequest(clubName,acronym, city, address, phone, email);
             clubs.add(clubService.createClubForSeeder(clubRequest));
         }
 

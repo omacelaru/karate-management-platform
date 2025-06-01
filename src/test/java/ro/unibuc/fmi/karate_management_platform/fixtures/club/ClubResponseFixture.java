@@ -8,15 +8,23 @@ public class ClubResponseFixture {
         return new ClubResponse(
                 1L,
                 "Karate Club",
-                "KTC"
+                "KTC",
+                "Bucharest",
+                "Strada Exemplu 123",
+                "+40712345678",
+                "contact@karateclub.ro"
         );
     }
 
-    public static ClubResponse createCustomClubResponse(Long id, String name, String acronym) {
+    public static ClubResponse createCustomClubResponse(Long id, String name, String acronym, String city, String address, String phone, String email) {
         return new ClubResponse(
                 id,
                 name,
-                acronym
+                acronym,
+                city,
+                address,
+                phone,
+                email
         );
     }
 }
