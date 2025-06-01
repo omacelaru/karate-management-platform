@@ -94,4 +94,12 @@ public class ClubService {
         log.info("Getting club with id: {}", clubId);
         return clubRepository.findById(clubId).orElseThrow(() -> new IllegalArgumentException("Club not found"));
     }
+
+    public Club createClubForSeeder(ClubRequest clubRequest) {
+        validateClubRequest(clubRequest);
+
+        Club club = mapperUtils.mapToClub(clubRequest);
+
+        return clubRepository.save(club);
+    }
 }

@@ -60,4 +60,13 @@ public class CoachService {
             return new IllegalArgumentException("Coach with email " + email + " not found");
         });
     }
+
+    public void updateCoach(Coach coach) {
+        log.info("Updating coach with ID: {}", coach.getId());
+        if (!coachRepository.existsById(coach.getId())) {
+            log.error("Coach with ID {} not found", coach.getId());
+            throw new IllegalArgumentException("Coach with ID " + coach.getId() + " not found");
+        }
+        coachRepository.save(coach);
+    }
 }

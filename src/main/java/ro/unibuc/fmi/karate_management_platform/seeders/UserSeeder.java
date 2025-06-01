@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ro.unibuc.fmi.karate_management_platform.dtos.athlete.AthleteRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.auth.AuthRequest;
+import ro.unibuc.fmi.karate_management_platform.dtos.club.ClubRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.referee.RefereeRequest;
@@ -13,6 +14,7 @@ import ro.unibuc.fmi.karate_management_platform.dtos.user.UserDetailsRequest;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Belt;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Gender;
+import ro.unibuc.fmi.karate_management_platform.models.club.Club;
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.embedded.TRN.TaxRegistrationNumber;
 import ro.unibuc.fmi.karate_management_platform.models.embedded.license.LicenseInfo;
@@ -22,10 +24,7 @@ import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.services.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -35,11 +34,47 @@ public class UserSeeder implements CommandLineRunner {
     private final CoachService coachService;
     private final RefereeService refereeService;
     private final OrganizerService organizerService;
+    private final ClubService clubService;
 
     private static final String PASSWORD = "Password123!";
     private final Random random = new Random();
 
-    private static final List<String> NATIONALITIES = List.of("USA", "UK", "Canada", "Germany", "France", "Spain", "Italy", "Brazil", "Japan", "Australia");
+    private static final List<String> NATIONALITIES = List.of(
+        "Romania", "USA", "UK", "Canada", "Germany", "France", "Spain", 
+        "Italy", "Brazil", "Japan", "Australia", "China", "Russia", 
+        "South Korea", "Netherlands", "Sweden", "Norway", "Denmark", 
+        "Finland", "Poland", "Ukraine", "Turkey", "Greece", "Portugal"
+    );
+
+    private static final List<String> FIRST_NAMES = List.of(
+        "John", "Jane", "Michael", "Emma", "David", "Sarah", "James", "Maria",
+        "Robert", "Anna", "William", "Sophia", "Daniel", "Olivia", "Matthew",
+        "Isabella", "Joseph", "Mia", "Andrew", "Charlotte", "Thomas", "Amelia",
+        "Joshua", "Harper", "Ryan", "Evelyn", "Nicholas", "Abigail", "Tyler",
+        "Emily", "Alexander", "Elizabeth", "Nathan", "Sofia", "Samuel", "Avery"
+    );
+
+    private static final List<String> LAST_NAMES = List.of(
+        "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller",
+        "Davis", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez",
+        "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin",
+        "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark",
+        "Ramirez", "Lewis", "Robinson", "Walker", "Young", "Allen", "King",
+        "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores"
+    );
+
+    private static final List<String> CLUB_NAMES = List.of(
+        "Dragon Karate Club", "Samurai Dojo", "Tiger's Den", "Phoenix Martial Arts",
+        "Black Belt Academy", "Warrior's Path", "Zen Karate Center", "Eagle's Nest Dojo",
+        "Golden Dragon", "Silver Tiger", "Red Phoenix", "Blue Wave",
+        "White Crane", "Black Panther", "Green Dragon", "Yellow Tiger"
+    );
+
+    private static final List<String> CITIES = List.of(
+        "București", "Cluj-Napoca", "Timișoara", "Iași", "Constanța",
+        "Brașov", "Sibiu", "Oradea", "Craiova", "Galați",
+        "Ploiești", "Brăila", "Pitești", "Bacău", "Arad"
+    );
 
     @Override
     @Transactional
@@ -48,48 +83,81 @@ public class UserSeeder implements CommandLineRunner {
     }
 
     private void seedUsers() {
-        // Dacă există deja utilizatori, nu se mai face seeding
         if (!userService.getAllUsers().isEmpty()) {
             return;
         }
 
-        List<Athlete> seededAthletes = new ArrayList<>();
-        List<Coach> seededCoaches = new ArrayList<>();
+        // Create admin first
+        User admin = createAdminUser();
 
-        seededAthletes.add(createAthlete("john.athlete.coach1@karate.com", "John", "Doe"));
-        seededAthletes.add(createAthlete("jane.athlete.coach1@karate.com", "Jane", "Smith"));
-        seededAthletes.add(createAthlete("alex.athlete.coach1@karate.com", "Alex", "Johnson"));
-        seededAthletes.add(createAthlete("emma.athlete.coach2@karate.com", "Emma", "Brown"));
-        seededAthletes.add(createAthlete("dore.athlete.coach2@karate.com", "Dore", "Smith"));
-        seededAthletes.add(createAthlete("enif.athlete.coach2@karate.com", "Enif", "Red"));
+        // Create clubs (8 clubs)
+        List<Club> clubs = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            String clubName = CLUB_NAMES.get(i);
+            String city = CITIES.get(random.nextInt(CITIES.size()));
+            String address = "Strada " + (i + 1) + ", Nr. " + (random.nextInt(100) + 1);
+            String phone = "07" + String.format("%08d", random.nextInt(100000000));
+            String email = "contact@" + clubName.toLowerCase().replace(" ", "") + ".com";
+            
+            ClubRequest clubRequest = new ClubRequest(clubName, city, address, phone, email);
+            clubs.add(clubService.createClubForSeeder(clubRequest));
+        }
 
-        seededCoaches.add(createCoach("mike.coach1@karate.com", "Mike", "Taylor"));
-        seededCoaches.add(createCoach("susan.coach2@karate.com", "Susan", "Anderson"));
-        seededCoaches.add(createCoach("don.coach3@karate.com", "Don", "White"));
-        seededCoaches.add(createCoach("wally.coach4@karate.com", "Wally", "Green"));
+        // Create coaches (10 coaches)
+        List<Coach> coaches = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            String email = String.format("coach%d@karate.com", i + 1);
+            String firstName = FIRST_NAMES.get(random.nextInt(FIRST_NAMES.size()));
+            String lastName = LAST_NAMES.get(random.nextInt(LAST_NAMES.size()));
+            Coach coach = createCoach(email, firstName, lastName);
+            
+            // Assign coach to a random club
+            Club randomClub = clubs.get(random.nextInt(clubs.size()));
+            coach.setClub(randomClub);
+            coachService.updateCoach(coach);
+            
+            coaches.add(coach);
+        }
 
-        createGenericUser("mark.referee1@karate.com", "Mark", "Wilson", Role.REFEREE, createRefereeRequest());
-        createGenericUser("lucy.referee2@karate.com", "Lucy", "Evans", Role.REFEREE, createRefereeRequest());
-        createGenericUser("miles.referee3@karate.com", "Miles", "Brown", Role.REFEREE, createRefereeRequest());
-        createGenericUser("ronald.referee4@karate.com", "Ronald", "Smith", Role.REFEREE, createRefereeRequest());
-
-        createGenericUser("chris.organizer1@karate.com", "Chris", "Miller", Role.ORGANIZER, createOrganizerRequest());
-        createGenericUser("natalie.organizer2@karate.com", "Natalie", "Harris", Role.ORGANIZER, createOrganizerRequest());
-
-        createAdminUser();
-
-        for (Athlete athlete : seededAthletes) {
-            Coach assignedCoach = seededCoaches.get(random.nextInt(seededCoaches.size()));
-            athlete.setCoaches(new HashSet<>(List.of(assignedCoach)));
+        // Create athletes (50 athletes)
+        List<Athlete> athletes = new ArrayList<>();
+        for (int i = 0; i < 50; i++) {
+            String email = String.format("athlete%d@karate.com", i + 1);
+            String firstName = FIRST_NAMES.get(random.nextInt(FIRST_NAMES.size()));
+            String lastName = LAST_NAMES.get(random.nextInt(LAST_NAMES.size()));
+            Athlete athlete = createAthlete(email, firstName, lastName);
+            
+            // Assign athlete to a coach
+            Coach randomCoach = coaches.get(random.nextInt(coaches.size()));
+            athlete.getCoaches().add(randomCoach);
             athleteService.updateAthlete(athlete);
+            
+            athletes.add(athlete);
+        }
+
+        // Create referees (15 referees)
+        for (int i = 0; i < 15; i++) {
+            String email = String.format("referee%d@karate.com", i + 1);
+            String firstName = FIRST_NAMES.get(random.nextInt(FIRST_NAMES.size()));
+            String lastName = LAST_NAMES.get(random.nextInt(LAST_NAMES.size()));
+            createGenericUser(email, firstName, lastName, Role.REFEREE, createRefereeRequest());
+        }
+
+        // Create organizers (8 organizers)
+        for (int i = 0; i < 8; i++) {
+            String email = String.format("organizer%d@karate.com", i + 1);
+            String firstName = FIRST_NAMES.get(random.nextInt(FIRST_NAMES.size()));
+            String lastName = LAST_NAMES.get(random.nextInt(LAST_NAMES.size()));
+            createGenericUser(email, firstName, lastName, Role.ORGANIZER, createOrganizerRequest());
         }
     }
 
-    private void createAdminUser() {
+    private User createAdminUser() {
         User user = userService.createUser(new AuthRequest("admin@admin.com", PASSWORD, "en"));
         updateUser("admin@admin.com", "Admin", "Admin");
         user.addRole(Role.ADMIN);
         userService.updateUser(user);
+        return user;
     }
 
     private Athlete createAthlete(String email, String firstName, String lastName) {
@@ -133,7 +201,7 @@ public class UserSeeder implements CommandLineRunner {
                 (long) (random.nextInt(10) + 1),
                 random.nextInt(200 - 50) + 50,
                 random.nextInt(150 - 20) + 20,
-                Belt.GREEN
+                Belt.values()[random.nextInt(Belt.values().length)]
         );
     }
 
