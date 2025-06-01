@@ -15,7 +15,7 @@ import java.util.Set;
 @SuperBuilder
 @RequiredArgsConstructor
 @AllArgsConstructor
-@MappedSuperclass
+@Entity
 public class TeamCategory extends Category {
     @ManyToMany(fetch = FetchType.LAZY)
     @ToString.Exclude

@@ -15,7 +15,7 @@ import java.util.Set;
 @SuperBuilder
 @RequiredArgsConstructor
 @AllArgsConstructor
-@MappedSuperclass
+@Entity
 public abstract class IndividualCategory extends Category {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
