@@ -20,6 +20,7 @@ import ro.unibuc.fmi.karate_management_platform.repositories.OrganizerRepository
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.CompetitionRepository;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -34,7 +35,7 @@ public class CompetitionService {
     private final CoachService coachService;
 
     @Transactional
-    public void createCompetition(User createdBy, CompetitionRequest competitionRequest) {
+    public Competition createCompetition(User createdBy, CompetitionRequest competitionRequest) {
         log.info("Creating competition {}", competitionRequest.name());
 
         Organizer organizer = organizerRepository.findByUserEmail(createdBy.getEmail()).orElseThrow();
@@ -45,7 +46,7 @@ public class CompetitionService {
         competition.setCategories(categories);
         competition.setOrganizer(organizer);
 
-        competitionRepository.save(competition);
+        return competitionRepository.save(competition);
     }
 
     public Page<CompetitionResponse> getAllCompetitions(Pageable pageable) {
@@ -120,4 +121,9 @@ public class CompetitionService {
         });
     }
 
+    public List<Competition> getAllCompetitionsForSeeder() {
+        log.info("Getting all competitions for seeder");
+
+        return competitionRepository.findAll();
+    }
 }

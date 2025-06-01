@@ -15,6 +15,8 @@ import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.repositories.OrganizerRepository;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,8 @@ public class OrganizerService {
         log.info("Getting all organizers");
         return organizerRepository.findAll(pageable).map(mapperUtils::mapToOrganizerResponse);
     }
+
+
 
     public OrganizerResponse getMe(User user) {
         String email = user.getEmail();
@@ -49,4 +53,8 @@ public class OrganizerService {
     }
 
 
+    public List<Organizer> getAllOrganizersForSeeder() {
+        log.info("Getting all organizers for seeder");
+        return organizerRepository.findAll();
+    }
 }
