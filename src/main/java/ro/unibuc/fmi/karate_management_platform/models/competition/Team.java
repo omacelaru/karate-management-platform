@@ -28,4 +28,12 @@ public class Team extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "athlete_id")
     )
     private Set<Athlete> athletes = new LinkedHashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "team_competitions",
+            joinColumns = @JoinColumn(name = "team_id"),
+            inverseJoinColumns = @JoinColumn(name = "competition_id")
+    )
+    private Set<Competition> competitions = new LinkedHashSet<>();
 }
