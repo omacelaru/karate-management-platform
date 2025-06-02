@@ -114,7 +114,7 @@ public class CompetitionService {
 //    }
 
 
-    private Competition findCompetitionById(Long competitionId) {
+    public Competition findCompetitionById(Long competitionId) {
         return competitionRepository.findById(competitionId).orElseThrow(() -> {
             log.error("Competition with ID {} not found", competitionId);
             return new IllegalArgumentException("Competition not found");

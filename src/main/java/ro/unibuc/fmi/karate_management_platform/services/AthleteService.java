@@ -11,14 +11,18 @@ import ro.unibuc.fmi.karate_management_platform.dtos.athlete.AthleteResponse;
 import ro.unibuc.fmi.karate_management_platform.exceptions.IncompleteProfileException;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
+import ro.unibuc.fmi.karate_management_platform.models.competition.Team;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
 import ro.unibuc.fmi.karate_management_platform.models.user.Role;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.repositories.AthleteRepository;
+import ro.unibuc.fmi.karate_management_platform.repositories.TeamRepository;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -26,6 +30,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class AthleteService {
     private final AthleteRepository athleteRepository;
+    private final TeamRepository teamRepository;
     private final MapperUtils mapperUtils;
     private final ClubService clubService;
 
@@ -89,4 +94,15 @@ public class AthleteService {
         return AgeGroup.getAgeGroupByAge(age);
     }
 
+    public Set<Coach> findCoachesByAthleteId(Long id) {
+        log.info("Finding coaches for athlete with ID: {}", id);
+        Athlete athlete = getAthleteById(id);
+        return athlete.getCoaches();
+    }
+
+    public List<Team> getTeamsByAthleteId(Long id) {
+        log.info("Finding teams for athlete with ID: {}", id);
+        Athlete athlete = getAthleteById(id);
+        return teamRepository.findAllByAthletesContains(athlete);
+    }
 }

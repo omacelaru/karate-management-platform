@@ -53,7 +53,7 @@ public class CompetitionCreationRequestStrategy extends AbstractRequestTypeStrat
     }
 
     @Override
-    protected boolean isDuplicateRequest(User user) {
+    protected boolean isDuplicateRequest(User user, Object request) {
         return false; // No duplicate check needed for competition creation requests
     }
 

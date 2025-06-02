@@ -11,6 +11,7 @@ import ro.unibuc.fmi.karate_management_platform.dtos.club.ClubResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.club.ClubWithCoachesResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.coach.CoachRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.coach.CoachResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.AthleteRegistrationRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.CategoryResponse;
@@ -39,6 +40,7 @@ import ro.unibuc.fmi.karate_management_platform.models.organizer.Organizer;
 import ro.unibuc.fmi.karate_management_platform.models.referee.Referee;
 import ro.unibuc.fmi.karate_management_platform.models.request.athlete.AthleteCreationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.request.coach.CoachCreationRequest;
+import ro.unibuc.fmi.karate_management_platform.models.request.competition.AthleteCompetitionRegistrationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.request.competition.CompetitionCreationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.request.organizer.OrganizerCreationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.request.referee.RefereeCreationRequest;
@@ -195,5 +197,10 @@ public interface MapperUtils {
     }
 
     TeamResponse mapToTeamResponse(Team savedTeam);
+
+    // === Athlete Competition Registration Mapping ===
+    AthleteCompetitionRegistrationRequest toAthleteCompetitionRegistrationRequest(AthleteRegistrationRequest request);
+
+    AthleteCompetitionRegistrationResponse maptoAthleteCompetitionRegistrationResponse(AthleteCompetitionRegistrationRequest request);
 }
 

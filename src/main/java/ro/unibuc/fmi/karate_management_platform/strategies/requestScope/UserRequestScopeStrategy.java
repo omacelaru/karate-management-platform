@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestInfo;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestScope;
-import ro.unibuc.fmi.karate_management_platform.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestWithUsersApproval;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.repositories.request.RequestInfoRepository;
@@ -58,6 +57,6 @@ public class UserRequestScopeStrategy implements RequestScopeStrategy {
     @Override
     public Optional<? extends RequestInfo> getRequestAssignedToMeById(Long requestId, User user, Pageable pageable, RequestInfoRepository<? extends RequestInfo> repository) {
         RequestWithUsersApprovalRepository<RequestWithUsersApproval> validRepository = validateRepository(repository);
-        return validRepository.findByIdAndApproverUsersContaining(requestId, Set.of(user));
+        return validRepository.findByIdAndApproverUsers(requestId, user);
     }
 }

@@ -40,9 +40,10 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
 
     @Override
     public Page<? extends RequestInfoResponseInterface> getRequestsMadeByMe(User user, Pageable pageable) {
-        log.info("Getting requests made by user with email: {}", user.getEmail());
-        return getRepository().findAllByCreatedById(user.getId(), pageable)
-                .map(this::mapToResponse);
+        log.info("Getting requests made by user with email: {} and id: {}", user.getEmail(), user.getId());
+        Page<? extends RequestInfo> requests = getRepository().findAllByCreatedById(user.getId(), pageable);
+        log.debug("Found {} requests for user {}", requests.getTotalElements(), user.getId());
+        return requests.map(this::mapToResponse);
     }
 
     @Override
@@ -84,9 +85,8 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
 
         validateRequest(user, request);
 
-        if (isDuplicateRequest(user)) {
+        if (isDuplicateRequest(user, request)) {
             log.error("Duplicate request {}", request);
-            //todo set location where to edit the request
             throw new IllegalStateException("Duplicate request found. You can edit the existing request");
         }
 
@@ -159,7 +159,7 @@ public abstract class AbstractRequestTypeStrategy implements RequestTypeStrategy
         return getRepository().existsById(requestId);
     }
 
-    protected boolean isDuplicateRequest(User user) {
+    protected boolean isDuplicateRequest(User user, Object request) {
         return getRepository().existsByCreatedByIdAndStatusIn(user.getId(), Set.of(RequestStatus.PENDING));
     }
 

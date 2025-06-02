@@ -7,9 +7,13 @@ import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Gender;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.IndividualCategoryParticipation;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteDivisionRange;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.services.AthleteService;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -42,12 +46,25 @@ public class KumiteIndividualCategoryRegistrationStrategy implements Competition
                         .findFirst()
                         .orElseThrow(() -> new IllegalArgumentException("No category found for athlete")));
 
-        if (kumiteIndividualCategory.getAthletes().contains(athlete)) {
-            log.info("Athlete {} is already registered in category {}", athlete.getId(), kumiteIndividualCategory.getId());
+
+        Set<Athlete> athletes = kumiteIndividualCategory.getParticipations()
+                .stream()
+                .filter(participation -> participation.getCompetition().equals(competition))
+                .map(IndividualCategoryParticipation::getAthlete)
+                .collect(Collectors.toSet());
+
+        if (athletes.contains(athlete)) {
+            log.error("Athlete {} is already registered in kumnite individual category {} for competition {}", athlete.getId(), kumiteIndividualCategory.getId(),competition.getName());
             throw new IllegalArgumentException("Athlete is already registered in this category");
         } else {
-            kumiteIndividualCategory.getAthletes().add(athlete);
-            log.info("Athlete {} registered in category {}", athlete.getId(), kumiteIndividualCategory.getId());
+            kumiteIndividualCategory.getParticipations().add(
+                    IndividualCategoryParticipation.builder()
+                            .category(kumiteIndividualCategory)
+                            .competition(competition)
+                            .athlete(athlete)
+                            .build()
+            );
+            log.info("Athlete {} registered in kumite individual category {}, competition {}", athlete.getId(), kumiteIndividualCategory.getId(),competition.getName());
         }
     }
 }

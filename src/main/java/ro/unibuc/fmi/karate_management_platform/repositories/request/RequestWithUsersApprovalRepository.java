@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestInfo;
-import ro.unibuc.fmi.karate_management_platform.models.request.RequestStatus;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestWithUsersApproval;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 
@@ -15,5 +14,5 @@ import java.util.Set;
 public interface RequestWithUsersApprovalRepository<T extends RequestWithUsersApproval> extends RequestInfoRepository<T> {
     Page<? extends RequestInfo> findAllByApproverUsersContaining(User user, Pageable pageable);
 
-    Optional<? extends RequestInfo> findByIdAndApproverUsersContaining(Long requestId, Set<User> user);
+    Optional<? extends RequestInfo> findByIdAndApproverUsers(Long id, User approverUsers);
 }

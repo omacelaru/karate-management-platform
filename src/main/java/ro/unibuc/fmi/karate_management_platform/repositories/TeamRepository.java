@@ -20,4 +20,5 @@ public interface TeamRepository extends JpaRepository<Team, Long>, JpaSpecificat
 
     boolean existsByTeamName(@NotBlank(message = "Team name is required") String teamName);
 
+    List<Team> findAllByAthletesContains(Athlete athlete);
 }

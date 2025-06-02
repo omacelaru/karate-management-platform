@@ -19,6 +19,7 @@ public class RequestInfoRepositoryFactory {
     private final AthleteCreationRequestRepository athleteCreationRequestRepository;
     private final OrganizerCreationRequestRepository organizerCreationRequestRepository;
     private final CompetitionCreationRequestRepository competitionCreationRequestRepository;
+    private final AthleteCompetitionRegistrationRequestRepository athleteCompetitionRegistrationRequestRepository;
 
     private Map<RequestType, RequestInfoRepository<? extends RequestInfo>> repositoryMap;
 
@@ -29,7 +30,8 @@ public class RequestInfoRepositoryFactory {
                 RequestType.REFEREE_CREATION, refereeCreationRequestRepository,
                 RequestType.ATHLETE_CREATION, athleteCreationRequestRepository,
                 RequestType.ORGANIZER_CREATION, organizerCreationRequestRepository,
-                RequestType.COMPETITION_CREATION, competitionCreationRequestRepository
+                RequestType.COMPETITION_CREATION, competitionCreationRequestRepository,
+                RequestType.ATHLETE_COMPETITION_REGISTRATION, athleteCompetitionRegistrationRequestRepository
         );
     }
 
