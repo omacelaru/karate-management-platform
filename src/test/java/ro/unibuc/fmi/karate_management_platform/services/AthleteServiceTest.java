@@ -17,6 +17,7 @@ import ro.unibuc.fmi.karate_management_platform.models.athelte.Belt;
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.repositories.AthleteRepository;
+import ro.unibuc.fmi.karate_management_platform.repositories.TeamRepository;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
 import java.util.List;
@@ -45,7 +46,8 @@ class AthleteServiceTest {
         athleteRepository = mock(AthleteRepository.class);
         mapperUtils = mock(MapperUtils.class);
         clubService = mock(ClubService.class);
-        athleteService = new AthleteService(athleteRepository, mapperUtils, clubService);
+        TeamRepository teamRepository = mock(TeamRepository.class);
+        athleteService = new AthleteService(athleteRepository,teamRepository, mapperUtils, clubService);
     }
 
     @Test

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-public sealed class RequestWithUsersApprovalResponse implements RequestInfoResponseInterface permits AthleteCreationResponse {
+public sealed class RequestWithUsersApprovalResponse implements RequestInfoResponseInterface permits AthleteCompetitionRegistrationResponse, AthleteCreationResponse {
     Long id;
     RequestType type;
     RequestStatus status;

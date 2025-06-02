@@ -7,9 +7,13 @@ import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Gender;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.IndividualCategoryParticipation;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataBeltRange;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.services.AthleteService;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -42,12 +46,24 @@ public class KataIndividualCategoryRegistrationStrategy implements CompetitionRe
                         .findFirst()
                         .orElseThrow(() -> new IllegalArgumentException("No category found for athlete")));
 
-        if (kataIndividualCategory.getAthletes().contains(athlete)) {
-            log.info("Athlete {} is already registered in category {}", athlete.getId(), kataIndividualCategory.getId());
+        Set<Athlete> athletes = kataIndividualCategory.getParticipations()
+                .stream()
+                .filter(participation -> participation.getCompetition().equals(competition))
+                .map(IndividualCategoryParticipation::getAthlete)
+                .collect(Collectors.toSet());
+
+        if (athletes.contains(athlete)) {
+            log.error("Athlete {} is already registered in kata individual category {} for competition {}", athlete.getId(), kataIndividualCategory.getId(),competition.getName());
             throw new IllegalArgumentException("Athlete is already registered in this category");
         } else {
-            kataIndividualCategory.getAthletes().add(athlete);
-            log.info("Athlete {} registered in category {}", athlete.getId(), kataIndividualCategory.getId());
+            kataIndividualCategory.getParticipations().add(
+                    IndividualCategoryParticipation.builder()
+                            .category(kataIndividualCategory)
+                            .competition(competition)
+                            .athlete(athlete)
+                            .build()
+            );
+            log.info("Athlete {} registered in kata individual category {}, competition {}", athlete.getId(), kataIndividualCategory.getId(),competition.getName());
 
         }
     }

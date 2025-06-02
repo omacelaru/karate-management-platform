@@ -7,10 +7,12 @@ import ro.unibuc.fmi.karate_management_platform.models.athelte.Gender;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Team;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.AgeGroup;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.TeamCategoryParticipation;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.kumite.KumiteTeamCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.kumite.KumiteTeamType;
 import ro.unibuc.fmi.karate_management_platform.services.TeamService;
 
+import java.util.Set;
 import java.util.function.Predicate;
 
 @Slf4j
@@ -28,14 +30,39 @@ public class KumiteTeamCategoryRegistrationStrategy implements CompetitionRegist
         KumiteTeamCategory rotationCategory = findCategory(competition, ageGroup, gender, KumiteTeamType.ROTATION);
         KumiteTeamCategory simpleCategory = findCategory(competition, ageGroup, gender, KumiteTeamType.SIMPLE);
 
-        if (rotationCategory.getTeams().contains(team) || simpleCategory.getTeams().contains(team)) {
-            log.info("Team {} is already registered in category {}", team.getId(), rotationCategory.getId());
+        Set<Team> teamsInRotation = rotationCategory.getParticipations().stream()
+                .filter(participation -> participation.getCompetition().equals(competition))
+                .map(TeamCategoryParticipation::getTeam)
+                .collect(java.util.stream.Collectors.toSet());
+
+        Set<Team> teamsInSimple = simpleCategory.getParticipations().stream()
+                .filter(participation -> participation.getCompetition().equals(competition))
+                .map(TeamCategoryParticipation::getTeam)
+                .collect(java.util.stream.Collectors.toSet());
+
+        if (teamsInRotation.contains(team) || teamsInSimple.contains(team)) {
+            log.error("Team {} is already registered in kumite team category {} competition {}", team.getId(), rotationCategory.getId(), competition.getName());
             throw new IllegalArgumentException("Team is already registered in this category");
         }
-        simpleCategory.getTeams().add(team);
-        rotationCategory.getTeams().add(team);
-        log.info("Team {} registered in rotation category {}", team.getId(), rotationCategory.getId());
-        log.info("Team {} registered in simple category {}", team.getId(), simpleCategory.getId());
+
+        rotationCategory.getParticipations().add(
+                TeamCategoryParticipation.builder()
+                        .category(rotationCategory)
+                        .competition(competition)
+                        .team(team)
+                        .build()
+        );
+
+        simpleCategory.getParticipations().add(
+                TeamCategoryParticipation.builder()
+                        .category(simpleCategory)
+                        .competition(competition)
+                        .team(team)
+                        .build()
+        );
+
+        log.info("Team {} registered in rotation kumite team category {} competition {}", team.getId(), rotationCategory.getId(), competition.getName());
+        log.info("Team {} registered in simple kumite team category {} competition {}", team.getId(), simpleCategory.getId(), competition.getName());
     }
 
     private KumiteTeamCategory findCategory(Competition competition, AgeGroup ageGroup, Gender gender, KumiteTeamType type) {
