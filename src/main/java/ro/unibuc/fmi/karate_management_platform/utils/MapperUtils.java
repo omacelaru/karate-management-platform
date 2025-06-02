@@ -201,6 +201,9 @@ public interface MapperUtils {
     // === Athlete Competition Registration Mapping ===
     AthleteCompetitionRegistrationRequest toAthleteCompetitionRegistrationRequest(AthleteRegistrationRequest request);
 
+    @Mapping(target = "athleteCompetitionRegistrationRequest.competitionId", source = "competitionId")
+    @Mapping(target = "athleteCompetitionRegistrationRequest.individualCategories", source = "individualCategories")
+    @Mapping(target = "athleteCompetitionRegistrationRequest.teamCategories", source = "teamCategories")
     AthleteCompetitionRegistrationResponse maptoAthleteCompetitionRegistrationResponse(AthleteCompetitionRegistrationRequest request);
 }
 
