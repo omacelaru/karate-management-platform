@@ -3,7 +3,9 @@ package ro.unibuc.fmi.karate_management_platform.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ro.unibuc.fmi.karate_management_platform.dtos.athlete.AthleteResponse;
@@ -66,7 +68,8 @@ public class CompetitionService {
     public Page<CompetitionResponse> getAllCompetitions(Pageable pageable) {
         log.info("Getting all competitions paginated");
 
-        return competitionRepository.findAll(pageable)
+        Pageable pageableSorted = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.ASC, "date"));
+        return competitionRepository.findAll(pageableSorted)
                 .map(mapperUtils::mapToCompetitionResponse);
     }
 
@@ -204,7 +207,7 @@ public class CompetitionService {
         log.info("Toggling registration status for competition {} to {}", competitionId, open);
 
         Competition competition = findCompetitionById(competitionId);
-        
+
         // Verify that the user is the organizer of this competition
         if (!competition.getOrganizer().getUser().getEmail().equals(user.getEmail())) {
             log.error("User {} is not authorized to modify competition {}", user.getEmail(), competitionId);
@@ -217,13 +220,16 @@ public class CompetitionService {
         return mapperUtils.mapToCompetitionResponse(competition);
     }
 
-    public Page<CompetitionResponse> getCompetitionsByOrganizer(User user, Pageable pageable) {
+    public List<CompetitionResponse> getCompetitionsByOrganizer(User user, Pageable pageable) {
         log.info("Getting competitions for organizer {}", user.getEmail());
 
         Organizer organizer = organizerRepository.findByUserEmail(user.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Organizer not found"));
 
         return competitionRepository.findAllByOrganizer(organizer, pageable)
-                .map(mapperUtils::mapToCompetitionResponse);
+                .stream()
+                .map(mapperUtils::mapToCompetitionResponse)
+                .sorted(Comparator.comparing(CompetitionResponse::date))
+                .toList();
     }
 }

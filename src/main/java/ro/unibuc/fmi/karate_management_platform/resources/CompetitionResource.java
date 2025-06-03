@@ -21,6 +21,7 @@ import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_management_platform.services.CompetitionService;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -170,7 +171,7 @@ public class CompetitionResource {
     )
     @SecuredEndpoint(roles = {Role.ORGANIZER})
     @GetMapping("/organizer")
-    public ResponseEntity<Page<CompetitionResponse>> getMyCompetitions(
+    public ResponseEntity<List<CompetitionResponse>> getMyCompetitions(
             @AuthenticationPrincipal User user,
             Pageable pageable) {
         return ResponseEntity.ok(competitionService.getCompetitionsByOrganizer(user, pageable));
