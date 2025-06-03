@@ -170,6 +170,7 @@ public class CompetitionService {
                         .collect(Collectors.toSet()).isEmpty())
                 .map(category -> {
                     List<TeamResponse> teams = ((TeamCategory) category).getParticipations().stream()
+                            .filter(participation -> participation.getCompetition().getId().equals(competitionId))
                             .map(participation -> mapperUtils.mapToTeamResponse(participation.getTeam()))
                             .sorted(Comparator.comparing(TeamResponse::getTeamName))
                             .toList();
