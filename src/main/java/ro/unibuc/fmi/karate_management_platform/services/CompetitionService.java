@@ -216,4 +216,14 @@ public class CompetitionService {
 
         return mapperUtils.mapToCompetitionResponse(competition);
     }
+
+    public Page<CompetitionResponse> getCompetitionsByOrganizer(User user, Pageable pageable) {
+        log.info("Getting competitions for organizer {}", user.getEmail());
+
+        Organizer organizer = organizerRepository.findByUserEmail(user.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Organizer not found"));
+
+        return competitionRepository.findAllByOrganizer(organizer, pageable)
+                .map(mapperUtils::mapToCompetitionResponse);
+    }
 }

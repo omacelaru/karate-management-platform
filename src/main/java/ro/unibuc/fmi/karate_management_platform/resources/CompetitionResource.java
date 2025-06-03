@@ -145,4 +145,34 @@ public class CompetitionResource {
             @RequestParam boolean open) {
         return ResponseEntity.ok(competitionService.toggleRegistrationStatus(user, competitionId, open));
     }
+
+    @Operation(
+            summary = "Get competitions by organizer",
+            description = "Returns a list of competitions created by the authenticated organizer",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Competitions returned successfully",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = PagedModel.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Organizer not found",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiError.class)
+                            )
+                    )
+            }
+    )
+    @SecuredEndpoint(roles = {Role.ORGANIZER})
+    @GetMapping("/organizer")
+    public ResponseEntity<Page<CompetitionResponse>> getMyCompetitions(
+            @AuthenticationPrincipal User user,
+            Pageable pageable) {
+        return ResponseEntity.ok(competitionService.getCompetitionsByOrganizer(user, pageable));
+    }
 }
