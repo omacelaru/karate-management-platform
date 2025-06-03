@@ -13,6 +13,6 @@ import java.util.Set;
  * DTO for {@link Competition}
  */
 @Builder
-public record CompetitionResponse(Long id, String name, String location, LocalDate date, OrganizerResponse organizer,
+public record CompetitionResponse(Long id, String name, String location, LocalDate date, boolean registrationOpen,OrganizerResponse organizer,
                                   Set<CategoryResponse> categories) implements Serializable {
 }

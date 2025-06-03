@@ -106,4 +106,43 @@ public class CompetitionResource {
     public ResponseEntity<Set<CategoryWithAthletesResponse>> getCategoriesWithAthletes(@PathVariable Long competitionId) {
         return ResponseEntity.ok(competitionService.getCategoriesWithAthletes(competitionId));
     }
+
+    @Operation(
+            summary = "Toggle competition registration status",
+            description = "Allows an organizer to open or close registration for their competition",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Registration status updated successfully",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = CompetitionResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Competition not found",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiError.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "User is not authorized to modify this competition",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiError.class)
+                            )
+                    )
+            }
+    )
+    @SecuredEndpoint(roles = {Role.ORGANIZER})
+    @PatchMapping("/{competitionId}/registration-status")
+    public ResponseEntity<CompetitionResponse> toggleRegistrationStatus(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long competitionId,
+            @RequestParam boolean open) {
+        return ResponseEntity.ok(competitionService.toggleRegistrationStatus(user, competitionId, open));
+    }
 }

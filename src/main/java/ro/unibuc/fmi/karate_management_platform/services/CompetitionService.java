@@ -198,4 +198,22 @@ public class CompetitionService {
                         }))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
+
+    @Transactional
+    public CompetitionResponse toggleRegistrationStatus(User user, Long competitionId, boolean open) {
+        log.info("Toggling registration status for competition {} to {}", competitionId, open);
+
+        Competition competition = findCompetitionById(competitionId);
+        
+        // Verify that the user is the organizer of this competition
+        if (!competition.getOrganizer().getUser().getEmail().equals(user.getEmail())) {
+            log.error("User {} is not authorized to modify competition {}", user.getEmail(), competitionId);
+            throw new IllegalArgumentException("You are not authorized to modify this competition");
+        }
+
+        competition.setRegistrationOpen(open);
+        competition = competitionRepository.save(competition);
+
+        return mapperUtils.mapToCompetitionResponse(competition);
+    }
 }
