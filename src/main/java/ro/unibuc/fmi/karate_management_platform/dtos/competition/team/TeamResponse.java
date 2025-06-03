@@ -23,6 +23,4 @@ public class TeamResponse implements Serializable {
     private Long id;
     private String teamName;
     private Set<AthleteResponse> athletes;
-    private Gender gender;
-    private AgeGroup ageGroup;
 }

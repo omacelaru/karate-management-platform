@@ -21,4 +21,7 @@ public record AthleteResponse(UserResponse user,
                               Integer height, Integer weight, Belt belt,
                               Optional<ClubResponse> clubResponse
 ) implements Serializable {
+    public String getFullName() {
+        return user.firstName() + " " + user.lastName();
+    }
 }

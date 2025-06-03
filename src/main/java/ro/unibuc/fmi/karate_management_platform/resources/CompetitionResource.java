@@ -13,12 +13,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.withAthletes.CategoryWithAthletesResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.registration.CompetitionRegistrationRequest;
 import ro.unibuc.fmi.karate_management_platform.exceptions.ApiError;
 import ro.unibuc.fmi.karate_management_platform.models.user.Role;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_management_platform.services.CompetitionService;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/competitions")
@@ -74,5 +77,33 @@ public class CompetitionResource {
             @PathVariable Long competitionId,
             @RequestBody @Valid CompetitionRegistrationRequest competitionRegistrationRequest) {
         return ResponseEntity.ok(competitionService.registerAthletesToCompetition(user, competitionId, competitionRegistrationRequest));
+    }
+
+    @Operation(
+            summary = "Get categories with assigned athletes",
+            description = "Returns a list of categories with their assigned athletes for a competition, ordered alphabetically within each category",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Categories with athletes returned successfully",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = CategoryWithAthletesResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Competition not found",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiError.class)
+                            )
+                    )
+            }
+    )
+    @SecuredEndpoint
+    @GetMapping("/{competitionId}/categories-with-athletes")
+    public ResponseEntity<Set<CategoryWithAthletesResponse>> getCategoriesWithAthletes(@PathVariable Long competitionId) {
+        return ResponseEntity.ok(competitionService.getCategoriesWithAthletes(competitionId));
     }
 }

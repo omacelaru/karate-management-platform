@@ -14,9 +14,7 @@ import ro.unibuc.fmi.karate_management_platform.dtos.coach.CoachResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.AthleteRegistrationRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResponse;
-import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.CategoryResponse;
-import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.KataCategoryResponse;
-import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.KumiteCategoryResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.*;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.match.*;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.team.TeamResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerRequest;
@@ -154,13 +152,13 @@ public interface MapperUtils {
 
     CompetitionResponse mapToCompetitionResponse(Competition competition);
 
-    KataCategoryResponse mapToKataIndividualCategoryResponse(KataIndividualCategory kataIndividualCategory);
+    KataIndividualCategoryResponse mapToKataIndividualCategoryResponse(KataIndividualCategory kataIndividualCategory);
 
-    KumiteCategoryResponse mapToKumiteIndividualCategoryResponse(KumiteIndividualCategory kumiteIndividualCategory);
+    KumiteIndividualCategoryResponse mapToKumiteIndividualCategoryResponse(KumiteIndividualCategory kumiteIndividualCategory);
 
-    KataCategoryResponse mapToKataTeamCategoryResponse(KataTeamCategory kataTeamCategory);
+    KataTeamCategoryResponse mapToKataTeamCategoryResponse(KataTeamCategory kataTeamCategory);
 
-    KumiteCategoryResponse mapToKumiteTeamCategoryResponse(KumiteTeamCategory kumiteTeamCategory);
+    KumiteTeamCategoryResponse mapToKumiteTeamCategoryResponse(KumiteTeamCategory kumiteTeamCategory);
 
     default CategoryResponse mapCategory(Category category) {
         return switch (category) {

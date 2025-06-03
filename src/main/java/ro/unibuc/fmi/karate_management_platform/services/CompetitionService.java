@@ -6,22 +6,36 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ro.unibuc.fmi.karate_management_platform.dtos.athlete.AthleteResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.CategoryResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.IndividualCategoryResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.TeamCategoryResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.withAthletes.CategoryWithAthletesResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.withAthletes.IndividualCategoryWithAthletesResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.withAthletes.TeamCategoryWithTeamsResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.registration.CompetitionRegistrationRequest;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.team.TeamResponse;
 import ro.unibuc.fmi.karate_management_platform.manager.AthleteCategoryRegistrationManager;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.IndividualCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.TeamCategory;
 import ro.unibuc.fmi.karate_management_platform.models.organizer.Organizer;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.repositories.OrganizerRepository;
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.CompetitionRepository;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -125,5 +139,62 @@ public class CompetitionService {
         log.info("Getting all competitions for seeder");
 
         return competitionRepository.findAll();
+    }
+
+    public Set<CategoryWithAthletesResponse> getCategoriesWithAthletes(Long competitionId) {
+        Competition competition = findCompetitionById(competitionId);
+
+        Set<CategoryWithAthletesResponse> individualCategories = competition.getCategories().stream()
+                .filter(category -> category instanceof IndividualCategory)
+                .filter(category -> !((IndividualCategory) category).getParticipations().stream()
+                        .filter(participation -> participation.getCompetition().getId().equals(competitionId))
+                        .collect(Collectors.toSet()).isEmpty())
+                .map(category -> {
+                    List<AthleteResponse> athletes = ((IndividualCategory) category).getParticipations().stream()
+                            .filter(participation -> participation.getCompetition().getId().equals(competitionId))
+                            .map(participation -> mapperUtils.mapToAthleteResponse(participation.getAthlete()))
+                            .sorted(Comparator.comparing(AthleteResponse::getFullName))
+                            .collect(Collectors.toList());
+
+                    return IndividualCategoryWithAthletesResponse.builder()
+                            .category(mapperUtils.mapCategory(category))
+                            .athletes(athletes)
+                            .build();
+                })
+                .collect(Collectors.toSet());
+
+        Set<CategoryWithAthletesResponse> teamCategories = competition.getCategories().stream()
+                .filter(category -> category instanceof TeamCategory)
+                .filter(category -> !((TeamCategory) category).getParticipations().stream()
+                        .filter(participation -> participation.getCompetition().getId().equals(competitionId))
+                        .collect(Collectors.toSet()).isEmpty())
+                .map(category -> {
+                    List<TeamResponse> teams = ((TeamCategory) category).getParticipations().stream()
+                            .map(participation -> mapperUtils.mapToTeamResponse(participation.getTeam()))
+                            .sorted(Comparator.comparing(TeamResponse::getTeamName))
+                            .toList();
+
+
+                    return TeamCategoryWithTeamsResponse.builder()
+                            .category(mapperUtils.mapCategory(category))
+                            .teams(teams)
+                            .build();
+                })
+                .collect(Collectors.toSet());
+
+        //sorted by age group, gender, and category type
+        return Stream.concat(individualCategories.stream(), teamCategories.stream())
+                .sorted(Comparator.comparing(CategoryWithAthletesResponse::getCategory, Comparator.comparing(CategoryResponse::getAgeGroup))
+                        .thenComparing(CategoryWithAthletesResponse::getCategory, Comparator.comparing(CategoryResponse::getGender))
+                        .thenComparing(category -> {
+                            CategoryResponse cat = category.getCategory();
+                            if (cat instanceof IndividualCategoryResponse) {
+                                return ((IndividualCategoryResponse) cat).getCategoryType().name();
+                            } else if (cat instanceof TeamCategoryResponse) {
+                                return ((TeamCategoryResponse) cat).getCategoryType().name();
+                            }
+                            return "";
+                        }))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 }
