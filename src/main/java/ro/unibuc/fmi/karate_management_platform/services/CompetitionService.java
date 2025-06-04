@@ -152,7 +152,7 @@ public class CompetitionService {
 
         Set<CategoryResponse> individualCategories = competition.getCategories().stream()
                 .filter(category -> category instanceof IndividualCategory)
-                .filter(category -> !((IndividualCategory) category).getParticipations().stream()
+                .filter(category -> !category.getParticipations().stream()
                         .filter(participation -> participation.getCompetition().getId().equals(competitionId))
                         .collect(Collectors.toSet()).isEmpty())
                 .map(category -> {
@@ -176,7 +176,7 @@ public class CompetitionService {
 
         Set<CategoryResponse> teamCategories = competition.getCategories().stream()
                 .filter(category -> category instanceof TeamCategory)
-                .filter(category -> !((TeamCategory) category).getParticipations().stream()
+                .filter(category -> !category.getParticipations().stream()
                         .filter(participation -> participation.getCompetition().getId().equals(competitionId))
                         .collect(Collectors.toSet()).isEmpty())
                 .map(category -> {
