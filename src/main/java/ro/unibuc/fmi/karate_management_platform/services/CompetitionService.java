@@ -129,27 +129,27 @@ public class CompetitionService {
 
     public Set<Category> getCategoriesWithAthletesEntity(Long competitionId) {
         Competition competition = findCompetitionById(competitionId);
+        log.info("Getting categories with athletes for competition {}", competitionId);
 
-        Set<Category> individualCategories = competition.getCategories().stream()
-                .filter(category -> category instanceof IndividualCategory)
-                .filter(category -> !((IndividualCategory) category).getParticipations().stream()
+        Set<Category> categoriesWithAthletes = competition.getCategories().stream()
+                .filter(category -> category instanceof IndividualCategory || category instanceof TeamCategory)
+                .filter(category -> !category.getParticipations().stream()
                         .filter(participation -> participation.getCompetition().getId().equals(competitionId))
                         .collect(Collectors.toSet()).isEmpty())
                 .collect(Collectors.toSet());
-
-        Set<Category> teamCategories = competition.getCategories().stream()
-                .filter(category -> category instanceof TeamCategory)
-                .filter(category -> !((TeamCategory) category).getParticipations().stream()
-                        .filter(participation -> participation.getCompetition().getId().equals(competitionId))
-                        .collect(Collectors.toSet()).isEmpty())
-                .collect(Collectors.toSet());
-
-        return Stream.concat(individualCategories.stream(), teamCategories.stream())
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+        if (categoriesWithAthletes.isEmpty()) {
+            log.warn("No categories with athletes found for competition {}", competitionId);
+            throw new IllegalArgumentException("No categories with athletes found for this competition");
+        } else {
+            log.info("Found {} categories with athletes for competition {}", categoriesWithAthletes.size(), competitionId);
+            return categoriesWithAthletes;
+        }
     }
 
     public Set<CategoryWithAthletesResponse> getCategoriesWithAthletes(Long competitionId) {
         Competition competition = findCompetitionById(competitionId);
+
+        Set<Category> categoriesWithAthletes = getCategoriesWithAthletesEntity(competitionId);
 
         Set<CategoryWithAthletesResponse> individualCategories = competition.getCategories().stream()
                 .filter(category -> category instanceof IndividualCategory)
