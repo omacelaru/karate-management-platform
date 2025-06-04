@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.scheduling.ScheduledCategory;
 import ro.unibuc.fmi.karate_management_platform.services.CompetitionSchedulingService;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Slf4j
@@ -21,6 +22,7 @@ public class CompetitionSchedulingController {
     public ResponseEntity<List<ScheduledCategory>> getCompetitionSchedule(@PathVariable Long competitionId) {
         log.info("Getting schedule for competition {}", competitionId);
         List<ScheduledCategory> schedule = competitionSchedulingService.scheduleCategories(competitionId);
+        log.info("Greedy time {}",schedule.stream().map(ScheduledCategory::getEndTime).max(LocalTime::compareTo).orElse(LocalTime.MIN));
         return ResponseEntity.ok(schedule);
     }
 
@@ -28,6 +30,8 @@ public class CompetitionSchedulingController {
     public ResponseEntity<List<ScheduledCategory>> getCompetitionScheduleGraphColoring(@PathVariable Long competitionId) {
         log.info("Getting schedule (graph coloring) for competition {}", competitionId);
         List<ScheduledCategory> schedule = competitionSchedulingService.scheduleCategoriesGraphColoring(competitionId);
+        log.info("Graph coloring time {}",schedule.stream().map(ScheduledCategory::getEndTime).max(LocalTime::compareTo).orElse(LocalTime.MIN));
+
         return ResponseEntity.ok(schedule);
     }
 } 

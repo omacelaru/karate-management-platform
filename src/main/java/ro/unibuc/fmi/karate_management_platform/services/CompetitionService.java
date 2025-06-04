@@ -242,13 +242,13 @@ public class CompetitionService {
 
             List<ScheduledCategory> chosenSchedule;
             String chosenAlgorithm;
-            if (greedyEnd.isBefore(graphEnd)) {
-                chosenSchedule = greedySchedule;
-                chosenAlgorithm = "greedy";
-            } else {
+//            if (greedyEnd.isBefore(graphEnd)) {
+//                chosenSchedule = greedySchedule;
+//                chosenAlgorithm = "greedy";
+//            } else {
                 chosenSchedule = graphColoringSchedule;
                 chosenAlgorithm = "graph_coloring";
-            }
+//            }
 
             log.info("Chosen schedule algorithm: {} (end time: {})", chosenAlgorithm, (chosenAlgorithm.equals("greedy") ? greedyEnd : graphEnd));
             chosenSchedule.forEach(scheduled ->
