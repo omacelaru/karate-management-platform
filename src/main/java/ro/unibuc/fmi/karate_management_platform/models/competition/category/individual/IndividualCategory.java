@@ -25,4 +25,6 @@ public abstract class IndividualCategory extends Category {
     @Enumerated(EnumType.STRING)
     @Column(name = "category_type", nullable = false)
     private IndividualCategoryType categoryType;
+
+    public abstract void calculateDuration();
 }

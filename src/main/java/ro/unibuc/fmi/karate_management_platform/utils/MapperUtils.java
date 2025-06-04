@@ -15,6 +15,9 @@ import ro.unibuc.fmi.karate_management_platform.dtos.competition.AthleteRegistra
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.*;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.participation.CategoryParticipationResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.participation.IndividualCategoryParticipationResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.participation.TeamCategoryParticipationResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.match.*;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.team.TeamResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerRequest;
@@ -29,8 +32,10 @@ import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Team;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.IndividualCategoryParticipation;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteIndividualCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.TeamCategoryParticipation;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.kata.KataTeamCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.kumite.KumiteTeamCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.match.*;
@@ -152,13 +157,25 @@ public interface MapperUtils {
 
     CompetitionResponse mapToCompetitionResponse(Competition competition);
 
+    @Mapping(target = "participations", expression = "java(kataIndividualCategory.getParticipations().stream().map(this::mapToIndividualCategoryParticipationResponse).collect(java.util.stream.Collectors.toSet()))")
     KataIndividualCategoryResponse mapToKataIndividualCategoryResponse(KataIndividualCategory kataIndividualCategory);
 
+    @Mapping(target = "participations", expression = "java(kumiteIndividualCategory.getParticipations().stream().map(this::mapToIndividualCategoryParticipationResponse).collect(java.util.stream.Collectors.toSet()))")
     KumiteIndividualCategoryResponse mapToKumiteIndividualCategoryResponse(KumiteIndividualCategory kumiteIndividualCategory);
 
+    @Mapping(target = "participations", expression = "java(kataTeamCategory.getParticipations().stream().map(this::mapToTeamCategoryParticipationResponse).collect(java.util.stream.Collectors.toSet()))")
     KataTeamCategoryResponse mapToKataTeamCategoryResponse(KataTeamCategory kataTeamCategory);
 
+    @Mapping(target = "participations", expression = "java(kumiteTeamCategory.getParticipations().stream().map(this::mapToTeamCategoryParticipationResponse).collect(java.util.stream.Collectors.toSet()))")
     KumiteTeamCategoryResponse mapToKumiteTeamCategoryResponse(KumiteTeamCategory kumiteTeamCategory);
+
+    @Mapping(target = "athlete", source = "athlete")
+    @Mapping(target = "competitionId", source = "competition.id")
+    IndividualCategoryParticipationResponse mapToIndividualCategoryParticipationResponse(IndividualCategoryParticipation participation);
+
+    @Mapping(target = "team", source = "team")
+    @Mapping(target = "competitionId", source = "competition.id")
+    TeamCategoryParticipationResponse mapToTeamCategoryParticipationResponse(TeamCategoryParticipation participation);
 
     default CategoryResponse mapCategory(Category category) {
         return switch (category) {

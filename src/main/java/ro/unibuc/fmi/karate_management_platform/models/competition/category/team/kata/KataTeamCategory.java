@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.TeamCategory;
 
 @Getter
@@ -19,4 +20,13 @@ public class KataTeamCategory extends TeamCategory {
     @Enumerated(EnumType.STRING)
     @Column(name = "kata_team_type", nullable = false)
     private KataTeamType kataTeamType;
+
+    @Override
+    public void calculateDuration() {
+        getParticipations().stream()
+                .filter(participation -> participation.getCategory() instanceof KataTeamCategory)
+                .forEach(participation -> {
+                    participation.setDurationMinutes(5); // Each kata team performance average 5 minutes
+                });
+    }
 }

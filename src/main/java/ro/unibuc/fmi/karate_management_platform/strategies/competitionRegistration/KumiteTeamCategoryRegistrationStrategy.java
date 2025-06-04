@@ -61,6 +61,9 @@ public class KumiteTeamCategoryRegistrationStrategy implements CompetitionRegist
                         .build()
         );
 
+        rotationCategory.calculateDuration();
+        simpleCategory.calculateDuration();
+
         log.info("Team {} registered in rotation kumite team category {} competition {}", team.getId(), rotationCategory.getId(), competition.getName());
         log.info("Team {} registered in simple kumite team category {} competition {}", team.getId(), simpleCategory.getId(), competition.getName());
     }

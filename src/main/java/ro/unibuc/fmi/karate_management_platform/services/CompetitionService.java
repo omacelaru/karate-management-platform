@@ -49,6 +49,7 @@ public class CompetitionService {
     private final OrganizerRepository organizerRepository;
     private final AthleteCategoryRegistrationManager athleteCategoryRegistrationManager;
     private final CoachService coachService;
+    private final CompetitionSchedulingService competitionSchedulingService;
 
     @Transactional
     public Competition createCompetition(User createdBy, CompetitionRequest competitionRequest) {
@@ -110,27 +111,6 @@ public class CompetitionService {
                 .orElseThrow(() -> new IllegalArgumentException("Athlete not found"));
     }
 
-//    private void registerAthleteToKumite(Athlete athlete, AgeGroup ageGroup, Set<KumiteCategory> kumiteCategories) {
-//        Short weight = athlete.getWeight();
-//        kumiteCategories.stream()
-//                .filter(category -> category.getAgeGroup().equals(ageGroup))
-//                .filter(category -> category.getGender().equals(athlete.getUser().getGender()))
-//                .filter(category -> weight >= category.getWeightMin() && weight <= category.getWeightMax())
-//                .findFirst()
-//                .ifPresent(category -> category.getAthletes().add(athlete));
-//    }
-//
-//    private void registerAthleteToKata(Athlete athlete, AgeGroup ageGroup, Set<KataCategory> kataCategories) {
-//        KataBeltRange kataCategoryType = KataBeltRange.getKataCategoryTypeByBelt(athlete.getBelt());
-//        kataCategories.stream()
-//                .filter(category -> category.getAgeGroup().equals(ageGroup))
-//                .filter(category -> category.getGender().equals(athlete.getUser().getGender()))
-//                .filter(category -> category.getKataBeltRange().equals(kataCategoryType))
-//                .findFirst()
-//                .ifPresent(category -> category.getAthletes().add(athlete));
-//    }
-
-
     public Competition findCompetitionById(Long competitionId) {
         return competitionRepository.findById(competitionId).orElseThrow(() -> {
             log.error("Competition with ID {} not found", competitionId);
@@ -142,6 +122,27 @@ public class CompetitionService {
         log.info("Getting all competitions for seeder");
 
         return competitionRepository.findAll();
+    }
+
+    public Set<Category> getCategoriesWithAthletesEntity(Long competitionId) {
+        Competition competition = findCompetitionById(competitionId);
+
+        Set<Category> individualCategories = competition.getCategories().stream()
+                .filter(category -> category instanceof IndividualCategory)
+                .filter(category -> !((IndividualCategory) category).getParticipations().stream()
+                        .filter(participation -> participation.getCompetition().getId().equals(competitionId))
+                        .collect(Collectors.toSet()).isEmpty())
+                .collect(Collectors.toSet());
+
+        Set<Category> teamCategories = competition.getCategories().stream()
+                .filter(category -> category instanceof TeamCategory)
+                .filter(category -> !((TeamCategory) category).getParticipations().stream()
+                        .filter(participation -> participation.getCompetition().getId().equals(competitionId))
+                        .collect(Collectors.toSet()).isEmpty())
+                .collect(Collectors.toSet());
+
+        return Stream.concat(individualCategories.stream(), teamCategories.stream())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public Set<CategoryWithAthletesResponse> getCategoriesWithAthletes(Long competitionId) {
@@ -216,6 +217,10 @@ public class CompetitionService {
 
         competition.setRegistrationOpen(open);
         competition = competitionRepository.save(competition);
+
+        if (!open) {
+            competitionSchedulingService.scheduleCompetition(competition);
+        }
 
         return mapperUtils.mapToCompetitionResponse(competition);
     }

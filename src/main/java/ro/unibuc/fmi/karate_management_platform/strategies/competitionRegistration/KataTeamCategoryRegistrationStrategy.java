@@ -51,6 +51,7 @@ public class KataTeamCategoryRegistrationStrategy implements CompetitionRegistra
                             .team(team)
                             .build()
             );
+            kataTeamCategory.calculateDuration();
             log.info("Team {} registered in kata team category {} competition {}", team.getId(), kataTeamCategory.getId(), competition.getName());
         }
 

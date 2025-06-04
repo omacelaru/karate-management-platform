@@ -63,6 +63,7 @@ public class KataIndividualCategoryRegistrationStrategy implements CompetitionRe
                             .athlete(athlete)
                             .build()
             );
+            kataIndividualCategory.calculateDuration();
             log.info("Athlete {} registered in kata individual category {}, competition {}", athlete.getId(), kataIndividualCategory.getId(),competition.getName());
 
         }

@@ -26,5 +26,8 @@ public class IndividualCategoryParticipation {
 
     @ManyToOne
     private Athlete athlete;
+
+    @Column(name = "duration_minutes", nullable = false)
+    private Integer durationMinutes;
 }
 

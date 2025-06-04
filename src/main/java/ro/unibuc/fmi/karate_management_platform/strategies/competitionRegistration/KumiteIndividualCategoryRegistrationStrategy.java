@@ -64,6 +64,7 @@ public class KumiteIndividualCategoryRegistrationStrategy implements Competition
                             .athlete(athlete)
                             .build()
             );
+            kumiteIndividualCategory.calculateDuration();
             log.info("Athlete {} registered in kumite individual category {}, competition {}", athlete.getId(), kumiteIndividualCategory.getId(),competition.getName());
         }
     }

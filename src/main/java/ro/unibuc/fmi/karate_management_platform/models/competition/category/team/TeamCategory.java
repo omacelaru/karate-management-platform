@@ -17,7 +17,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
-public class TeamCategory extends Category {
+public abstract class TeamCategory extends Category {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private Set<TeamCategoryParticipation> participations = new LinkedHashSet<>();
@@ -25,4 +25,6 @@ public class TeamCategory extends Category {
     @Enumerated(EnumType.STRING)
     @Column(name = "category_type", nullable = false)
     private TeamCategoryType categoryType;
+
+    public abstract void calculateDuration();
 }

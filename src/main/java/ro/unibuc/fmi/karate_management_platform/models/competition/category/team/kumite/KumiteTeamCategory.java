@@ -19,4 +19,13 @@ public class KumiteTeamCategory extends TeamCategory {
     @Enumerated(EnumType.STRING)
     @Column(name = "kumite_team_type", nullable = false)
     private KumiteTeamType kumiteTeamType;
+
+    @Override
+    public void calculateDuration() {
+        getParticipations().stream()
+                .filter(participation -> participation.getCategory() instanceof KumiteTeamCategory)
+                .forEach(participation -> {
+                    participation.setDurationMinutes(4); // Each kata performance average 4 minutes
+                });
+    }
 }

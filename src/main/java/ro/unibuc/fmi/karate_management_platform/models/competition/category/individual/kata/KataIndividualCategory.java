@@ -19,4 +19,13 @@ public class KataIndividualCategory extends IndividualCategory {
     @Enumerated(EnumType.STRING)
     @Column(name = "kata_belt_range", nullable = false)
     private KataBeltRange kataBeltRange;
+
+    @Override
+    public void calculateDuration() {
+        getParticipations().stream()
+                .filter(participation -> participation.getCategory() instanceof KataIndividualCategory)
+                .forEach(participation -> {
+                    participation.setDurationMinutes(4); // Each kata performance average 4 minutes
+                });
+    }
 }
