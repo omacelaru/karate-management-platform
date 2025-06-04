@@ -2,8 +2,9 @@ package ro.unibuc.fmi.karate_management_platform.models.competition.category.ind
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
-import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.CategoryParticipation;
 
 @Entity
 @Table(name = "individual_category_participation")
@@ -11,23 +12,13 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class IndividualCategoryParticipation {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@SuperBuilder
+public class IndividualCategoryParticipation extends CategoryParticipation {
 
     @ManyToOne
     private IndividualCategory category;
 
     @ManyToOne
-    private Competition competition;
-
-    @ManyToOne
     private Athlete athlete;
-
-    @Column(name = "duration_minutes", nullable = false)
-    private Integer durationMinutes;
 }
 
