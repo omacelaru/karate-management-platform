@@ -19,6 +19,7 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.category.team
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.kumite.KumiteTeamCategory;
 import ro.unibuc.fmi.karate_management_platform.repositories.CategorySchedulingRepository;
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.CompetitionRepository;
+import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -34,6 +35,7 @@ public class CompetitionSchedulingService {
     
     private static final int NUMBER_OF_TATAMIS = 3;
     private static final LocalTime COMPETITION_START_TIME = LocalTime.of(9, 0);
+    private final MapperUtils mapperUtils;
 
     @Transactional
     public List<ScheduledCategory> scheduleCategories(Long competitionId) {
@@ -142,7 +144,7 @@ public class CompetitionSchedulingService {
                 categorySchedulingRepository.save(scheduling);
                 
                 scheduledCategories.add(ScheduledCategory.builder()
-                        .categoryId(categoryId)
+                        .category(mapperUtils.mapCategory(category))
                         .tatamiId(selectedTatami)
                         .startTime(earliestStartTime)
                         .endTime(endTime)
@@ -264,7 +266,7 @@ public class CompetitionSchedulingService {
             categorySchedulingRepository.save(scheduling);
 
             scheduledCategories.add(ScheduledCategory.builder()
-                    .categoryId(categoryId)
+                    .category(mapperUtils.mapCategory(category))
                     .tatamiId(tatami)
                     .startTime(startTime)
                     .endTime(endTime)
