@@ -229,15 +229,16 @@ public class CompetitionService {
         competition = competitionRepository.save(competition);
 
         if (!open) {
-            // Generează ambele variante de schedule
             List<ScheduledCategory> greedySchedule = competitionSchedulingService.scheduleCategories(competitionId);
             List<ScheduledCategory> graphColoringSchedule = competitionSchedulingService.scheduleCategoriesGraphColoring(competitionId);
 
-            // Calculează timpul de finalizare pentru fiecare
+
             LocalTime greedyEnd = greedySchedule.stream().map(ScheduledCategory::getEndTime).max(LocalTime::compareTo).orElse(LocalTime.MIN);
             LocalTime graphEnd = graphColoringSchedule.stream().map(ScheduledCategory::getEndTime).max(LocalTime::compareTo).orElse(LocalTime.MIN);
 
-            // Alege varianta care se termină mai repede
+            log.info("Greedy schedule end time: {}", greedyEnd);
+            log.info("Graph coloring schedule end time: {}", graphEnd);
+
             List<ScheduledCategory> chosenSchedule;
             String chosenAlgorithm;
             if (greedyEnd.isBefore(graphEnd)) {
