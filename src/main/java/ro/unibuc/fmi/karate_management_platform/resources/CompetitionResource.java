@@ -182,4 +182,34 @@ public class CompetitionResource {
     public ResponseEntity<List<ScheduledCategory>> getCompetitionDraws(@PathVariable Long competitionId) {
         return ResponseEntity.ok(competitionService.getSavedScheduleForCompetition(competitionId));
     }
+
+    @Operation(
+            summary = "Get draws for specific category",
+            description = "Returns the draws/schedule for a specific category within a competition",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Category draws returned successfully",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ScheduledCategory.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Competition or category not found",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ApiError.class)
+                            )
+                    )
+            }
+    )
+    @SecuredEndpoint
+    @GetMapping("/{competitionId}/draws/{categoryId}")
+    public ResponseEntity<ScheduledCategory> getCategoryDraws(
+            @PathVariable Long competitionId,
+            @PathVariable Long categoryId) {
+        return ResponseEntity.ok(competitionService.getSavedScheduleForCategory(competitionId, categoryId));
+    }
 }

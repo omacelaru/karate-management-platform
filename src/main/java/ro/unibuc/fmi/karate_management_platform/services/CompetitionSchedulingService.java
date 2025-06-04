@@ -40,7 +40,12 @@ public class CompetitionSchedulingService {
     public List<CategoryScheduling> findAllByCompetitionId(Long competitionId) {
         log.info("Fetching all category schedules for competition {}", competitionId);
         return categorySchedulingRepository.findAllByCompetitionId(competitionId);
+    }
 
+    public CategoryScheduling findByCompetitionIdAndCategoryId(Long competitionId, Long categoryId) {
+        log.info("Fetching schedule for competition {} and category {}", competitionId, categoryId);
+        return categorySchedulingRepository.findByCompetitionIdAndCategoryId(competitionId, categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Schedule not found for this category"));
     }
 
     @Transactional

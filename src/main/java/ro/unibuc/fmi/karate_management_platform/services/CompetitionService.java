@@ -282,4 +282,9 @@ public class CompetitionService {
         List<CategoryScheduling> schedulings = competitionSchedulingService.findAllByCompetitionId(competitionId);
         return schedulings.stream().map(mapperUtils::mapToScheduledCategory).toList();
     }
+
+    public ScheduledCategory getSavedScheduleForCategory(Long competitionId, Long categoryId) {
+        CategoryScheduling scheduling = competitionSchedulingService.findByCompetitionIdAndCategoryId(competitionId, categoryId);
+        return mapperUtils.mapToScheduledCategory(scheduling);
+    }
 }
