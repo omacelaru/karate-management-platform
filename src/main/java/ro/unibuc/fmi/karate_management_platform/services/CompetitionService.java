@@ -49,7 +49,7 @@ public class CompetitionService {
     private final OrganizerRepository organizerRepository;
     private final AthleteCategoryRegistrationManager athleteCategoryRegistrationManager;
     private final CoachService coachService;
-    private final CompetitionSchedulingService competitionSchedulingService;
+    //private final CompetitionSchedulingService competitionSchedulingService;
 
     @Transactional
     public Competition createCompetition(User createdBy, CompetitionRequest competitionRequest) {
@@ -62,6 +62,7 @@ public class CompetitionService {
         Competition competition = mapperUtils.mapToCompetition(competitionRequest);
         competition.setCategories(categories);
         competition.setOrganizer(organizer);
+        competition.setRegistrationOpen(true);
 
         return competitionRepository.save(competition);
     }
@@ -219,7 +220,7 @@ public class CompetitionService {
         competition = competitionRepository.save(competition);
 
         if (!open) {
-            competitionSchedulingService.scheduleCompetition(competition);
+            //competitionSchedulingService.scheduleCompetition(competition);
         }
 
         return mapperUtils.mapToCompetitionResponse(competition);
