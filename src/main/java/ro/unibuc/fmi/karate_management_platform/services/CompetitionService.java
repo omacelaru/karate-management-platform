@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ro.unibuc.fmi.karate_management_platform.dtos.athlete.AthleteResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.CategoryResponse;
@@ -18,7 +17,7 @@ import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.partic
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.participation.IndividualCategoryParticipationResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.participation.TeamCategoryParticipationResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.registration.CompetitionRegistrationRequest;
-import ro.unibuc.fmi.karate_management_platform.dtos.competition.team.TeamResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.scheduling.ScheduledCategory;
 import ro.unibuc.fmi.karate_management_platform.manager.AthleteCategoryRegistrationManager;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
@@ -34,6 +33,7 @@ import ro.unibuc.fmi.karate_management_platform.repositories.OrganizerRepository
 import ro.unibuc.fmi.karate_management_platform.repositories.competition.CompetitionRepository;
 import ro.unibuc.fmi.karate_management_platform.utils.MapperUtils;
 
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -51,7 +51,7 @@ public class CompetitionService {
     private final OrganizerRepository organizerRepository;
     private final AthleteCategoryRegistrationManager athleteCategoryRegistrationManager;
     private final CoachService coachService;
-    //private final CompetitionSchedulingService competitionSchedulingService;
+    private final CompetitionSchedulingService competitionSchedulingService;
 
     @Transactional
     public Competition createCompetition(User createdBy, CompetitionRequest competitionRequest) {
@@ -229,7 +229,35 @@ public class CompetitionService {
         competition = competitionRepository.save(competition);
 
         if (!open) {
-            //competitionSchedulingService.scheduleCompetition(competition);
+            // Generează ambele variante de schedule
+            List<ScheduledCategory> greedySchedule = competitionSchedulingService.scheduleCategories(competitionId);
+            List<ScheduledCategory> graphColoringSchedule = competitionSchedulingService.scheduleCategoriesGraphColoring(competitionId);
+
+            // Calculează timpul de finalizare pentru fiecare
+            LocalTime greedyEnd = greedySchedule.stream().map(ScheduledCategory::getEndTime).max(LocalTime::compareTo).orElse(LocalTime.MIN);
+            LocalTime graphEnd = graphColoringSchedule.stream().map(ScheduledCategory::getEndTime).max(LocalTime::compareTo).orElse(LocalTime.MIN);
+
+            // Alege varianta care se termină mai repede
+            List<ScheduledCategory> chosenSchedule;
+            String chosenAlgorithm;
+            if (greedyEnd.isBefore(graphEnd)) {
+                chosenSchedule = greedySchedule;
+                chosenAlgorithm = "greedy";
+            } else {
+                chosenSchedule = graphColoringSchedule;
+                chosenAlgorithm = "graph_coloring";
+            }
+
+            log.info("Chosen schedule algorithm: {} (end time: {})", chosenAlgorithm, (chosenAlgorithm.equals("greedy") ? greedyEnd : graphEnd));
+            chosenSchedule.forEach(scheduled ->
+                log.info("Category {} scheduled on tatami {} from {} to {} (duration: {} minutes)",
+                    scheduled.getCategoryName(),
+                    scheduled.getTatamiId(),
+                    scheduled.getStartTime(),
+                    scheduled.getEndTime(),
+                    scheduled.getTotalDuration()
+                )
+            );
         }
 
         return mapperUtils.mapToCompetitionResponse(competition);
