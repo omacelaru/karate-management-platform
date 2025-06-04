@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface CategorySchedulingRepository extends JpaRepository<CategoryScheduling, Long> {
     void deleteByCompetitionId(Long competitionId);
+    List<CategoryScheduling> findAllByCompetitionId(Long competitionId);
+
 } 

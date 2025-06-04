@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.CategoryResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.registration.CompetitionRegistrationRequest;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.scheduling.ScheduledCategory;
 import ro.unibuc.fmi.karate_management_platform.exceptions.ApiError;
 import ro.unibuc.fmi.karate_management_platform.models.user.Role;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
@@ -175,5 +176,10 @@ public class CompetitionResource {
             @AuthenticationPrincipal User user,
             Pageable pageable) {
         return ResponseEntity.ok(competitionService.getCompetitionsByOrganizer(user, pageable));
+    }
+
+    @GetMapping("/{competitionId}/draws")
+    public ResponseEntity<List<ScheduledCategory>> getCompetitionDraws(@PathVariable Long competitionId) {
+        return ResponseEntity.ok(competitionService.getSavedScheduleForCompetition(competitionId));
     }
 }

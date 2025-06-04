@@ -19,6 +19,7 @@ import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.partic
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.participation.IndividualCategoryParticipationResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.participation.TeamCategoryParticipationResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.match.*;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.scheduling.ScheduledCategory;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.team.TeamResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerResponse;
@@ -33,6 +34,7 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Team;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.CategoryParticipation;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.CategoryScheduling;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.IndividualCategoryParticipation;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteIndividualCategory;
@@ -229,5 +231,7 @@ public interface MapperUtils {
     @Mapping(target = "athleteCompetitionRegistrationRequest.teamCategories", source = "teamCategories")
     AthleteCompetitionRegistrationResponse maptoAthleteCompetitionRegistrationResponse
             (AthleteCompetitionRegistrationRequest request);
+
+    ScheduledCategory mapToScheduledCategory(CategoryScheduling categoryScheduling);
 }
 

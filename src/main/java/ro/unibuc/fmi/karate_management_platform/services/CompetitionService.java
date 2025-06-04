@@ -23,6 +23,7 @@ import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.CategoryScheduling;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.IndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.IndividualCategoryParticipation;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.TeamCategory;
@@ -275,5 +276,10 @@ public class CompetitionService {
                 .map(mapperUtils::mapToCompetitionResponse)
                 .sorted(Comparator.comparing(CompetitionResponse::date))
                 .toList();
+    }
+
+    public List<ScheduledCategory> getSavedScheduleForCompetition(Long competitionId) {
+        List<CategoryScheduling> schedulings = competitionSchedulingService.findAllByCompetitionId(competitionId);
+        return schedulings.stream().map(mapperUtils::mapToScheduledCategory).toList();
     }
 }

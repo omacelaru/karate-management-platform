@@ -37,6 +37,12 @@ public class CompetitionSchedulingService {
     private static final LocalTime COMPETITION_START_TIME = LocalTime.of(9, 0);
     private final MapperUtils mapperUtils;
 
+    public List<CategoryScheduling> findAllByCompetitionId(Long competitionId) {
+        log.info("Fetching all category schedules for competition {}", competitionId);
+        return categorySchedulingRepository.findAllByCompetitionId(competitionId);
+
+    }
+
     @Transactional
     public List<ScheduledCategory> scheduleCategories(Long competitionId) {
         log.info("Starting category scheduling for competition {}", competitionId);
