@@ -32,6 +32,7 @@ import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Team;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.CategoryParticipation;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.IndividualCategoryParticipation;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kata.KataIndividualCategory;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.kumite.KumiteIndividualCategory;
@@ -47,8 +48,8 @@ import ro.unibuc.fmi.karate_management_platform.models.request.competition.Athle
 import ro.unibuc.fmi.karate_management_platform.models.request.competition.CompetitionCreationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.request.organizer.OrganizerCreationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.request.referee.RefereeCreationRequest;
-import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.models.user.Role;
+import ro.unibuc.fmi.karate_management_platform.models.user.User;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -157,25 +158,31 @@ public interface MapperUtils {
 
     CompetitionResponse mapToCompetitionResponse(Competition competition);
 
-    @Mapping(target = "participations", expression = "java(kataIndividualCategory.getParticipations().stream().map(this::mapToIndividualCategoryParticipationResponse).collect(java.util.stream.Collectors.toSet()))")
     KataIndividualCategoryResponse mapToKataIndividualCategoryResponse(KataIndividualCategory kataIndividualCategory);
 
-    @Mapping(target = "participations", expression = "java(kumiteIndividualCategory.getParticipations().stream().map(this::mapToIndividualCategoryParticipationResponse).collect(java.util.stream.Collectors.toSet()))")
     KumiteIndividualCategoryResponse mapToKumiteIndividualCategoryResponse(KumiteIndividualCategory kumiteIndividualCategory);
 
-    @Mapping(target = "participations", expression = "java(kataTeamCategory.getParticipations().stream().map(this::mapToTeamCategoryParticipationResponse).collect(java.util.stream.Collectors.toSet()))")
     KataTeamCategoryResponse mapToKataTeamCategoryResponse(KataTeamCategory kataTeamCategory);
 
-    @Mapping(target = "participations", expression = "java(kumiteTeamCategory.getParticipations().stream().map(this::mapToTeamCategoryParticipationResponse).collect(java.util.stream.Collectors.toSet()))")
     KumiteTeamCategoryResponse mapToKumiteTeamCategoryResponse(KumiteTeamCategory kumiteTeamCategory);
 
     @Mapping(target = "athlete", source = "athlete")
-    @Mapping(target = "competitionId", source = "competition.id")
     IndividualCategoryParticipationResponse mapToIndividualCategoryParticipationResponse(IndividualCategoryParticipation participation);
 
     @Mapping(target = "team", source = "team")
-    @Mapping(target = "competitionId", source = "competition.id")
     TeamCategoryParticipationResponse mapToTeamCategoryParticipationResponse(TeamCategoryParticipation participation);
+
+    default CategoryParticipationResponse mapCategoryParticipation(CategoryParticipation participation) {
+        return switch (participation) {
+            case IndividualCategoryParticipation individualParticipation ->
+                    mapToIndividualCategoryParticipationResponse(individualParticipation);
+            case TeamCategoryParticipation teamParticipation ->
+                    mapToTeamCategoryParticipationResponse(teamParticipation);
+            default ->
+                    throw new IllegalArgumentException("Unknown category participation type: " + participation.getClass());
+
+        };
+    }
 
     default CategoryResponse mapCategory(Category category) {
         return switch (category) {
@@ -214,11 +221,13 @@ public interface MapperUtils {
     TeamResponse mapToTeamResponse(Team savedTeam);
 
     // === Athlete Competition Registration Mapping ===
-    AthleteCompetitionRegistrationRequest toAthleteCompetitionRegistrationRequest(AthleteRegistrationRequest request);
+    AthleteCompetitionRegistrationRequest toAthleteCompetitionRegistrationRequest(AthleteRegistrationRequest
+                                                                                          request);
 
     @Mapping(target = "athleteCompetitionRegistrationRequest.competitionId", source = "competitionId")
     @Mapping(target = "athleteCompetitionRegistrationRequest.individualCategories", source = "individualCategories")
     @Mapping(target = "athleteCompetitionRegistrationRequest.teamCategories", source = "teamCategories")
-    AthleteCompetitionRegistrationResponse maptoAthleteCompetitionRegistrationResponse(AthleteCompetitionRegistrationRequest request);
+    AthleteCompetitionRegistrationResponse maptoAthleteCompetitionRegistrationResponse
+            (AthleteCompetitionRegistrationRequest request);
 }
 

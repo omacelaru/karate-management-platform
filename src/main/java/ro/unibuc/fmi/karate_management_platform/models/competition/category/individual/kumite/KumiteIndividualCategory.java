@@ -20,13 +20,4 @@ public class KumiteIndividualCategory extends IndividualCategory {
     @Enumerated(EnumType.STRING)
     @Column(name = "kumite_division_range", nullable = false)
     private KumiteDivisionRange kumiteDivisionRange;
-
-    @Override
-    public void calculateDuration() {
-        getParticipations().stream()
-                .filter(participation -> participation.getCategory() instanceof KumiteIndividualCategory)
-                .forEach(participation -> {
-                    participation.setDurationMinutes(4); // Each kumite match average 4 minutes
-                });
-    }
 }

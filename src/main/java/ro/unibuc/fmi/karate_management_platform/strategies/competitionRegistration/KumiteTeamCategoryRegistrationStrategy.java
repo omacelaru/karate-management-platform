@@ -32,12 +32,12 @@ public class KumiteTeamCategoryRegistrationStrategy implements CompetitionRegist
 
         Set<Team> teamsInRotation = rotationCategory.getParticipations().stream()
                 .filter(participation -> participation.getCompetition().equals(competition))
-                .map(TeamCategoryParticipation::getTeam)
+                .map(participation -> ((TeamCategoryParticipation) participation).getTeam())
                 .collect(java.util.stream.Collectors.toSet());
 
         Set<Team> teamsInSimple = simpleCategory.getParticipations().stream()
                 .filter(participation -> participation.getCompetition().equals(competition))
-                .map(TeamCategoryParticipation::getTeam)
+                .map(participation -> ((TeamCategoryParticipation) participation).getTeam())
                 .collect(java.util.stream.Collectors.toSet());
 
         if (teamsInRotation.contains(team) || teamsInSimple.contains(team)) {
@@ -50,6 +50,7 @@ public class KumiteTeamCategoryRegistrationStrategy implements CompetitionRegist
                         .category(rotationCategory)
                         .competition(competition)
                         .team(team)
+                        .durationMinutes(9)
                         .build()
         );
 
@@ -58,11 +59,9 @@ public class KumiteTeamCategoryRegistrationStrategy implements CompetitionRegist
                         .category(simpleCategory)
                         .competition(competition)
                         .team(team)
+                        .durationMinutes(9)
                         .build()
         );
-
-        rotationCategory.calculateDuration();
-        simpleCategory.calculateDuration();
 
         log.info("Team {} registered in rotation kumite team category {} competition {}", team.getId(), rotationCategory.getId(), competition.getName());
         log.info("Team {} registered in simple kumite team category {} competition {}", team.getId(), simpleCategory.getId(), competition.getName());

@@ -50,7 +50,7 @@ public class KumiteIndividualCategoryRegistrationStrategy implements Competition
         Set<Athlete> athletes = kumiteIndividualCategory.getParticipations()
                 .stream()
                 .filter(participation -> participation.getCompetition().equals(competition))
-                .map(IndividualCategoryParticipation::getAthlete)
+                .map(participation -> ((IndividualCategoryParticipation) participation).getAthlete())
                 .collect(Collectors.toSet());
 
         if (athletes.contains(athlete)) {
@@ -62,9 +62,9 @@ public class KumiteIndividualCategoryRegistrationStrategy implements Competition
                             .category(kumiteIndividualCategory)
                             .competition(competition)
                             .athlete(athlete)
+                            .durationMinutes(5)
                             .build()
             );
-            kumiteIndividualCategory.calculateDuration();
             log.info("Athlete {} registered in kumite individual category {}, competition {}", athlete.getId(), kumiteIndividualCategory.getId(),competition.getName());
         }
     }

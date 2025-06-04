@@ -37,7 +37,7 @@ public class KataTeamCategoryRegistrationStrategy implements CompetitionRegistra
 
         Set<Team> teams = kataTeamCategory.getParticipations().stream()
                 .filter(participation -> participation.getCompetition().equals(competition))
-                .map(TeamCategoryParticipation::getTeam)
+                .map(participation -> ((TeamCategoryParticipation) participation).getTeam())
                 .collect(java.util.stream.Collectors.toSet());
 
         if (teams.contains(team)) {
@@ -49,9 +49,9 @@ public class KataTeamCategoryRegistrationStrategy implements CompetitionRegistra
                             .category(kataTeamCategory)
                             .competition(competition)
                             .team(team)
+                            .durationMinutes(5)
                             .build()
             );
-            kataTeamCategory.calculateDuration();
             log.info("Team {} registered in kata team category {} competition {}", team.getId(), kataTeamCategory.getId(), competition.getName());
         }
 

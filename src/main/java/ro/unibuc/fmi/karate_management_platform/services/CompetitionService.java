@@ -25,7 +25,9 @@ import ro.unibuc.fmi.karate_management_platform.models.coach.Coach;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Competition;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.Category;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.IndividualCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.individual.IndividualCategoryParticipation;
 import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.TeamCategory;
+import ro.unibuc.fmi.karate_management_platform.models.competition.category.team.TeamCategoryParticipation;
 import ro.unibuc.fmi.karate_management_platform.models.organizer.Organizer;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.repositories.OrganizerRepository;
@@ -157,7 +159,7 @@ public class CompetitionService {
                 .map(category -> {
                     List<AthleteResponse> athletes = ((IndividualCategory) category).getParticipations().stream()
                             .filter(participation -> participation.getCompetition().getId().equals(competitionId))
-                            .map(participation -> mapperUtils.mapToAthleteResponse(participation.getAthlete()))
+                            .map(participation -> mapperUtils.mapToAthleteResponse(((IndividualCategoryParticipation)participation).getAthlete()))
                             .sorted(Comparator.comparing(AthleteResponse::getFullName))
                             .collect(Collectors.toList());
 
@@ -176,7 +178,7 @@ public class CompetitionService {
                 .map(category -> {
                     List<TeamResponse> teams = ((TeamCategory) category).getParticipations().stream()
                             .filter(participation -> participation.getCompetition().getId().equals(competitionId))
-                            .map(participation -> mapperUtils.mapToTeamResponse(participation.getTeam()))
+                            .map(participation -> mapperUtils.mapToTeamResponse(((TeamCategoryParticipation)participation).getTeam()))
                             .sorted(Comparator.comparing(TeamResponse::getTeamName))
                             .toList();
 
