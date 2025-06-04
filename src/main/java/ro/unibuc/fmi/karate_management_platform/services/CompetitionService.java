@@ -14,9 +14,9 @@ import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResp
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.CategoryResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.IndividualCategoryResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.TeamCategoryResponse;
-import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.withAthletes.CategoryWithAthletesResponse;
-import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.withAthletes.IndividualCategoryWithAthletesResponse;
-import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.withAthletes.TeamCategoryWithTeamsResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.participation.CategoryParticipationResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.participation.IndividualCategoryParticipationResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.participation.TeamCategoryParticipationResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.registration.CompetitionRegistrationRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.team.TeamResponse;
 import ro.unibuc.fmi.karate_management_platform.manager.AthleteCategoryRegistrationManager;
@@ -106,7 +106,6 @@ public class CompetitionService {
         return mapperUtils.mapToCompetitionResponse(competitionUpdated);
     }
 
-
     private Athlete findAthleteById(Long athleteId, Coach coach) {
         return coach.getAthletes().stream()
                 .filter(a -> a.getId().equals(athleteId))
@@ -146,60 +145,68 @@ public class CompetitionService {
         }
     }
 
-    public Set<CategoryWithAthletesResponse> getCategoriesWithAthletes(Long competitionId) {
+    public Set<CategoryResponse> getCategoriesWithAthletes(Long competitionId) {
         Competition competition = findCompetitionById(competitionId);
 
         Set<Category> categoriesWithAthletes = getCategoriesWithAthletesEntity(competitionId);
 
-        Set<CategoryWithAthletesResponse> individualCategories = competition.getCategories().stream()
+        Set<CategoryResponse> individualCategories = competition.getCategories().stream()
                 .filter(category -> category instanceof IndividualCategory)
                 .filter(category -> !((IndividualCategory) category).getParticipations().stream()
                         .filter(participation -> participation.getCompetition().getId().equals(competitionId))
                         .collect(Collectors.toSet()).isEmpty())
                 .map(category -> {
-                    List<AthleteResponse> athletes = ((IndividualCategory) category).getParticipations().stream()
+                    Set<CategoryParticipationResponse> participations = ((IndividualCategory) category).getParticipations().stream()
                             .filter(participation -> participation.getCompetition().getId().equals(competitionId))
-                            .map(participation -> mapperUtils.mapToAthleteResponse(((IndividualCategoryParticipation)participation).getAthlete()))
-                            .sorted(Comparator.comparing(AthleteResponse::getFullName))
-                            .collect(Collectors.toList());
+                            .map(participation -> {
+                                IndividualCategoryParticipationResponse response = new IndividualCategoryParticipationResponse();
+                                response.setId(participation.getId());
+                                response.setCompetitionId(participation.getCompetition().getId());
+                                response.setDurationMinutes(participation.getDurationMinutes());
+                                response.setAthlete(mapperUtils.mapToAthleteResponse(((IndividualCategoryParticipation)participation).getAthlete()));
+                                return response;
+                            })
+                            .collect(Collectors.toSet());
 
-                    return IndividualCategoryWithAthletesResponse.builder()
-                            .category(mapperUtils.mapCategory(category))
-                            .athletes(athletes)
-                            .build();
+                    CategoryResponse response = mapperUtils.mapCategory(category);
+                    response.setParticipations(participations);
+                    return response;
                 })
                 .collect(Collectors.toSet());
 
-        Set<CategoryWithAthletesResponse> teamCategories = competition.getCategories().stream()
+        Set<CategoryResponse> teamCategories = competition.getCategories().stream()
                 .filter(category -> category instanceof TeamCategory)
                 .filter(category -> !((TeamCategory) category).getParticipations().stream()
                         .filter(participation -> participation.getCompetition().getId().equals(competitionId))
                         .collect(Collectors.toSet()).isEmpty())
                 .map(category -> {
-                    List<TeamResponse> teams = ((TeamCategory) category).getParticipations().stream()
+                    Set<CategoryParticipationResponse> participations = ((TeamCategory) category).getParticipations().stream()
                             .filter(participation -> participation.getCompetition().getId().equals(competitionId))
-                            .map(participation -> mapperUtils.mapToTeamResponse(((TeamCategoryParticipation)participation).getTeam()))
-                            .sorted(Comparator.comparing(TeamResponse::getTeamName))
-                            .toList();
+                            .map(participation -> {
+                                TeamCategoryParticipationResponse response = new TeamCategoryParticipationResponse();
+                                response.setId(participation.getId());
+                                response.setCompetitionId(participation.getCompetition().getId());
+                                response.setDurationMinutes(participation.getDurationMinutes());
+                                response.setTeam(mapperUtils.mapToTeamResponse(((TeamCategoryParticipation)participation).getTeam()));
+                                return response;
+                            })
+                            .collect(Collectors.toSet());
 
-
-                    return TeamCategoryWithTeamsResponse.builder()
-                            .category(mapperUtils.mapCategory(category))
-                            .teams(teams)
-                            .build();
+                    CategoryResponse response = mapperUtils.mapCategory(category);
+                    response.setParticipations(participations);
+                    return response;
                 })
                 .collect(Collectors.toSet());
 
         //sorted by age group, gender, and category type
         return Stream.concat(individualCategories.stream(), teamCategories.stream())
-                .sorted(Comparator.comparing(CategoryWithAthletesResponse::getCategory, Comparator.comparing(CategoryResponse::getAgeGroup))
-                        .thenComparing(CategoryWithAthletesResponse::getCategory, Comparator.comparing(CategoryResponse::getGender))
+                .sorted(Comparator.comparing(CategoryResponse::getAgeGroup)
+                        .thenComparing(CategoryResponse::getGender)
                         .thenComparing(category -> {
-                            CategoryResponse cat = category.getCategory();
-                            if (cat instanceof IndividualCategoryResponse) {
-                                return ((IndividualCategoryResponse) cat).getCategoryType().name();
-                            } else if (cat instanceof TeamCategoryResponse) {
-                                return ((TeamCategoryResponse) cat).getCategoryType().name();
+                            if (category instanceof IndividualCategoryResponse) {
+                                return ((IndividualCategoryResponse) category).getCategoryType().name();
+                            } else if (category instanceof TeamCategoryResponse) {
+                                return ((TeamCategoryResponse) category).getCategoryType().name();
                             }
                             return "";
                         }))

@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResponse;
-import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.withAthletes.CategoryWithAthletesResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.CategoryResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.registration.CompetitionRegistrationRequest;
 import ro.unibuc.fmi.karate_management_platform.exceptions.ApiError;
 import ro.unibuc.fmi.karate_management_platform.models.user.Role;
@@ -89,7 +89,7 @@ public class CompetitionResource {
                             description = "Categories with athletes returned successfully",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = CategoryWithAthletesResponse.class)
+                                    schema = @Schema(implementation = CategoryResponse.class)
                             )
                     ),
                     @ApiResponse(
@@ -104,7 +104,7 @@ public class CompetitionResource {
     )
     @SecuredEndpoint
     @GetMapping("/{competitionId}/categories-with-athletes")
-    public ResponseEntity<Set<CategoryWithAthletesResponse>> getCategoriesWithAthletes(@PathVariable Long competitionId) {
+    public ResponseEntity<Set<CategoryResponse>> getCategoriesWithAthletes(@PathVariable Long competitionId) {
         return ResponseEntity.ok(competitionService.getCategoriesWithAthletes(competitionId));
     }
 
