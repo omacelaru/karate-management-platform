@@ -18,7 +18,7 @@ import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.*;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.participation.CategoryParticipationResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.participation.IndividualCategoryParticipationResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.category.participation.TeamCategoryParticipationResponse;
-import ro.unibuc.fmi.karate_management_platform.dtos.competition.match.*;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.match.response.*;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.scheduling.ScheduledCategory;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.team.TeamResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.organizer.OrganizerRequest;
@@ -169,9 +169,11 @@ public interface MapperUtils {
     KumiteTeamCategoryResponse mapToKumiteTeamCategoryResponse(KumiteTeamCategory kumiteTeamCategory);
 
     @Mapping(target = "athlete", source = "athlete")
+    @Mapping(target = "competitionId", source = "competition.id")
     IndividualCategoryParticipationResponse mapToIndividualCategoryParticipationResponse(IndividualCategoryParticipation participation);
 
     @Mapping(target = "team", source = "team")
+    @Mapping(target = "competitionId", source = "competition.id")
     TeamCategoryParticipationResponse mapToTeamCategoryParticipationResponse(TeamCategoryParticipation participation);
 
     default CategoryParticipationResponse mapCategoryParticipation(CategoryParticipation participation) {

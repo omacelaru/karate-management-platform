@@ -1,4 +1,4 @@
-package ro.unibuc.fmi.karate_management_platform.dtos.competition.match;
+package ro.unibuc.fmi.karate_management_platform.dtos.competition.match.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Team;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -18,11 +19,12 @@ import java.util.List;
 @Entity
 @Table(name = "team_match_results")
 public class TeamMatchResult extends Match {
-    @ManyToMany
-    @JoinTable(
-        name = "team_match_winners",
-        joinColumns = @JoinColumn(name = "match_id"),
-        inverseJoinColumns = @JoinColumn(name = "team_id")
+    @ElementCollection
+    @CollectionTable(
+        name = "team_match_points",
+        joinColumns = @JoinColumn(name = "match_id")
     )
-    private List<Team> winners; // Ordinea din lista reprezintă locul ocupat (primul element = locul 1)
-} 
+    @MapKeyJoinColumn(name = "team_id")
+    @Column(name = "points")
+    private Map<Team, Long> teamPoints;
+}
