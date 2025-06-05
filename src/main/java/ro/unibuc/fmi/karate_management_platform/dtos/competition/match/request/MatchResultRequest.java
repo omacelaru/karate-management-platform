@@ -13,7 +13,6 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.match.MatchTy
 @NoArgsConstructor
 @AllArgsConstructor
 public abstract class MatchResultRequest {
-    private Long matchId;
     private Long categoryId;
     private Long competitionId;
     private MatchType matchType;
