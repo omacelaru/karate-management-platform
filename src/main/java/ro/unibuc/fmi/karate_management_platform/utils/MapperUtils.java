@@ -200,12 +200,20 @@ public interface MapperUtils {
         };
     }
 
+    @Mapping(target = "categoryId", source = "category.id")
+    @Mapping(target = "competitionId", source = "competition.id")
     IndividualKataMatchResponse mapToIndividualKataMatchResponse(IndividualKataMatch individualKataMatch);
 
+    @Mapping(target = "categoryId", source = "category.id")
+    @Mapping(target = "competitionId", source = "competition.id")
     IndividualKumiteMatchResponse mapToIndividualKumiteMatchResponse(IndividualKumiteMatch individualKumiteMatch);
 
+    @Mapping(target = "categoryId", source = "category.id")
+    @Mapping(target = "competitionId", source = "competition.id")
     TeamKataMatchResponse mapToTeamKataMatchResponse(TeamKataMatch teamKataMatch);
 
+    @Mapping(target = "categoryId", source = "category.id")
+    @Mapping(target = "competitionId", source = "competition.id")
     TeamKumiteMatchResponse mapToTeamKumiteMatchResponse(TeamKumiteMatch teamKumiteMatch);
 
     default MatchResponse mapMatch(Match match) {

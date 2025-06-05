@@ -14,6 +14,6 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public final class IndividualKumiteMatchResponse extends IndividualMatchResultResponse {
-    private Map<AthleteResponse, Long> athleteScores; // Map<Athlete ID, Score>
+public abstract class IndividualMatchResultResponse extends MatchResponse {
+    private Map<AthleteResponse, Long> athletePoints;
 }

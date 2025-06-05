@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_management_platform.dtos.athlete.AthleteResponse;
 
+import java.util.Map;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
@@ -14,6 +15,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public final class IndividualKataMatchResponse extends MatchResponse {
-    private Set<AthleteResponse> athletes;
+public final class IndividualKataMatchResponse extends IndividualMatchResultResponse {
+    private Map<AthleteResponse, Double> athleteScores; // Map<Athlete ID, Score>
 }
