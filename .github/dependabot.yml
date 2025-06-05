@@ -10,4 +10,6 @@ updates:
       - "maven"
     commit-message:
       prefix: "maven"
-      include: "scope" 
+      include: "scope"
+    target-branch: "main"
+    versioning-strategy: "auto"
