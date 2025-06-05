@@ -24,5 +24,5 @@ public class IndividualKataMatch extends IndividualMatchResult {
     @MapKeyJoinColumn(name = "athlete_id")
     @Column(name = "score")
     @Builder.Default
-    private Map<Athlete, Long> athleteScores = new HashMap<>();
+    private Map<Athlete, Double> athleteScores = new HashMap<>();
 }

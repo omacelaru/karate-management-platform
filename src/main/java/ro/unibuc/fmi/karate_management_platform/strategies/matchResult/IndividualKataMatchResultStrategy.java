@@ -40,7 +40,7 @@ public class IndividualKataMatchResultStrategy implements MatchResultStrategy {
 
         // Process the scores and update the match
         kataRequest.getAthleteScores().forEach((athleteId, score) -> {
-            match.getAthletePoints().put(
+            match.getAthleteScores().put(
                     athleteService.getAthleteById(athleteId),
                     score
             );

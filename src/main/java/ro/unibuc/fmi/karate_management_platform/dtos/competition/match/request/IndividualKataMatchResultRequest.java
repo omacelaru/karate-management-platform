@@ -15,5 +15,5 @@ import java.util.Map;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class IndividualKataMatchResultRequest extends IndividualMatchResultRequest {
-    private Map<Long, Long> athleteScores; // Map<Athlete ID, Score>
+    private Map<Long, Double> athleteScores; // Map<Athlete ID, Score>
 } 

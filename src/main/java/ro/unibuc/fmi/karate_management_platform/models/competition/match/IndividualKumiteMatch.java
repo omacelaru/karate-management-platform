@@ -24,7 +24,6 @@ public class IndividualKumiteMatch extends IndividualMatchResult {
     )
     @MapKeyJoinColumn(name = "athlete_id")
     @Column(name = "score")
-    @Size(min = 2, max = 2, message = "Exactly 2 athletes are required in a kumite match")
     @Builder.Default
     private Map<Athlete, Long> athleteScores = new HashMap<>();
 }

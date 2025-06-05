@@ -40,7 +40,7 @@ public class TeamKumiteMatchResultStrategy implements MatchResultStrategy {
 
         // Process the scores and update the match
         kumiteRequest.getTeamScores().forEach((teamId, score) -> {
-            match.getTeamPoints().put(
+            match.getTeamScores().put(
                     teamService.getTeamById(teamId),
                     score
             );

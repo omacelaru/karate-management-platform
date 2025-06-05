@@ -1,38 +1,4 @@
-ALTER TABLE athlete_competition_category
-    DROP CONSTRAINT fk_athlete_competition_category_on_athlete;
 
-ALTER TABLE athlete_competition_category
-    DROP CONSTRAINT fk_athlete_competition_category_on_competition;
-
-ALTER TABLE individual_kata_matches
-    DROP CONSTRAINT fk_individual_kata_matches_on_id;
-
-ALTER TABLE individual_kumite_matches
-    DROP CONSTRAINT fk_individual_kumite_matches_on_athlete_left;
-
-ALTER TABLE individual_kumite_matches
-    DROP CONSTRAINT fk_individual_kumite_matches_on_athlete_right;
-
-ALTER TABLE individual_kumite_matches
-    DROP CONSTRAINT fk_individual_kumite_matches_on_id;
-
-ALTER TABLE team_kata_matches_teams
-    DROP CONSTRAINT fk_teakatmattea_on_team;
-
-ALTER TABLE team_kata_matches_teams
-    DROP CONSTRAINT fk_teakatmattea_on_team_kata_match;
-
-ALTER TABLE team_kata_matches
-    DROP CONSTRAINT fk_team_kata_matches_on_id;
-
-ALTER TABLE team_kumite_matches
-    DROP CONSTRAINT fk_team_kumite_matches_on_id;
-
-ALTER TABLE team_kumite_matches
-    DROP CONSTRAINT fk_team_kumite_matches_on_team_left;
-
-ALTER TABLE team_kumite_matches
-    DROP CONSTRAINT fk_team_kumite_matches_on_team_right;
 
 CREATE TABLE individual_kata_scores
 (
@@ -115,8 +81,12 @@ ALTER TABLE matches
     ALTER COLUMN start_time SET NOT NULL;
 
 ALTER TABLE individual_kata_matches
+    DROP CONSTRAINT FK_INDIVIDUAL_KATA_MATCHES_ON_ID;
+ALTER TABLE individual_kata_matches
     ADD CONSTRAINT FK_INDIVIDUAL_KATA_MATCHES_ON_ID FOREIGN KEY (id) REFERENCES individual_match_results (id);
 
+ALTER TABLE individual_kumite_matches
+    DROP CONSTRAINT FK_INDIVIDUAL_KUMITE_MATCHES_ON_ID;
 ALTER TABLE individual_kumite_matches
     ADD CONSTRAINT FK_INDIVIDUAL_KUMITE_MATCHES_ON_ID FOREIGN KEY (id) REFERENCES individual_match_results (id);
 
@@ -127,8 +97,12 @@ ALTER TABLE matches
     ADD CONSTRAINT FK_MATCHES_ON_CATEGORY FOREIGN KEY (category_id) REFERENCES category (id);
 
 ALTER TABLE team_kata_matches
+    DROP CONSTRAINT FK_TEAM_KATA_MATCHES_ON_ID;
+ALTER TABLE team_kata_matches
     ADD CONSTRAINT FK_TEAM_KATA_MATCHES_ON_ID FOREIGN KEY (id) REFERENCES team_match_results (id);
 
+ALTER TABLE team_kumite_matches
+    DROP CONSTRAINT FK_TEAM_KUMITE_MATCHES_ON_ID;
 ALTER TABLE team_kumite_matches
     ADD CONSTRAINT FK_TEAM_KUMITE_MATCHES_ON_ID FOREIGN KEY (id) REFERENCES team_match_results (id);
 
@@ -171,10 +145,6 @@ ALTER TABLE team_match_winners
 ALTER TABLE team_match_winners
     ADD CONSTRAINT fk_teamatwin_on_team_match_result FOREIGN KEY (match_id) REFERENCES team_match_results (id);
 
-DROP TABLE athlete_competition_category CASCADE;
-
-DROP TABLE team_kata_matches_teams CASCADE;
-
 ALTER TABLE individual_kumite_matches
     DROP COLUMN athlete_left_id;
 
@@ -192,5 +162,3 @@ ALTER TABLE team_kumite_matches
 
 ALTER TABLE team_kumite_matches
     DROP COLUMN team_right_id;
-
-DROP SEQUENCE category_sequence CASCADE;

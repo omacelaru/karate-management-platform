@@ -40,7 +40,7 @@ public class TeamKataMatchResultStrategy implements MatchResultStrategy {
 
         // Process the scores and update the match
         kataRequest.getTeamScores().forEach((teamId, score) -> {
-            match.getTeamPoints().put(
+            match.getTeamScores().put(
                     teamService.getTeamById(teamId),
                     score
             );

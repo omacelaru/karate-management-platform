@@ -40,7 +40,7 @@ public class IndividualKumiteMatchResultStrategy implements MatchResultStrategy 
 
         // Process the scores and update the match
         kumiteRequest.getAthleteScores().forEach((athleteId, score) -> {
-            match.getAthletePoints().put(
+            match.getAthleteScores().put(
                     athleteService.getAthleteById(athleteId),
                     score
             );
