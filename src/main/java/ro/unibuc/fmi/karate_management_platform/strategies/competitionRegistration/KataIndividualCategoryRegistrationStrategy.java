@@ -49,7 +49,7 @@ public class KataIndividualCategoryRegistrationStrategy implements CompetitionRe
         Set<Athlete> athletes = kataIndividualCategory.getParticipations()
                 .stream()
                 .filter(participation -> participation.getCompetition().equals(competition))
-                .map(IndividualCategoryParticipation::getAthlete)
+                .map(participation -> ((IndividualCategoryParticipation) participation).getAthlete())
                 .collect(Collectors.toSet());
 
         if (athletes.contains(athlete)) {
@@ -61,6 +61,7 @@ public class KataIndividualCategoryRegistrationStrategy implements CompetitionRe
                             .category(kataIndividualCategory)
                             .competition(competition)
                             .athlete(athlete)
+                            .durationMinutes(4)
                             .build()
             );
             log.info("Athlete {} registered in kata individual category {}, competition {}", athlete.getId(), kataIndividualCategory.getId(),competition.getName());

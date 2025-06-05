@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ro.unibuc.fmi.karate_management_platform.dtos.athlete.AthleteResponse;
+import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResponse;
 import ro.unibuc.fmi.karate_management_platform.exceptions.ApiError;
 import ro.unibuc.fmi.karate_management_platform.exceptions.IncompleteProfileException;
 import ro.unibuc.fmi.karate_management_platform.models.user.Role;
@@ -48,5 +49,18 @@ public class AthleteResource {
         return ResponseEntity.ok(athleteService.getMe(user));
     }
 
-
+    @Operation(summary = "Get athlete's competitions",
+            description = "Returns a list of competitions that the athlete has participated in or will participate in",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Competitions returned successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PagedModel.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
+            })
+    @SecuredEndpoint(roles = {Role.ATHLETE})
+    @GetMapping("/me/competitions")
+    public ResponseEntity<Page<CompetitionResponse>> getMyCompetitions(
+            @AuthenticationPrincipal User user,
+            Pageable pageable
+    ) throws IncompleteProfileException {
+        return ResponseEntity.ok(athleteService.getMyCompetitions(user, pageable));
+    }
 }

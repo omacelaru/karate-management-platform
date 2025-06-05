@@ -1,14 +1,12 @@
 package ro.unibuc.fmi.karate_management_platform.models.competition.match;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -17,12 +15,14 @@ import java.util.Set;
 @SuperBuilder
 @Entity
 @Table(name = "individual_kata_matches")
-public class IndividualKataMatch extends Match {
-    @ManyToMany
-    @JoinTable(
-            name = "individual_kata_athletes",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "athlete_id")
+public class IndividualKataMatch extends IndividualMatchResult {
+    @ElementCollection
+    @CollectionTable(
+            name = "individual_kata_scores",
+            joinColumns = @JoinColumn(name = "match_id")
     )
-    private Set<Athlete> athletes;
+    @MapKeyJoinColumn(name = "athlete_id")
+    @Column(name = "score")
+    @Builder.Default
+    private Map<Athlete, Double> athleteScores = new HashMap<>();
 }

@@ -1,4 +1,4 @@
-package ro.unibuc.fmi.karate_management_platform.dtos.competition.match;
+package ro.unibuc.fmi.karate_management_platform.dtos.competition.match.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,12 +7,14 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_management_platform.dtos.athlete.AthleteResponse;
 
+import java.util.Map;
+import java.util.Set;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public final class IndividualKumiteMatchResponse extends MatchResponse {
-    private AthleteResponse athleteLeft;
-    private AthleteResponse athleteRight;
+public final class IndividualKataMatchResponse extends IndividualMatchResultResponse {
+    private Map<AthleteResponse, Double> athleteScores; // Map<Athlete ID, Score>
 }

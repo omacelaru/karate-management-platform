@@ -31,6 +31,9 @@ public class Competition extends BaseEntity {
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
+    @Column(name = "registration_open", nullable = false)
+    private boolean registrationOpen;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "organizer_id", nullable = false)
     private Organizer organizer;
