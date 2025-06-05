@@ -1,7 +1,6 @@
 package ro.unibuc.fmi.karate_management_platform.models.competition.match;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,9 +8,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Team;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -19,14 +16,13 @@ import java.util.Map;
 @AllArgsConstructor
 @SuperBuilder
 @Entity
-@Table(name = "team_kata_matches")
-public class TeamKataMatch extends TeamMatchResult {
-    @ElementCollection
-    @CollectionTable(
-        name = "team_kata_scores",
-        joinColumns = @JoinColumn(name = "match_id")
+@Table(name = "team_match_results")
+public class TeamMatchResult extends Match {
+    @ManyToMany
+    @JoinTable(
+        name = "team_match_winners",
+        joinColumns = @JoinColumn(name = "match_id"),
+        inverseJoinColumns = @JoinColumn(name = "team_id")
     )
-    @MapKeyJoinColumn(name = "team_id")
-    @Column(name = "score")
-    private Map<Team, Long> teamScores;
-}
+    private List<Team> winners; // Ordinea din lista reprezintă locul ocupat (primul element = locul 1)
+} 
