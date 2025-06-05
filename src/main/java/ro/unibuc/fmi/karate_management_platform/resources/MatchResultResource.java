@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import ro.unibuc.fmi.karate_management_platform.dtos.club.ClubMedalsResponse;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.match.request.MatchResultRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.match.response.MatchResponse;
 import ro.unibuc.fmi.karate_management_platform.factories.MatchResultStrategyFactory;
@@ -21,11 +22,9 @@ import ro.unibuc.fmi.karate_management_platform.models.user.Role;
 import ro.unibuc.fmi.karate_management_platform.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_management_platform.services.MatchService;
 import ro.unibuc.fmi.karate_management_platform.strategies.matchResult.MatchResultStrategy;
+
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
-import ro.unibuc.fmi.karate_management_platform.dtos.club.ClubResponse;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/match-results")
@@ -89,48 +88,28 @@ public class MatchResultResource {
         return ResponseEntity.ok(matchService.findByCompetitionIdAndCategoryId(competitionId, categoryId));
     }
 
-    @Data
-    @AllArgsConstructor
-    class ClubMedalsResponse {
-        private ClubResponse club;
-        private int gold;
-        private int silver;
-        private int bronze;
-    }
-
     @Operation(
-        summary = "Get medals by club for a competition",
-        description = "Returns a list of clubs and their number of gold, silver, and bronze medals for a given competition."
+            summary = "Get club medals",
+            description = "Returns the medal counts for a given club ID."
     )
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200",
-            description = "Medals by club",
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = ClubMedalsResponse.class)
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Club medals found",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ClubMedalsResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Club not found",
+                    content = @Content
             )
-        )
     })
     @SecuredEndpoint
     @GetMapping("/competition/{competitionId}/medals")
     public ResponseEntity<List<ClubMedalsResponse>> getMedalsByClubForCompetition(@PathVariable Long competitionId) {
-        // 1. Get all matches for the competition
-        List<Match> matches = matchService.findAllByCompetitionId(competitionId);
-        // 2. Map: clubId -> ClubMedalsResponse
-        Map<Long, ClubMedalsResponse> clubMedalsMap = new HashMap<>();
-        for (Match match : matches) {
-            List<Object[]> podium = matchService.getPodiumForMatch(match); // returns list of [club, place]
-            for (int i = 0; i < podium.size(); i++) {
-                ClubResponse club = (ClubResponse) podium.get(i)[0];
-                int place = (int) podium.get(i)[1];
-                clubMedalsMap.putIfAbsent(club.getId(), new ClubMedalsResponse(club, 0, 0, 0));
-                ClubMedalsResponse resp = clubMedalsMap.get(club.getId());
-                if (place == 1) resp.gold++;
-                else if (place == 2) resp.silver++;
-                else if (place == 3) resp.bronze++;
-            }
-        }
-        return ResponseEntity.ok(new ArrayList<>(clubMedalsMap.values()));
+        return ResponseEntity.ok(matchService.getMedalsByClubForCompetition(competitionId));
     }
 } 

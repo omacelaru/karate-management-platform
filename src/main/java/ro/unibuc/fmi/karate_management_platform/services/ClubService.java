@@ -102,4 +102,11 @@ public class ClubService {
 
         return clubRepository.save(club);
     }
+
+    public ClubResponse findById(Long id) {
+        log.info("Finding club by id: {}", id);
+        Club club = clubRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Club not found"));
+        return mapperUtils.mapToClubResponse(club);
+    }
 }
