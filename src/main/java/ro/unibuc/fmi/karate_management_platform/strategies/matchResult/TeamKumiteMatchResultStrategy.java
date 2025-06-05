@@ -21,11 +21,11 @@ public class TeamKumiteMatchResultStrategy implements MatchResultStrategy {
     @Override
     public Match processMatchResult(MatchResultRequest request) {
         TeamKumiteMatchResultRequest kumiteRequest = (TeamKumiteMatchResultRequest) request;
-        
+
         TeamKumiteMatch match = TeamKumiteMatch.builder()
                 .category(categoryService.getCategoryById(request.getCategoryId()))
                 .competition(competitionService.findCompetitionById(request.getCompetitionId()))
-                .matchType(MatchType.TEAM_KUMITE)
+                .matchType(MatchType.KUMITE_TEAM)
                 .ageGroup(request.getAgeGroup())
                 .gender(request.getGender())
                 .build();
@@ -33,16 +33,16 @@ public class TeamKumiteMatchResultStrategy implements MatchResultStrategy {
         // Process the teams and their points
         kumiteRequest.getTeamPoints().forEach((teamId, points) -> {
             match.getTeamPoints().put(
-                teamService.getTeamById(teamId),
-                points
+                    teamService.getTeamById(teamId),
+                    points
             );
         });
 
         // Process the scores and update the match
         kumiteRequest.getTeamScores().forEach((teamId, score) -> {
             match.getTeamPoints().put(
-                teamService.getTeamById(teamId),
-                score
+                    teamService.getTeamById(teamId),
+                    score
             );
         });
 
@@ -51,7 +51,6 @@ public class TeamKumiteMatchResultStrategy implements MatchResultStrategy {
 
     @Override
     public boolean supports(MatchResultRequest request) {
-        return request instanceof TeamKumiteMatchResultRequest && 
-               request.getMatchType() == MatchType.TEAM_KUMITE;
+        return request instanceof TeamKumiteMatchResultRequest;
     }
 } 

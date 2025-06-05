@@ -1,13 +1,11 @@
 package ro.unibuc.fmi.karate_management_platform.models.competition.match;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,5 +24,6 @@ public class IndividualMatchResult extends Match {
     )
     @MapKeyJoinColumn(name = "athlete_id")
     @Column(name = "points")
-    private Map<Athlete, Long> athletePoints;
+    @Builder.Default
+    private Map<Athlete, Long> athletePoints = new HashMap<>();
 }

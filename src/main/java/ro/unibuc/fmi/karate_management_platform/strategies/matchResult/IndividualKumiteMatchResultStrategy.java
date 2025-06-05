@@ -21,11 +21,11 @@ public class IndividualKumiteMatchResultStrategy implements MatchResultStrategy 
     @Override
     public Match processMatchResult(MatchResultRequest request) {
         IndividualKumiteMatchResultRequest kumiteRequest = (IndividualKumiteMatchResultRequest) request;
-        
+
         IndividualKumiteMatch match = IndividualKumiteMatch.builder()
                 .category(categoryService.getCategoryById(request.getCategoryId()))
                 .competition(competitionService.findCompetitionById(request.getCompetitionId()))
-                .matchType(MatchType.INDIVIDUAL_KUMITE)
+                .matchType(MatchType.KUMITE_INDIVIDUAL)
                 .ageGroup(request.getAgeGroup())
                 .gender(request.getGender())
                 .build();
@@ -33,16 +33,16 @@ public class IndividualKumiteMatchResultStrategy implements MatchResultStrategy 
         // Process the athletes and their points
         kumiteRequest.getAthletePoints().forEach((athleteId, points) -> {
             match.getAthletePoints().put(
-                athleteService.getAthleteById(athleteId),
-                points
+                    athleteService.getAthleteById(athleteId),
+                    points
             );
         });
 
         // Process the scores and update the match
         kumiteRequest.getAthleteScores().forEach((athleteId, score) -> {
             match.getAthletePoints().put(
-                athleteService.getAthleteById(athleteId),
-                score
+                    athleteService.getAthleteById(athleteId),
+                    score
             );
         });
 
@@ -51,7 +51,6 @@ public class IndividualKumiteMatchResultStrategy implements MatchResultStrategy 
 
     @Override
     public boolean supports(MatchResultRequest request) {
-        return request instanceof IndividualKumiteMatchResultRequest && 
-               request.getMatchType() == MatchType.INDIVIDUAL_KUMITE;
+        return request instanceof IndividualKumiteMatchResultRequest;
     }
 } 

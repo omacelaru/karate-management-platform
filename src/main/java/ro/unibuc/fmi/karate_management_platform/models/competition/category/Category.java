@@ -1,5 +1,6 @@
 package ro.unibuc.fmi.karate_management_platform.models.competition.category;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -41,9 +42,11 @@ public abstract class Category {
     @Column(name = "is_default", nullable = false)
     private Boolean isDefault;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, targetEntity = Match.class, orphanRemoval = true)
     private List<Match> matches;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private Set<CategoryParticipation> participations = new LinkedHashSet<>();

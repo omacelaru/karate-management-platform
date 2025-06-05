@@ -1,5 +1,6 @@
 package ro.unibuc.fmi.karate_management_platform.models.competition.match;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,10 +25,12 @@ import java.time.LocalTime;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "matches")
 public abstract class Match extends BaseEntity {
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "competition_id", nullable = false)
     private Competition competition;

@@ -1,16 +1,11 @@
 package ro.unibuc.fmi.karate_management_platform.models.competition.match;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import ro.unibuc.fmi.karate_management_platform.models.competition.Team;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -23,10 +18,11 @@ import java.util.Map;
 public class TeamKataMatch extends TeamMatchResult {
     @ElementCollection
     @CollectionTable(
-        name = "team_kata_scores",
-        joinColumns = @JoinColumn(name = "match_id")
+            name = "team_kata_scores",
+            joinColumns = @JoinColumn(name = "match_id")
     )
     @MapKeyJoinColumn(name = "team_id")
     @Column(name = "score")
-    private Map<Team, Long> teamScores;
+    @Builder.Default
+    private Map<Team, Long> teamScores = new HashMap<>();
 }

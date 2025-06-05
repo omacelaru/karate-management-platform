@@ -21,11 +21,11 @@ public class TeamKataMatchResultStrategy implements MatchResultStrategy {
     @Override
     public Match processMatchResult(MatchResultRequest request) {
         TeamKataMatchResultRequest kataRequest = (TeamKataMatchResultRequest) request;
-        
+
         TeamKataMatch match = TeamKataMatch.builder()
                 .category(categoryService.getCategoryById(request.getCategoryId()))
                 .competition(competitionService.findCompetitionById(request.getCompetitionId()))
-                .matchType(MatchType.TEAM_KATA)
+                .matchType(MatchType.KATA_TEAM)
                 .ageGroup(request.getAgeGroup())
                 .gender(request.getGender())
                 .build();
@@ -33,16 +33,16 @@ public class TeamKataMatchResultStrategy implements MatchResultStrategy {
         // Process the teams and their points
         kataRequest.getTeamPoints().forEach((teamId, points) -> {
             match.getTeamPoints().put(
-                teamService.getTeamById(teamId),
-                points
+                    teamService.getTeamById(teamId),
+                    points
             );
         });
 
         // Process the scores and update the match
         kataRequest.getTeamScores().forEach((teamId, score) -> {
             match.getTeamPoints().put(
-                teamService.getTeamById(teamId),
-                score
+                    teamService.getTeamById(teamId),
+                    score
             );
         });
 
@@ -51,7 +51,6 @@ public class TeamKataMatchResultStrategy implements MatchResultStrategy {
 
     @Override
     public boolean supports(MatchResultRequest request) {
-        return request instanceof TeamKataMatchResultRequest && 
-               request.getMatchType() == MatchType.TEAM_KATA;
+        return request instanceof TeamKataMatchResultRequest;
     }
 } 
