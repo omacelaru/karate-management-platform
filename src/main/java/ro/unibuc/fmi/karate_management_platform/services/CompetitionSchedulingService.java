@@ -25,6 +25,8 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -32,54 +34,72 @@ public class CompetitionSchedulingService {
 
     private final CategorySchedulingRepository categorySchedulingRepository;
     private final CompetitionRepository competitionRepository;
-    
+
     private static final int NUMBER_OF_TATAMIS = 3;
     private static final LocalTime COMPETITION_START_TIME = LocalTime.of(9, 0);
     private final MapperUtils mapperUtils;
 
     public List<CategoryScheduling> findAllByCompetitionId(Long competitionId) {
         log.info("Fetching all category schedules for competition {}", competitionId);
-        return categorySchedulingRepository.findAllByCompetitionId(competitionId);
-    }
+        List<CategoryScheduling> schedules = categorySchedulingRepository.findAllByCompetitionId(competitionId);
 
+        //remove participations that are not in the current competition
+        List<CategoryParticipation> participationsToRemove = schedules.stream()
+                .flatMap(scheduling -> scheduling.getCategory().getParticipations().stream())
+                .filter(participation -> !participation.getCompetition().getId().equals(competitionId))
+                .toList();
+
+        return schedules.stream()
+                .peek(scheduling -> participationsToRemove.forEach(scheduling.getCategory().getParticipations()::remove))
+                .toList();
+    }
     public CategoryScheduling findByCompetitionIdAndCategoryId(Long competitionId, Long categoryId) {
         log.info("Fetching schedule for competition {} and category {}", competitionId, categoryId);
-        return categorySchedulingRepository.findByCompetitionIdAndCategoryId(competitionId, categoryId)
+        CategoryScheduling categoryScheduling = categorySchedulingRepository.findByCompetitionIdAndCategoryId(competitionId, categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("Schedule not found for this category"));
+
+        //remove participations that are not in the current competition
+
+        List<CategoryParticipation> participationsToRemove = categoryScheduling.getCategory().getParticipations().stream()
+                .filter(participation -> !participation.getCompetition().getId().equals(competitionId))
+                .toList();
+
+        return categoryScheduling.getCategory().getParticipations().removeAll(participationsToRemove) ?
+                categoryScheduling :
+                categorySchedulingRepository.save(categoryScheduling);
     }
 
     @Transactional
     public List<ScheduledCategory> scheduleCategories(Long competitionId) {
         log.info("Starting category scheduling for competition {}", competitionId);
-        
+
         // Get competition and categories
-        Competition competition = competitionRepository.findById(competitionId)
-                .orElseThrow(() -> new IllegalArgumentException("Competition not found"));
+        Competition competition = findCompetitionById(competitionId);
         Set<Category> categories = competition.getCategories().stream()
                 .filter(category -> category instanceof IndividualCategory || category instanceof TeamCategory)
                 .filter(category -> !category.getParticipations().stream()
                         .filter(participation -> participation.getCompetition().getId().equals(competitionId))
                         .collect(Collectors.toSet()).isEmpty())
                 .collect(Collectors.toSet());
-        
+
         // Delete any existing schedule
         categorySchedulingRepository.deleteByCompetitionId(competitionId);
-        
+
         // Create a map of athlete IDs to category IDs to detect conflicts
         Map<Long, Set<Long>> athleteToCategories = new HashMap<>();
-        
+
         // Calculate total duration for each category and build athlete-category relationships
         Map<Long, Integer> categoryDurations = new HashMap<>();
         Map<Long, String> categoryNames = new HashMap<>();
-        
+
         for (Category category : categories) {
             int totalDuration = category.getParticipations().stream()
                     .mapToInt(CategoryParticipation::getDurationMinutes)
                     .sum();
-            
+
             categoryDurations.put(category.getId(), totalDuration);
             categoryNames.put(category.getId(), buildCategoryName(category));
-            
+
             // Build athlete-category relationships
             category.getParticipations().forEach(participation -> {
                 if (participation instanceof IndividualCategoryParticipation) {
@@ -93,56 +113,56 @@ public class CompetitionSchedulingService {
                 }
             });
         }
-        
+
         // Sort categories by duration (descending)
         List<Long> sortedCategoryIds = new ArrayList<>(categoryDurations.keySet());
         sortedCategoryIds.sort((a, b) -> categoryDurations.get(b).compareTo(categoryDurations.get(a)));
-        
+
         // Initialize scheduling data structures
         List<ScheduledCategory> scheduledCategories = new ArrayList<>();
         Map<Integer, LocalTime> tatamiEndTimes = new HashMap<>();
         for (int i = 1; i <= NUMBER_OF_TATAMIS; i++) {
             tatamiEndTimes.put(i, COMPETITION_START_TIME);
         }
-        
+
         // Schedule categories using greedy approach
         for (Long categoryId : sortedCategoryIds) {
             Category category = categories.stream()
                     .filter(c -> c.getId().equals(categoryId))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Category not found"));
-                    
+
             int duration = categoryDurations.get(categoryId);
             LocalTime earliestStartTime = null;
             int selectedTatami = -1;
-            
+
             // Find the earliest possible start time across all tatamis
             for (int tatami = 1; tatami <= NUMBER_OF_TATAMIS; tatami++) {
                 LocalTime tatamiEndTime = tatamiEndTimes.get(tatami);
                 boolean hasConflict = false;
-                
+
                 // Check for conflicts with already scheduled categories
                 for (ScheduledCategory scheduled : scheduledCategories) {
                     if (scheduled.getTatamiId() == tatami) {
                         // Check if this category would overlap with the scheduled one
-                        if (!(tatamiEndTime.isBefore(scheduled.getStartTime()) || 
-                              tatamiEndTime.plusMinutes(duration).isAfter(scheduled.getEndTime()))) {
+                        if (!(tatamiEndTime.isBefore(scheduled.getStartTime()) ||
+                                tatamiEndTime.plusMinutes(duration).isAfter(scheduled.getEndTime()))) {
                             hasConflict = true;
                             break;
                         }
                     }
                 }
-                
+
                 if (!hasConflict && (earliestStartTime == null || tatamiEndTime.isBefore(earliestStartTime))) {
                     earliestStartTime = tatamiEndTime;
                     selectedTatami = tatami;
                 }
             }
-            
+
             if (selectedTatami != -1) {
                 LocalTime endTime = earliestStartTime.plusMinutes(duration);
                 tatamiEndTimes.put(selectedTatami, endTime);
-                
+
                 // Create and save the scheduling
                 CategoryScheduling scheduling = CategoryScheduling.builder()
                         .category(category)
@@ -151,9 +171,9 @@ public class CompetitionSchedulingService {
                         .startTime(earliestStartTime)
                         .endTime(endTime)
                         .build();
-                
+
                 categorySchedulingRepository.save(scheduling);
-                
+
                 scheduledCategories.add(ScheduledCategory.builder()
                         .category(mapperUtils.mapCategory(category))
                         .tatamiId(selectedTatami)
@@ -164,23 +184,22 @@ public class CompetitionSchedulingService {
                         .build());
             }
         }
-        
+
         log.info("Completed scheduling {} categories", scheduledCategories.size());
         return scheduledCategories;
     }
-    
+
     @Transactional
     public List<ScheduledCategory> scheduleCategoriesGraphColoring(Long competitionId) {
         log.info("Starting category scheduling (graph coloring) for competition {}", competitionId);
 
-        Competition competition = competitionRepository.findById(competitionId)
-                .orElseThrow(() -> new IllegalArgumentException("Competition not found"));
-        Set<Category> categories = competition.getCategories().stream()
-                .filter(category -> category instanceof IndividualCategory || category instanceof TeamCategory)
-                .filter(category -> !category.getParticipations().stream()
-                        .filter(participation -> participation.getCompetition().getId().equals(competitionId))
-                        .collect(Collectors.toSet()).isEmpty())
-                .collect(Collectors.toSet());
+        Competition competition = findCompetitionById(competitionId);
+                Set < Category > categories = competition.getCategories().stream()
+                        .filter(category -> category instanceof IndividualCategory || category instanceof TeamCategory)
+                        .filter(category -> !category.getParticipations().stream()
+                                .filter(participation -> participation.getCompetition().getId().equals(competitionId))
+                                .collect(Collectors.toSet()).isEmpty())
+                        .collect(Collectors.toSet());
 
         // Delete any existing schedule
         categorySchedulingRepository.deleteByCompetitionId(competitionId);
@@ -288,7 +307,7 @@ public class CompetitionSchedulingService {
         log.info("Completed graph coloring scheduling for {} categories", scheduledCategories.size());
         return scheduledCategories;
     }
-    
+
     private String buildCategoryName(Category category) {
         StringBuilder name = new StringBuilder();
 
@@ -305,13 +324,22 @@ public class CompetitionSchedulingService {
         name.append(" - ").append(category.getAgeGroup().name().replace("_", " "));
 
         switch (category) {
-            case KataIndividualCategory kataIndividualCategory -> name.append(" - ").append(kataIndividualCategory.getKataBeltRange().name().replace("_", " "));
-            case KumiteIndividualCategory kumiteIndividualCategory -> name.append(" - ").append(kumiteIndividualCategory.getKumiteDivisionRange().name().replace("_", " "));
-            case KataTeamCategory kataTeamCategory -> name.append(" - ").append(kataTeamCategory.getKataTeamType().name().replace("_", " "));
-            case KumiteTeamCategory kumiteTeamCategory -> name.append(" - ").append(kumiteTeamCategory.getKumiteTeamType().name().replace("_", " "));
+            case KataIndividualCategory kataIndividualCategory ->
+                    name.append(" - ").append(kataIndividualCategory.getKataBeltRange().name().replace("_", " "));
+            case KumiteIndividualCategory kumiteIndividualCategory ->
+                    name.append(" - ").append(kumiteIndividualCategory.getKumiteDivisionRange().name().replace("_", " "));
+            case KataTeamCategory kataTeamCategory ->
+                    name.append(" - ").append(kataTeamCategory.getKataTeamType().name().replace("_", " "));
+            case KumiteTeamCategory kumiteTeamCategory ->
+                    name.append(" - ").append(kumiteTeamCategory.getKumiteTeamType().name().replace("_", " "));
             default -> name.append("Unknown Category Type");
         }
-        
+
         return name.toString();
+    }
+
+    private Competition findCompetitionById(Long competitionId) {
+        return competitionRepository.findById(competitionId)
+                .orElseThrow(() -> new IllegalArgumentException("Competition not found"));
     }
 } 

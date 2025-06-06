@@ -17,7 +17,6 @@ import ro.unibuc.fmi.karate_management_platform.models.request.RequestInfo;
 import ro.unibuc.fmi.karate_management_platform.models.request.RequestType;
 import ro.unibuc.fmi.karate_management_platform.models.request.competition.AthleteCompetitionRegistrationRequest;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
-import ro.unibuc.fmi.karate_management_platform.repositories.UserRepository;
 import ro.unibuc.fmi.karate_management_platform.repositories.request.AthleteCompetitionRegistrationRequestRepository;
 import ro.unibuc.fmi.karate_management_platform.services.AthleteService;
 import ro.unibuc.fmi.karate_management_platform.services.CompetitionService;
@@ -103,12 +102,22 @@ public class AthleteCompetitionRegistrationRequestStrategy extends AbstractReque
     protected void handleAcceptedRequest(User user, RequestInfo request) {
         User userToBeRegistered = request.getCreatedBy();
         AthleteCompetitionRegistrationRequest registrationRequest = (AthleteCompetitionRegistrationRequest) request;
-        CompetitionRegistrationRequest competitionRegistrationRequest = new CompetitionRegistrationRequest(
-                Map.of(userToBeRegistered.getId(), registrationRequest.getIndividualCategories()),
-                Map.of(athleteService.getTeamsByAthleteId(userToBeRegistered.getId()).stream()
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalStateException("No team found for athlete"))
-                        .getId(), registrationRequest.getTeamCategories()));
+
+        log.info("Registering athlete {} to competition {}", userToBeRegistered.getEmail(), registrationRequest.getCompetitionId());
+        CompetitionRegistrationRequest competitionRegistrationRequest;
+        if (registrationRequest.getTeamCategories() == null || registrationRequest.getTeamCategories().isEmpty()) {
+            log.warn("No team categories selected for athlete {}", userToBeRegistered.getEmail());
+            competitionRegistrationRequest = new CompetitionRegistrationRequest(
+                    Map.of(userToBeRegistered.getId(), registrationRequest.getIndividualCategories()),
+                    Map.of());
+        } else {
+            competitionRegistrationRequest = new CompetitionRegistrationRequest(
+                    Map.of(userToBeRegistered.getId(), registrationRequest.getIndividualCategories()),
+                    Map.of(athleteService.getTeamsByAthleteId(userToBeRegistered.getId()).stream()
+                            .findFirst()
+                            .orElseThrow(() -> new IllegalStateException("No team found for athlete"))
+                            .getId(), registrationRequest.getTeamCategories()));
+        }
         Competition competition = competitionService.findCompetitionById(registrationRequest.getCompetitionId());
         athleteCategoryRegistrationManager.registerAthletesToCompetition(competitionRegistrationRequest, competition);
         log.info("Athlete {} registered to competition {}", userToBeRegistered.getEmail(), competition.getName());
