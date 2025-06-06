@@ -49,6 +49,9 @@ logging:
   level:
     root: INFO
     ro.unibuc.fmi: DEBUG
+    org.springframework.web: INFO
+    org.hibernate: INFO
+    io.micrometer: DEBUG
 
 # Swagger Configuration
 springdoc:
@@ -76,11 +79,20 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus,metrics
+        include: health,info,prometheus,metrics,env,configprops
+      base-path: /actuator
+      path-mapping:
+        health: health
+        prometheus: prometheus
+        metrics: metrics
   endpoint:
     health:
       show-details: always
+      probes:
+        enabled: true
     prometheus:
+      enabled: true
+    metrics:
       enabled: true
   metrics:
     tags:
@@ -88,3 +100,11 @@ management:
     export:
       prometheus:
         enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      sla:
+        http.server.requests: 10ms, 50ms, 100ms, 200ms, 500ms
+  server:
+    port: 8080
+    base-path: /actuator
