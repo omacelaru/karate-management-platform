@@ -29,13 +29,13 @@
         <url/>
     </scm>
     <properties>
-        <java.version>23</java.version>
-        <maven.compiler.source>23</maven.compiler.source>
+        <java.version>17</java.version>
         <lombok.version>1.18.36</lombok.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <jjwt.version>0.12.6</jjwt.version>
         <springdoc.version>2.7.0</springdoc.version>
+        <logstash.version>7.4</logstash.version>
     </properties>
     <dependencies>
         <!--Sprin Boot Starter Dependencies-->
@@ -201,6 +201,13 @@
             <version>1.10.2</version>
             <scope>test</scope>
         </dependency>
+
+        <!--Logstash Dependencies-->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>${logstash.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -213,8 +220,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>23</source>
-                    <target>23</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <compilerArgs>
+                        <arg>--enable-preview</arg>
+                    </compilerArgs>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
