@@ -105,7 +105,10 @@ public class AthleteCompetitionRegistrationRequestStrategy extends AbstractReque
         AthleteCompetitionRegistrationRequest registrationRequest = (AthleteCompetitionRegistrationRequest) request;
         CompetitionRegistrationRequest competitionRegistrationRequest = new CompetitionRegistrationRequest(
                 Map.of(userToBeRegistered.getId(), registrationRequest.getIndividualCategories()),
-                Map.of(athleteService.getTeamsByAthleteId(userToBeRegistered.getId()).getFirst().getId(), registrationRequest.getTeamCategories()));
+                Map.of(athleteService.getTeamsByAthleteId(userToBeRegistered.getId()).stream()
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalStateException("No team found for athlete"))
+                        .getId(), registrationRequest.getTeamCategories()));
         Competition competition = competitionService.findCompetitionById(registrationRequest.getCompetitionId());
         athleteCategoryRegistrationManager.registerAthletesToCompetition(competitionRegistrationRequest, competition);
         log.info("Athlete {} registered to competition {}", userToBeRegistered.getEmail(), competition.getName());

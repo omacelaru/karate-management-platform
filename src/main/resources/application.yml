@@ -39,6 +39,17 @@ spring:
             enable: true
             required: true
 
+# Logstash Configuration
+logstash:
+  host: localhost
+  port: 5044
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    ro.unibuc.fmi: DEBUG
+
 # Swagger Configuration
 springdoc:
   api-docs.enabled: true
@@ -50,7 +61,6 @@ jwt:
   access-token-expiration: 90000000 # 15 minutes in milliseconds
   refresh-token-expiration: 604800000 # 7 days in milliseconds
   email-confirmation-token-expiration: 86400000 # 1 day in milliseconds
-
 
 # Domain Configuration
 domain:
@@ -66,4 +76,15 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: karate-management-platform
+    export:
+      prometheus:
+        enabled: true

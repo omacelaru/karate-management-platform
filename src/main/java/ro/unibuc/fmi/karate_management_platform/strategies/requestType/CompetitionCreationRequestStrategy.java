@@ -32,7 +32,7 @@ public class CompetitionCreationRequestStrategy extends AbstractRequestTypeStrat
 
     @Override
     protected void validateRequest(User user, Object request) {
-        if (!(request instanceof CompetitionRequest(String name, String location, java.time.LocalDate date))) {
+        if (!(request instanceof CompetitionRequest competitionRequest)) {
             throw new IllegalArgumentException("Invalid request type");
         }
         boolean duplicateExists = repositoryFactory.getRepository(requestType)
@@ -41,9 +41,9 @@ public class CompetitionCreationRequestStrategy extends AbstractRequestTypeStrat
             .filter(req -> req instanceof CompetitionCreationRequest)
             .map(req -> (CompetitionCreationRequest) req)
             .anyMatch(existingRequest -> 
-                existingRequest.getCompetitionRequest().name().equals(name) &&
-                existingRequest.getCompetitionRequest().location().equals(location) &&
-                existingRequest.getCompetitionRequest().date().equals(date) &&
+                existingRequest.getCompetitionRequest().name().equals(competitionRequest.name()) &&
+                existingRequest.getCompetitionRequest().location().equals(competitionRequest.location()) &&
+                existingRequest.getCompetitionRequest().date().equals(competitionRequest.date()) &&
                 existingRequest.getStatus().equals(RequestStatus.PENDING)
             );
 
