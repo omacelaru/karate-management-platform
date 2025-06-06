@@ -139,11 +139,10 @@ public class CompetitionService {
                 .collect(Collectors.toSet());
         if (categoriesWithAthletes.isEmpty()) {
             log.warn("No categories with athletes found for competition {}", competitionId);
-            throw new IllegalArgumentException("No categories with athletes found for this competition");
         } else {
             log.info("Found {} categories with athletes for competition {}", categoriesWithAthletes.size(), competitionId);
-            return categoriesWithAthletes;
         }
+        return categoriesWithAthletes;
     }
 
     public Set<CategoryResponse> getCategoriesWithAthletes(Long competitionId) {
