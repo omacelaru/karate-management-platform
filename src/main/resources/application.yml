@@ -66,4 +66,15 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: health,info,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: karate-management-platform
+    export:
+      prometheus:
+        enabled: true
