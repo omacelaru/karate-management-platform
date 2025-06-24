@@ -1,0 +1,110 @@
+spring:
+  application:
+    name: karate-management-platform
+
+  # Server Configuration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/karate_users_db
+    username: karate_user
+    password: Karate.user2025
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    open-in-view: true
+
+  #Flyway Configuration
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  # Mail Configuration
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: karate.platform@gmail.com
+    password: ykpe eeyi baxi qlom
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+# Logstash Configuration
+logstash:
+  host: localhost
+  port: 5044
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    ro.unibuc.fmi: DEBUG
+    org.springframework.web: INFO
+    org.hibernate: INFO
+    io.micrometer: DEBUG
+
+# Swagger Configuration
+springdoc:
+  api-docs.enabled: true
+  swagger-ui.enabled: true
+
+# JWT Configuration
+jwt:
+  secret-signing-key: VVBnjmJk/7zALlGMV2MTY/DeRxzecHINfsxU16d+A/gX+ta4lrnnM7nJRNPhDm6Vrt8EGXGRfUwbAkiWQWT4U1C6UZ+LXNx4bNVttqrTKOJNU17gyXIGQL+MFAIz0FCDqKZrOLGpE3RCnkLsJRbgo76gMdNvhGCcEm8JkHoLsXTSXJamuBDhheQD/wreedFrkzph4+XQ+NFSQ9PUMUy7/W1JwJcgLO8Dti8RUShJXXIxH0ed4q77kOpH7A0DOSvdr062geYmgI3mScOHJMI1R0ymPheDE5PDgfyYR/bdlcgt7RWPkDBe34WGeNdxdOktZKSLsDjUWe7ywZf5MpaZgQ==
+  access-token-expiration: 90000000 # 15 minutes in milliseconds
+  refresh-token-expiration: 604800000 # 7 days in milliseconds
+  email-confirmation-token-expiration: 86400000 # 1 day in milliseconds
+
+# Domain Configuration
+domain:
+  url: http://localhost:3000
+  basePath: /api/v1
+
+# Frontend Configuration
+frontend:
+  url: http://localhost:3000
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics,env,configprops
+      base-path: /actuator
+      path-mapping:
+        health: health
+        prometheus: prometheus
+        metrics: metrics
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+    prometheus:
+      enabled: true
+    metrics:
+      enabled: true
+  metrics:
+    tags:
+      application: karate-management-platform
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      sla:
+        http.server.requests: 10ms, 50ms, 100ms, 200ms, 500ms
+  server:
+    port: 8080
+    base-path: /actuator

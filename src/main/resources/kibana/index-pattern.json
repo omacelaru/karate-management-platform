@@ -1,0 +1,94 @@
+{
+  "index_patterns": ["karate-management-*"],
+  "template": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    },
+    "mappings": {
+      "properties": {
+        "@timestamp": {
+          "type": "date"
+        },
+        "message": {
+          "type": "text"
+        },
+        "logger_name": {
+          "type": "keyword"
+        },
+        "thread_name": {
+          "type": "keyword"
+        },
+        "level": {
+          "type": "keyword"
+        },
+        "level_value": {
+          "type": "long"
+        },
+        "app_name": {
+          "type": "keyword"
+        },
+        "userId": {
+          "type": "keyword"
+        },
+        "requestId": {
+          "type": "keyword"
+        },
+        "sessionId": {
+          "type": "keyword"
+        },
+        "clientIp": {
+          "type": "ip"
+        },
+        "userAgent": {
+          "type": "text"
+        },
+        "requestMethod": {
+          "type": "keyword"
+        },
+        "requestUri": {
+          "type": "keyword"
+        },
+        "responseStatus": {
+          "type": "integer"
+        },
+        "responseTime": {
+          "type": "float"
+        },
+        "errorCode": {
+          "type": "keyword"
+        },
+        "errorMessage": {
+          "type": "text"
+        },
+        "stackTrace": {
+          "type": "text"
+        },
+        "className": {
+          "type": "keyword"
+        },
+        "methodName": {
+          "type": "keyword"
+        },
+        "lineNumber": {
+          "type": "integer"
+        },
+        "hostName": {
+          "type": "keyword"
+        },
+        "environment": {
+          "type": "keyword"
+        },
+        "version": {
+          "type": "keyword"
+        },
+        "request_info": {
+          "type": "text"
+        },
+        "client_info": {
+          "type": "text"
+        }
+      }
+    }
+  }
+} 

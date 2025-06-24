@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="applicationName" source="spring.application.name"/>
+    <springProperty scope="context" name="logstashHost" source="logstash.host"/>
+    <springProperty scope="context" name="logstashPort" source="logstash.port"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{ISO8601} %highlight(%-5level) [%blue(%t)] %yellow(%C{1}): %msg%n%throwable</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${logstashHost}:${logstashPort}</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"app_name":"${applicationName}"}</customFields>
+            <includeMdcKeyName>userId</includeMdcKeyName>
+            <includeMdcKeyName>requestId</includeMdcKeyName>
+            <includeMdcKeyName>sessionId</includeMdcKeyName>
+            <includeMdcKeyName>clientIp</includeMdcKeyName>
+            <includeMdcKeyName>userAgent</includeMdcKeyName>
+            <includeMdcKeyName>requestMethod</includeMdcKeyName>
+            <includeMdcKeyName>requestUri</includeMdcKeyName>
+            <includeMdcKeyName>responseStatus</includeMdcKeyName>
+            <includeMdcKeyName>responseTime</includeMdcKeyName>
+            <includeMdcKeyName>errorCode</includeMdcKeyName>
+            <includeMdcKeyName>errorMessage</includeMdcKeyName>
+            <includeMdcKeyName>stackTrace</includeMdcKeyName>
+            <includeMdcKeyName>className</includeMdcKeyName>
+            <includeMdcKeyName>methodName</includeMdcKeyName>
+            <includeMdcKeyName>lineNumber</includeMdcKeyName>
+            <includeMdcKeyName>threadName</includeMdcKeyName>
+            <includeMdcKeyName>hostName</includeMdcKeyName>
+            <includeMdcKeyName>environment</includeMdcKeyName>
+            <includeMdcKeyName>version</includeMdcKeyName>
+        </encoder>
+    </appender>
+
+    <!-- Adăugăm un appender pentru a captura excepțiile -->
+    <appender name="ASYNC_LOGSTASH" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="LOGSTASH"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>true</includeCallerData>
+        <neverBlock>true</neverBlock>
+    </appender>
+
+    <!-- Logger specific pentru excepții -->
+    <logger name="ro.unibuc.fmi.karate_management_platform.exceptions" level="ERROR" additivity="false">
+        <appender-ref ref="ASYNC_LOGSTASH"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- Logger pentru request-uri HTTP -->
+    <logger name="ro.unibuc.fmi.karate_management_platform.controllers" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_LOGSTASH"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_LOGSTASH"/>
+    </root>
+</configuration> 
