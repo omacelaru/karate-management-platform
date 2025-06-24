@@ -53,4 +53,16 @@ public class Athlete extends BaseEntity {
     )
     private Set<Coach> coaches = new LinkedHashSet<>();
 
+    @Column(name = "points")
+    private Integer points = 0;
+
+    @Column(name = "gold_medals", nullable = false)
+    private int goldMedals = 0;
+
+    @Column(name = "silver_medals", nullable = false)
+    private int silverMedals = 0;
+
+    @Column(name = "bronze_medals", nullable = false)
+    private int bronzeMedals = 0;
+
 }

@@ -2,6 +2,10 @@ package ro.unibuc.fmi.karate_management_platform.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,11 +32,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class AthleteServiceTest {
 
+    @Mock
     private AthleteRepository athleteRepository;
+    @Mock
     private MapperUtils mapperUtils;
+    @Mock
     private ClubService clubService;
+    @Mock
+    private TeamRepository teamRepository;
+    @InjectMocks
     private AthleteService athleteService;
 
     private static final String EMAIL = "test@example.com";
@@ -41,15 +52,6 @@ class AthleteServiceTest {
     private static final Integer HEIGHT = 175;
     private static final Integer WEIGHT = 80;
 
-    @BeforeEach
-    void setUp() {
-        athleteRepository = mock(AthleteRepository.class);
-        mapperUtils = mock(MapperUtils.class);
-        clubService = mock(ClubService.class);
-        TeamRepository teamRepository = mock(TeamRepository.class);
-        athleteService = new AthleteService(athleteRepository,teamRepository, mapperUtils, clubService);
-    }
-
     @Test
     void getAllAthletes_shouldReturnPageOfAthletes() {
         Pageable pageable = mock(Pageable.class);
@@ -57,7 +59,7 @@ class AthleteServiceTest {
         UserResponse userResponse = UserResponseFixture.createDefaultUserResponse();
         ClubResponse clubResponse = ClubResponseFixture.createDefaultClubResponse();
         Athlete athlete = new Athlete();
-        AthleteResponse athleteResponse = new AthleteResponse(userResponse, HEIGHT, WEIGHT, Belt.BLACK, Optional.of(clubResponse));
+        AthleteResponse athleteResponse = new AthleteResponse(userResponse, HEIGHT, WEIGHT, Belt.BLACK, Optional.of(clubResponse), null, 0, 0, 0);
 
         when(athleteRepository.findAll(pageable)).thenReturn(new PageImpl<>(List.of(athlete)));
         when(mapperUtils.mapToAthleteResponse(athlete)).thenReturn(athleteResponse);
@@ -75,7 +77,7 @@ class AthleteServiceTest {
         User user = new User();
         user.setEmail(userResponse.email());
         Athlete athlete = new Athlete();
-        AthleteResponse athleteResponse = new AthleteResponse(userResponse, HEIGHT, WEIGHT,Belt.BLACK, Optional.of(clubResponse));
+        AthleteResponse athleteResponse = new AthleteResponse(userResponse, HEIGHT, WEIGHT,Belt.BLACK, Optional.of(clubResponse), null, 0, 0, 0);
 
         when(athleteRepository.findByUserEmail(user.getEmail())).thenReturn(Optional.of(athlete));
         when(mapperUtils.mapToAthleteResponse(athlete)).thenReturn(athleteResponse);

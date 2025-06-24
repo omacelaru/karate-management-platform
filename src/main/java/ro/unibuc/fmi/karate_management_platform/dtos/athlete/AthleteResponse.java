@@ -19,7 +19,11 @@ import java.util.Optional;
 @Schema(description = "Athlete response containing athletes information including roles, personal details, and measurements.")
 public record AthleteResponse(UserResponse user,
                               Integer height, Integer weight, Belt belt,
-                              Optional<ClubResponse> clubResponse
+                              Optional<ClubResponse> clubResponse,
+                              Integer points,
+                              int goldMedals,
+                              int silverMedals,
+                              int bronzeMedals
 ) implements Serializable {
     public String getFullName() {
         return user.firstName() + " " + user.lastName();

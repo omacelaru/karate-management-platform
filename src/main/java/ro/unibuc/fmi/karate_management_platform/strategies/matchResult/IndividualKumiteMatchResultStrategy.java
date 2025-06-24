@@ -10,6 +10,7 @@ import ro.unibuc.fmi.karate_management_platform.models.competition.match.MatchTy
 import ro.unibuc.fmi.karate_management_platform.services.AthleteService;
 import ro.unibuc.fmi.karate_management_platform.services.CategoryService;
 import ro.unibuc.fmi.karate_management_platform.services.CompetitionService;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -31,21 +32,33 @@ public class IndividualKumiteMatchResultStrategy implements MatchResultStrategy 
                 .build();
 
         // Process the athletes and their points
-        kumiteRequest.getAthletePoints().forEach((athleteId, points) -> {
-            match.getAthletePoints().put(
-                    athleteService.getAthleteById(athleteId),
-                    points
-            );
+        Map<Long, Long> athletePointsMap = kumiteRequest.getAthletePoints();
+        Map<Long, ro.unibuc.fmi.karate_management_platform.models.athelte.Athlete> athleteEntities = new HashMap<>();
+        athletePointsMap.forEach((athleteId, points) -> {
+            var athlete = athleteService.getAthleteById(athleteId);
+            athleteEntities.put(athleteId, athlete);
+            match.getAthletePoints().put(athlete, points);
+            // Update points (add to existing)
+            athlete.setPoints(athlete.getPoints() + points.intValue());
         });
-
         // Process the scores and update the match
         kumiteRequest.getAthleteScores().forEach((athleteId, score) -> {
             match.getAthleteScores().put(
-                    athleteService.getAthleteById(athleteId),
+                    athleteEntities.get(athleteId),
                     score
             );
         });
-
+        // Sort athletes by points desc and assign medals
+        List<Map.Entry<Long, Long>> sorted = new ArrayList<>(athletePointsMap.entrySet());
+        sorted.sort((a, b) -> Long.compare(b.getValue(), a.getValue()));
+        for (int i = 0; i < sorted.size(); i++) {
+            Long athleteId = sorted.get(i).getKey();
+            var athlete = athleteEntities.get(athleteId);
+            if (i == 0) athlete.setGoldMedals(athlete.getGoldMedals() + 1);
+            else if (i == 1) athlete.setSilverMedals(athlete.getSilverMedals() + 1);
+            else if (i == 2) athlete.setBronzeMedals(athlete.getBronzeMedals() + 1);
+            athleteService.updateAthlete(athlete);
+        }
         return match;
     }
 
