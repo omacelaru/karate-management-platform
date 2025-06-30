@@ -36,6 +36,13 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public List<UserResponse> findAllUsers() {
+        log.info("Finding all users");
+        return userRepository.findAll().stream()
+                .map(mapperUtils::mapToUserResponse)
+                .collect(Collectors.toList());
+    }
+
     public static String generatePassword() {
         int length = 12;
         String symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";

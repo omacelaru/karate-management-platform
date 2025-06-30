@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import ro.unibuc.fmi.karate_management_platform.dtos.user.UserDetailsRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.user.UserResponse;
 import ro.unibuc.fmi.karate_management_platform.exceptions.ApiError;
+import ro.unibuc.fmi.karate_management_platform.models.user.Role;
 import ro.unibuc.fmi.karate_management_platform.models.user.User;
 import ro.unibuc.fmi.karate_management_platform.security.SecuredEndpoint;
 import ro.unibuc.fmi.karate_management_platform.services.UserService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -48,6 +51,19 @@ public class UserResource {
             @AuthenticationPrincipal User user,
             @RequestBody @Valid UserDetailsRequest userDetailsRequest) {
         return ResponseEntity.ok(userService.updateMe(user, userDetailsRequest));
+    }
+
+    @Operation(summary = "Get all users (admin only)",
+            description = "Returns a list of all users. Only accessible by ADMIN.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "List of users returned successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class))),
+                    @ApiResponse(responseCode = "403", description = "Forbidden", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ApiError.class)))
+            })
+    @SecuredEndpoint(roles = {Role.ADMIN})
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        return ResponseEntity.ok(userService.findAllUsers());
     }
 
 }
