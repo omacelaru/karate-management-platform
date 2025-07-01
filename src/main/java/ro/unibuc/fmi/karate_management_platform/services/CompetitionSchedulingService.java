@@ -35,7 +35,7 @@ public class CompetitionSchedulingService {
     private final CategorySchedulingRepository categorySchedulingRepository;
     private final CompetitionRepository competitionRepository;
 
-    private static final int NUMBER_OF_TATAMIS = 3;
+    private static final int NUMBER_OF_TATAMIS = 4;
     private static final LocalTime COMPETITION_START_TIME = LocalTime.of(9, 0);
     private final MapperUtils mapperUtils;
 
