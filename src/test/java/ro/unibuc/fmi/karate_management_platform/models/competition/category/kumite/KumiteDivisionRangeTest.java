@@ -16,7 +16,8 @@ class KumiteDivisionRangeTest {
     void testGetAvailableDivisionsForJuniorsMale() {
         Set<KumiteDivisionRange> divisions = getAvailableDivisions(AgeGroup.JUNIORS_15_17, MALE);
         assertFalse(divisions.isEmpty());
-        assertEquals(4, divisions.size());
+        assertEquals(5, divisions.size());
+        assertTrue(divisions.contains(OPEN));
         assertTrue(divisions.contains(UNDER_55KG));
         assertTrue(divisions.contains(BETWEEN_60_65KG));
         assertTrue(divisions.contains(BETWEEN_55_60KG));
@@ -27,7 +28,8 @@ class KumiteDivisionRangeTest {
     void testGetAvailableDivisionsForJuniorsFemale() {
         Set<KumiteDivisionRange> divisions = getAvailableDivisions(AgeGroup.JUNIORS_15_17, FEMALE);
         assertFalse(divisions.isEmpty());
-        assertEquals(4, divisions.size());
+        assertEquals(5, divisions.size());
+        assertTrue(divisions.contains(OPEN));
         assertTrue(divisions.contains(UNDER_50KG));
         assertTrue(divisions.contains(BETWEEN_50_55KG));
         assertTrue(divisions.contains(BETWEEN_55_60KG));
@@ -38,7 +40,8 @@ class KumiteDivisionRangeTest {
     void testGetAvailableDivisionsForSeniorsMale() {
         Set<KumiteDivisionRange> divisions = getAvailableDivisions(AgeGroup.SENIORS_18_34, MALE);
         assertFalse(divisions.isEmpty());
-        assertEquals(4, divisions.size());
+        assertEquals(5, divisions.size());
+        assertTrue(divisions.contains(OPEN));
         assertTrue(divisions.contains(UNDER_65KG));
         assertTrue(divisions.contains(BETWEEN_65_70KG));
         assertTrue(divisions.contains(BETWEEN_70_75KG));
@@ -49,7 +52,8 @@ class KumiteDivisionRangeTest {
     void testGetAvailableDivisionsForSeniorsFemale() {
         Set<KumiteDivisionRange> divisions = getAvailableDivisions(AgeGroup.SENIORS_18_34, FEMALE);
         assertFalse(divisions.isEmpty());
-        assertEquals(4, divisions.size());
+        assertEquals(5, divisions.size());
+        assertTrue(divisions.contains(OPEN));
         assertTrue(divisions.contains(UNDER_55KG));
         assertTrue(divisions.contains(BETWEEN_55_60KG));
         assertTrue(divisions.contains(BETWEEN_60_65KG));
@@ -81,7 +85,8 @@ class KumiteDivisionRangeTest {
         assertTrue(divisions.contains(UNDER_130CM));
         assertTrue(divisions.contains(BETWEEN_130_140CM));
         assertTrue(divisions.contains(OVER_140CM));
-        assertEquals(3, divisions.size());
+        assertTrue(divisions.contains(OPEN));
+        assertEquals(4, divisions.size());
     }
 
     @Test

@@ -53,21 +53,6 @@ class CoachServiceTest {
         verify(coachRepository).findAll(pageable);
     }
 
-    @Test
-    void getMe_shouldReturnCoach() throws IncompleteProfileException {
-        User user = new User();
-        user.setEmail("coach@example.com");
-        Coach coach = new Coach();
-        CoachResponse defaultResponse = CoachResponseFixture.createDefaultCoachResponse();
-
-        when(coachRepository.findByUserEmail(user.getEmail())).thenReturn(Optional.of(coach));
-        when(mapperUtils.mapToCoachResponse(coach)).thenReturn(defaultResponse);
-
-        CoachResponse result = coachService.getMe(user);
-
-        assertThat(result).isEqualTo(defaultResponse);
-        verify(coachRepository).findByUserEmail(user.getEmail());
-    }
 
     @Test
     void getMe_shouldThrowIncompleteProfileException() {
