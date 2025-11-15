@@ -3,10 +3,12 @@ package ro.unibuc.fmi.karate_management_platform.services;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import ro.unibuc.fmi.karate_management_platform.models.user.Role;
+import ro.unibuc.fmi.karate_management_platform.models.user.User;
 
 import java.util.Base64;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -15,7 +17,7 @@ import static org.mockito.Mockito.when;
 class JwtTokenServiceTest {
     private JwtTokenService jwtTokenService;
 
-    private final static String SECRET_SIGNING_KEY = "VVBnjmJk/7zALlGMV2MTY/DeRxzecHINfsxU16d+A/gX+ta4lrnnM7nJRNPhDm6Vrt8EGXGRfUwbAkiWQWT4U1C6UZ+LXNx4bNVttqrTKOJNU17gyXIGQL+MFAIz0FCDqKZrOLGpE3RCnkLsJRbgo76gMdNvhGCcEm8JkHoLsXTSXJamuBDhheQD/wreedFrkzph4+XQ+NFSQ9PUMUy7/W1JwJcgLO8Dti8RUShJXXIxH0ed4q77kOpH7A0DOSvdr062geYmgI3mScOHJMI1R0ymPheDE5PDgfyYR/bdlcgt7RWPkDBe34WGeNdxdOktZKSLsDjUWe7ywZf5MpaZgQ==";
+    private final static String SECRET_SIGNING_KEY = "my-very;secret-signing-key-for-jwt-tokens";
 
     @BeforeEach
     void setUp() {
@@ -28,9 +30,10 @@ class JwtTokenServiceTest {
     @Test
     void generateAccessToken_shouldReturnValidToken() {
         UserDetails userDetails = User.builder()
-                .username("test@example.com")
+                .id(1L)
+                .email("test@example.com")
                 .password("password")
-                .roles("USER")
+                .roles(Set.of(Role.USER))
                 .build();
 
         String token = jwtTokenService.generateAccessToken(userDetails);
@@ -43,9 +46,10 @@ class JwtTokenServiceTest {
     @Test
     void generateRefreshToken_shouldReturnValidToken() {
         UserDetails userDetails = User.builder()
-                .username("test@example.com")
+                .id(1L)
+                .email("test@example.com")
                 .password("password")
-                .roles("USER")
+                .roles(Set.of(Role.USER))
                 .build();
 
         String token = jwtTokenService.generateRefreshToken(userDetails);
@@ -58,9 +62,10 @@ class JwtTokenServiceTest {
     @Test
     void isTokenValid_shouldReturnTrueForValidToken() {
         UserDetails userDetails = User.builder()
-                .username("test@example.com")
+                .id(1L)
+                .email("test@example.com")
                 .password("password")
-                .roles("USER")
+                .roles(Set.of(Role.USER))
                 .build();
 
         String token = jwtTokenService.generateAccessToken(userDetails);
@@ -72,9 +77,10 @@ class JwtTokenServiceTest {
     @Test
     void extractUserEmail_shouldReturnEmailFromToken() {
         UserDetails userDetails = User.builder()
-                .username("test@example.com")
+                .id(1L)
+                .email("test@example.com")
                 .password("password")
-                .roles("USER")
+                .roles(Set.of(Role.USER))
                 .build();
 
         String token = jwtTokenService.generateAccessToken(userDetails);

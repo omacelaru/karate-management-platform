@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  flyway:
+    enabled: false
+
+# Frontend Configuration
+frontend:
+  url: http://localhost:3000
+
+domain:
+  url: http://localhost:3000
+  basePath: /api/v1
+
+jwt:
+  secret-signing-key: ${JWT_SECRET_KEY:defaultSecretKeyForTests}
+  access-token-expiration: 90000000 # 15 minutes in milliseconds
+  refresh-token-expiration: 604800000 # 7 days in milliseconds
+  email-confirmation-token-expiration: 86400000 # 1 day in milliseconds
