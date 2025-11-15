@@ -1,4 +1,4 @@
-name: Build & Qodana analysis
+name: Build
 
 on:
   push:
@@ -38,10 +38,3 @@ jobs:
 
       - name: Build & Test
         run: mvn -B clean verify
-
-      # --- Sonar ---
-      - uses: sonarsource/sonarcloud-github-action@v2
-        with:
-          projectBaseDir: .
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
