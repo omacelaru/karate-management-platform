@@ -43,8 +43,8 @@ services:
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     volumes:
-      - ./karate-management-platform/src/main/resources/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - ./karate-management-platform/src/main/resources/logstash/pipeline:/usr/share/logstash/pipeline
+      - ./src/main/resources/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./src/main/resources/logstash/pipeline:/usr/share/logstash/pipeline
     networks:
       - app-network
     depends_on:
@@ -123,7 +123,7 @@ services:
     ports:
       - "9090:9090"
     volumes:
-      - ./karate-management-platform/src/main/resources/prometheus:/etc/prometheus
+      - ./src/main/resources/prometheus:/etc/prometheus
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -157,7 +157,7 @@ services:
     ports:
       - "9093:9093"
     volumes:
-      - ./karate-management-platform/src/main/resources/alertmanager:/etc/alertmanager
+      - ./src/main/resources/alertmanager:/etc/alertmanager
       - alertmanager_data:/alertmanager
     command:
       - '--config.file=/etc/alertmanager/alertmanager.yml'
