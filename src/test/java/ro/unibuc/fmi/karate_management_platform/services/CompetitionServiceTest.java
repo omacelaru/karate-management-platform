@@ -1,6 +1,5 @@
 package ro.unibuc.fmi.karate_management_platform.services;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -9,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionRequest;
 import ro.unibuc.fmi.karate_management_platform.dtos.competition.CompetitionResponse;
@@ -64,6 +64,7 @@ class CompetitionServiceTest {
         Competition competition = CompetitionFixture.createDefaultCompetition();
 
         when(organizerRepository.findByUserEmail(user.getEmail())).thenReturn(Optional.of(organizer));
+        when(categoryService.getDefaultCategoryEntities()).thenReturn(categories);
         when(mapperUtils.mapToCompetition(request)).thenReturn(competition);
 
         competitionService.createCompetition(user, request);
@@ -95,12 +96,12 @@ class CompetitionServiceTest {
     @Test
     void testGetAllCompetitions_success() {
         // Arrange
-        Pageable pageable = Pageable.unpaged();
+        Pageable pageable = PageRequest.of(0, 10);
         Competition competition1 = new Competition();
         Competition competition2 = new Competition();
         List<Competition> competitions = List.of(competition1, competition2);
         Page<Competition> competitionPage = new PageImpl<>(competitions);
-        when(competitionRepository.findAll(pageable))
+        when(competitionRepository.findAll(any(Pageable.class)))
                 .thenReturn(competitionPage);
 
         CompetitionResponse response1 = CompetitionResponse.builder().id(1L).build();

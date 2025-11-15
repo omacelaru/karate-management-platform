@@ -33,6 +33,7 @@ class AuthServiceTest {
         jwtTokenService = mock(JwtTokenService.class);
         authenticationManager = mock(AuthenticationManager.class);
         mapperUtils = mock(MapperUtils.class);
+        emailService = mock(EmailService.class);
         authService = new AuthService(userService, jwtTokenService, authenticationManager, mapperUtils,emailService);
     }
 
@@ -43,6 +44,7 @@ class AuthServiceTest {
         user.setEmail(authRequest.email());
         user.setId(1L);
         user.addRole(Role.USER);
+        user.setEmailConfirmed(true);
 
         when(userService.findByEmail(authRequest.email())).thenReturn(Optional.of(user));
         when(jwtTokenService.generateAccessToken(user)).thenReturn("access-token");
@@ -69,8 +71,7 @@ class AuthServiceTest {
         assertThatThrownBy(() -> authService.login(authRequest))
                 .isInstanceOf(RuntimeException.class);
 
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(userService).findByEmail(authRequest.email());
+        verifyNoInteractions(authenticationManager);
     }
 
     @Test

@@ -34,7 +34,7 @@ public class JwtTokenService {
 
     public String generateAccessToken(UserDetails userDetails) {
         log.debug("Generating access token for user: {}", userDetails.getUsername());
-        User user = (User) userDetails;
+        User user = ((User) userDetails);
         return generateToken(
             Map.of(
                 "roles", user.getRoles(),
