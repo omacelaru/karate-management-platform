@@ -19,7 +19,7 @@ domain:
   basePath: /api/v1
 
 jwt:
-  secret-signing-key: ${JWT_SECRET_KEY}
+  secret-signing-key: ${JWT_SECRET_KEY:defaultSecretKeyForTests}
   access-token-expiration: 90000000 # 15 minutes in milliseconds
   refresh-token-expiration: 604800000 # 7 days in milliseconds
   email-confirmation-token-expiration: 86400000 # 1 day in milliseconds
