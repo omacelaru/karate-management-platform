@@ -2,14 +2,33 @@ version: 2
 updates:
   - package-ecosystem: "maven"
     directory: "/"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 10
     labels:
       - "dependencies"
       - "maven"
     commit-message:
-      prefix: "maven"
-      include: "scope"
-    target-branch: "main"
-    versioning-strategy: "auto"
+      prefix: "[Maven]"
+    target-branch: "develop"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "[github-actions]"
+    target-branch: "develop"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    labels:
+      - "dependencies"
+      - "docker"
+    commit-message:
+      prefix: "[docker]"
+    target-branch: "develop"
+    schedule:
+      interval: "weekly"
