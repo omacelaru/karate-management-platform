@@ -82,22 +82,25 @@ services:
     networks:
       - app-network
 
-  #  # Backend Service (Spring Boot)
-  #  karate-management-platform:
-  #    build:
-  #      context: ./karate-management-platform
-  #    container_name: karate-management-platform
-  #    depends_on:
-  #      - postgres
-  #    environment:
-  #      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/karate_users_db
-  #      SPRING_DATASOURCE_USERNAME: karate_user
-  #      SPRING_DATASOURCE_PASSWORD: Karate.user2025
-  #      FRONTEND_URL: http://localhost:3000
-  #    ports:
-  #      - "8080:8080"
-  #    networks:
-  #      - app-network
+    # Backend Service (Spring Boot)
+  karate-management-platform:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: karate-management-platform
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/karate_users_db
+      SPRING_DATASOURCE_USERNAME: karate_user
+      SPRING_DATASOURCE_PASSWORD: Karate.user2025
+      FRONTEND_URL: http://localhost:3000
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    volumes:
+      - ./:/app
 
   #  # Frontend Service (Next.js)
   #  karate-management-frontend:
