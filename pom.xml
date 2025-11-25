@@ -10,7 +10,7 @@
     </parent>
     <groupId>ro.unibuc.fmi</groupId>
     <artifactId>karate-management-platform</artifactId>
-    <version>0.1.0</version>
+    <version>1.0.0</version>
     <name>karate-management-platform</name>
     <description>
         Karate Management Platform is a REST API that provides endpoints for managing karate tournaments.

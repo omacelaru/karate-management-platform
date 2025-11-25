@@ -12,7 +12,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Build the production image
-FROM openjdk:23-jdk-slim
+FROM eclipse-temurin:21-jdk
 
 # Set the working directory
 WORKDIR /app
